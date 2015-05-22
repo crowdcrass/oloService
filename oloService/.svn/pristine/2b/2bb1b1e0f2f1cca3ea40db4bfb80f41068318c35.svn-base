@@ -1,0 +1,36 @@
+package com.sys.entity.order;
+/**
+ * 
+ * @author ZSL
+ *
+ */
+public class Error {
+	private String ERRORCODE;
+	private String FIELDNAME;
+	private String MESSAGE;
+	public String getERRORCODE() {
+		return ERRORCODE;
+	}
+	public void setERRORCODE(String eRRORCODE) {
+		ERRORCODE = eRRORCODE;
+	}
+	public String getFIELDNAME() {
+		return FIELDNAME;
+	}
+	public void setFIELDNAME(String fIELDNAME) {
+		FIELDNAME = fIELDNAME;
+	}
+	public String getMESSAGE() {
+		return MESSAGE;
+	}
+	public void setMESSAGE(String mESSAGE) {
+		MESSAGE = mESSAGE;
+	}
+	
+	@Override
+    public String toString()
+    {
+        return "Error [ERRORCODE=" + ERRORCODE + ", FIELDNAME=" + FIELDNAME
+               + ", MESSAGE=" + MESSAGE + "]";
+    }
+}

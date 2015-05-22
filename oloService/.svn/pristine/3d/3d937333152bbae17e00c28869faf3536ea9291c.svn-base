@@ -1,0 +1,50 @@
+package com.sys.common.exception;
+
+public class ReadException extends Exception
+{
+    /**
+     * Content of note
+     */
+    private static final long serialVersionUID = -6157451973153989329L;
+
+    /**
+     * constructor
+     * @param message the detail message. The detail message is saved for 
+     *          later retrieval by the {@link #getMessage()} method.
+     */
+    public ReadException(String message)
+    {
+        super(message);
+    }
+
+    /**
+     * constructor
+     * @param message the detail message. The detail message is saved for 
+     *          later retrieval by the {@link #getMessage()} method.
+     * @param cause the cause (which is saved for later retrieval by the
+     *         {@link #getCause()} method).  (A <tt>null</tt> value is
+     *         permitted, and indicates that the cause is nonexistent or
+     *         unknown.)
+     */
+    public ReadException(String message, Throwable cause)
+    {
+        super(message, cause);
+    }
+
+    /**
+     * constructor
+     * @param cause the cause (which is saved for later retrieval by the
+     *         {@link #getCause()} method).  (A <tt>null</tt> value is
+     *         permitted, and indicates that the cause is nonexistent or
+     *         unknown.)
+     */
+    public ReadException(Throwable cause)
+    {
+        super(cause);
+    }
+
+    public ReadException(int dberror, Exception ex)
+    {
+        this(ex.getMessage() + ",错误码：" + dberror);
+    }
+}

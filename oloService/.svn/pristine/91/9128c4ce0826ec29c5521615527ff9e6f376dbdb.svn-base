@@ -1,0 +1,157 @@
+package com.sys.index.web;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
+import net.sg.common.util.common.MD5Util;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import cn.org.rapid_framework.web.scope.Flash;
+
+import com.platform.common.data.CommonUtil;
+import com.platform.common.servlet.SessionAttribute;
+import com.sys.index.service.LoginUserService;
+
+
+/**
+ * 用户登录
+ * @author yl
+ */
+@Controller
+@RequestMapping("/login")
+public class LoginUserAction
+{
+    @Autowired
+    private LoginUserService loginUserService;
+
+    /**
+     * 用户登录首页
+     * @return
+     */
+    @RequestMapping("/index")
+    public String index()
+    {
+        return "/login";
+    }
+
+    /**
+     *  登录进入系统后台加载主菜单 
+     *  @author yl
+     */
+    @RequestMapping(value = "/main")
+    public String main(ModelMap model, HttpServletRequest request,
+                       HttpServletResponse response)
+    {
+        Map<String, Object> userMap = SessionAttribute.get(
+            request.getSession(), "user");
+        if (userMap == null) return "redirect:/login/index";
+        String userId = userMap.get("S_ID").toString();
+        List<Map<String, Object>> menuList = loginUserService.findUserMenus(
+            request, userId, "0");
+        List<Map<String, Object>> menuList1 = loginUserService.findUserMenus(
+            request, userId, menuList);
+        model.put("menuList", menuList);
+        model.put("menuJson", CommonUtil.toJSONString(menuList1));
+        return "/main";
+    }
+
+    public String loadTreeMenu(String userId, HttpServletRequest request)
+    {
+        List<Map<String, Object>> menuList = loginUserService.findUserMenus(
+            request, userId, "0");
+        return CommonUtil.toJSONString(menuList);
+    }
+
+    /**
+     * 登录
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping("/loginSys")
+    public String loginSys(ModelMap model, HttpServletRequest request,
+                           HttpServletResponse response)
+        throws Exception
+    {
+        boolean valid = false;
+        String userName = request.getParameter("username");
+        String password = request.getParameter("password");
+        if (null != userName && !"".equals(userName))
+        {
+            Map<String, Object> userMap = loginUserService.findUserByUserName(userName);
+            if (null != userMap && !"".equals(userMap))
+            {
+                if ( !"0".equals(String.valueOf(userMap.get("STATUS"))))
+                {
+                    Flash.current().error("用户已被冻结！");
+                    valid = false;
+                }
+                else
+                {
+                    if (MD5Util.MD5(password).equals(userMap.get("PASSWORD")))
+                    {
+                        request.getSession().setAttribute("user", userMap);
+                        loginUserService.saveUserLoginInfo(request, userMap);
+                        valid = true;
+                    }
+                    else
+                    {
+                        Flash.current().error("用户名或密码错误！");
+                        valid = false;
+                    }
+                }
+            }
+            else
+            {
+                Flash.current().error("不存在的用户！");
+                valid = false;
+            }
+        }
+        else
+        {
+            Flash.current().error("用户名不能为空！");
+            valid = false;
+        }
+
+        return valid ? "redirect:/login/main" : "redirect:/login/index";
+    }
+
+    /**	
+     * 清空session
+     * 退出
+     * @author mxy
+     * @return
+     */
+    @RequestMapping("/romAllsession")
+    public void romAllsession(ModelMap model, HttpServletRequest request,
+                              HttpServletResponse response)
+    {
+        HttpSession session = request.getSession(true);
+        session.invalidate();
+        try
+        {
+            session.getServletContext().getRequestDispatcher("/login/index").forward(
+                request, response);
+        }
+        catch (ServletException e)
+        {
+            e.printStackTrace();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+
+    }
+}

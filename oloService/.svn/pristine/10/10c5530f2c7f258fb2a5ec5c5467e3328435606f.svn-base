@@ -1,0 +1,131 @@
+package com.sys.web.service;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.amiba.dao.BaseDao;
+import com.platform.common.servlet.RequestParameter;
+
+
+/**
+ *随手记管理
+ * @author yl
+ *
+ */
+@Service
+public class CustomerInfoService
+{
+
+    @Autowired
+    private BaseDao baseDao;
+
+    /**
+     * 列表
+     * @param request
+     * @return
+     */
+    public Map<String, Object> queryCustomerInfoList(HttpServletRequest request)
+    {
+
+        int page = RequestParameter.getIntGreaterThen(request, "page", 0, 0,
+            false);
+        int count = RequestParameter.getInt(request, "count", 10, 1, 20, false);
+
+        String CI_CUS_NAME = request.getParameter("CI_CUS_NAME");//客户姓名
+        String CI_CUS_PHONE = request.getParameter("CI_CUS_PHONE");//客户电话
+        String CI_CUS_QQ = request.getParameter("CI_CUS_QQ");//客户QQ
+        String CI_CUS_EMAIL = request.getParameter("CI_CUS_EMAIL");//客户Email
+        String STORE = request.getParameter("STORE");//门店
+
+        String sqlWhere = "";
+
+        if (null != CI_CUS_NAME && !"".equals(CI_CUS_NAME))
+        {
+            CI_CUS_NAME = "%" + CI_CUS_NAME + "%";
+        }
+        else
+        {
+            CI_CUS_NAME = "%%";
+        }
+        if (null != CI_CUS_PHONE && !"".equals(CI_CUS_PHONE))
+        {
+            CI_CUS_PHONE = "%" + CI_CUS_PHONE + "%";
+        }
+        else
+        {
+            CI_CUS_PHONE = "%%";
+        }
+        if (null != CI_CUS_QQ && !"".equals(CI_CUS_QQ))
+        {
+            CI_CUS_QQ = "%" + CI_CUS_QQ + "%";
+        }
+        else
+        {
+            CI_CUS_QQ = "%%";
+        }
+        if (null != CI_CUS_EMAIL && !"".equals(CI_CUS_EMAIL))
+        {
+            CI_CUS_EMAIL = "%" + CI_CUS_EMAIL + "%";
+        }
+        else
+        {
+            CI_CUS_EMAIL = "%%";
+        }
+        Map<String, Object> map = null;
+        String sql = "";
+
+        if (null != STORE && !"".equals(STORE))
+        {
+            sql = "SELECT W.*,(SELECT S_NAME FROM SYS_STORE WHERE S_ID=W.S_ID) S_NAME "
+                  + "FROM W_CUSTOMER_INFO W WHERE CI_CUS_NAME LIKE ? AND "
+                  + "CI_CUS_PHONE LIKE ? AND CI_CUS_QQ LIKE ? AND CI_CUS_EMAIL LIKE ? AND S_ID=?";
+            map = this.baseDao.pagination(page, count, sql, CI_CUS_NAME,
+                CI_CUS_PHONE, CI_CUS_QQ, CI_CUS_EMAIL, STORE);
+
+        }
+        else
+        {
+            sql = "SELECT W.*,(SELECT S_NAME FROM SYS_STORE WHERE S_ID=W.S_ID) S_NAME "
+                  + "FROM W_CUSTOMER_INFO W WHERE CI_CUS_NAME LIKE ? AND "
+                  + "CI_CUS_PHONE LIKE ? AND CI_CUS_QQ LIKE ? AND CI_CUS_EMAIL LIKE ?";
+            map = this.baseDao.pagination(page, count, sql, CI_CUS_NAME,
+                CI_CUS_PHONE, CI_CUS_QQ, CI_CUS_EMAIL);
+        }
+        return map;
+    }
+
+    /**
+     * 
+     *查询门店列表
+     * @param request
+     * @return List<Map<String,Object>>
+     */
+    public List<Map<String, Object>> queryStoreList(HttpServletRequest request)
+    {
+        String sql = "";
+        sql = "SELECT * FROM SYS_STORE";
+
+        return this.baseDao.getUtil().query(sql);
+    }
+
+    /**
+     * 
+     *  查询随手记详情
+     * @param request
+     * @return Map<String,Object>
+     */
+    public Map<String, Object> queryCustomerInfo(HttpServletRequest request)
+    {
+        int CI_ID = RequestParameter.getInt(request, "CI_ID");
+        String sql = "";
+        sql = "SELECT W.*,(SELECT S_NAME FROM SYS_STORE WHERE S_ID=W.S_ID) S_NAME "
+              + "FROM W_CUSTOMER_INFO W WHERE CI_ID=?";
+
+        return this.baseDao.getUtil().read(sql, CI_ID);
+    }
+}

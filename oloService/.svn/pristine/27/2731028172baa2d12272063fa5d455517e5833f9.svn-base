@@ -1,0 +1,61 @@
+package com.sys.web.web;
+
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.sys.web.service.AppointmentOrderService;
+
+
+/**
+ * 预约单管理
+ * @author yl
+ */
+@Controller
+@RequestMapping("/appointmentOrderOrderAction")
+public class AppointmentOrderAction
+{
+    @Autowired
+    private AppointmentOrderService appointmentOrderService;
+
+    /**
+     *  列表查询
+     *  @author yl
+     */
+    @RequestMapping(value = "/index")
+    public String main(ModelMap model, HttpServletRequest request,
+                       HttpServletResponse response)
+    {
+        Map<String, Object> appointmentOrderMap = appointmentOrderService.queryAppointmentOrderInfoList(request);
+        model.put("appointmentOrderMap", appointmentOrderMap);
+
+        String AO_NO = request.getParameter("AO_NO");//单号
+        String AO_CUS_NAME = request.getParameter("AO_CUS_NAME");//客户姓名
+        String AO_CUS_PHONE = request.getParameter("AO_CUS_PHONE");//客户电话
+
+        model.put("AO_NO", AO_NO);
+        model.put("AO_CUS_NAME", AO_CUS_NAME);
+        model.put("AO_CUS_PHONE", AO_CUS_PHONE);
+
+        return "/basic/appoint/index";
+    }
+
+    /**
+     *  详情
+     *  @author yl
+     */
+    @RequestMapping(value = "/show")
+    public String show(ModelMap model, HttpServletRequest request,
+                       HttpServletResponse response)
+    {
+        model.put("appointmentOrderMap",
+            appointmentOrderService.queryAppointmentOrderInfo(request));
+        return "/basic/appoint/show";
+    }
+}

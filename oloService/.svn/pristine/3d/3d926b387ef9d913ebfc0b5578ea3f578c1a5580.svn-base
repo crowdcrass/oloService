@@ -1,0 +1,166 @@
+package com.sys.web.service;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.amiba.dao.BaseDao;
+import com.platform.common.servlet.SessionAttribute;
+
+
+/**
+ * 菜单树维护
+ * @author yl
+ *
+ */
+@Service
+public class LocationService
+{
+
+    @Autowired
+    private BaseDao baseDao;
+
+    /**
+     * 查询树形数据
+     * @return
+     */
+    public List<Map<String, Object>> findMenus()
+    {
+        String sql = "";
+        sql = "SELECT DISTINCT L_ID \"id\",L_ID_PARENT \"pid\","
+              + "L_NAME \"name\" FROM W_LOCATION";
+        List<Map<String, Object>> list = baseDao.queryForList(sql);
+        return list;
+    }
+
+    /**
+     * 查询节点详细信息
+     * @param request
+     * @return
+     */
+    public Map<String, Object> queryTreeNode(HttpServletRequest request)
+    {
+        String id = request.getParameter("id");
+        String sql = "";
+        sql = "SELECT * FROM W_LOCATION WHERE L_ID=?";
+        Map<String, Object> map = baseDao.queryForMap(sql, id);
+        return map;
+    }
+
+    /**
+     * 修改
+     * @param request
+     * @return
+     */
+    public String edit(HttpServletRequest request)
+    {
+        String flag = "0";
+        try
+        {
+            String l_id = request.getParameter("L_ID");
+            String l_code = request.getParameter("L_CODE");
+            String l_name = request.getParameter("L_NAME");
+            String l_id_parent = request.getParameter("L_ID_PARENT");
+
+            if (null == request.getSession().getAttribute("user")
+                || "".equals(request.getSession().getAttribute("user")))
+            {
+                return "3";
+            }
+
+            //Map<String,Object> userMap =SessionAttribute.get(request.getSession(), "user");
+
+            if (null == l_id || "".equals(l_id))
+            {
+                return "l_id";
+            }
+            String sql = "";
+            sql = "UPDATE W_LOCATION SET L_CODE=?,L_NAME=?,L_ID_PARENT=?"
+                  + " WHERE L_ID=?";
+            baseDao.getUtil().execute(sql, l_code, l_name, l_id_parent, l_id);
+            flag = "1";
+        }
+        catch (Exception e)
+        {
+            flag = "0";
+        }
+        return flag;
+    }
+
+    /**
+     * 删除
+     * @param request
+     * @return
+     */
+    public String deleteMenu(HttpServletRequest request)
+    {
+        String flag = "0";
+        try
+        {
+            String l_id = request.getParameter("l_id");
+
+            if (null == request.getSession().getAttribute("user")
+                || "".equals(request.getSession().getAttribute("user")))
+            {
+                return "3";
+            }
+            Map<String, Object> userMap = SessionAttribute.get(
+                request.getSession(), "user");
+
+            String sql = "";
+            sql = "DELETE FROM W_LOCATION WHERE L_ID=?";
+            baseDao.execute(sql, l_id);
+
+            sql = "INSERT INTO SYS_DELETE(MS,LR_RY,LR_SJ) VALUES (?,?,?)";
+            baseDao.execute(sql, "模块:推荐位置管理" + l_id, userMap.get("S_ID"),
+                new Date());
+
+            flag = "1";
+        }
+        catch (Exception e)
+        {
+            flag = "0";
+        }
+        return flag;
+    }
+
+    /**
+     * 增加
+     * @param request
+     * @return
+     */
+    public String add(HttpServletRequest request)
+    {
+        String flag = "0";
+        try
+        {
+            String l_name = request.getParameter("L_NAME");
+            String l_code = request.getParameter("L_CODE");
+            String l_id_parent = request.getParameter("L_ID_PARENT");
+
+            if (null == request.getSession().getAttribute("user")
+                || "".equals(request.getSession().getAttribute("user")))
+            {
+                return "3";
+            }
+            //Map<String,Object> userMap = (Map<String,Object>)request.getSession().getAttribute("user");
+
+            String sql = "";
+            sql = "SELECT IFNULL(MAX(L_ID),1)+1 AS L_ID FROM W_LOCATION";
+            String l_id = baseDao.getUtil().getString(sql);
+            sql = "INSERT INTO W_LOCATION(L_ID,l_NAME,L_ID_PARENT,L_CODE) VALUES (?,?,?,?)";
+            baseDao.getUtil().execute(sql, l_id, l_name, l_id_parent, l_code);
+            flag = "1";
+        }
+        catch (Exception e)
+        {
+            flag = "0";
+        }
+        return flag;
+    }
+}

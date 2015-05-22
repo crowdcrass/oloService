@@ -1,0 +1,251 @@
+package com.sys.web.service;
+
+import java.io.InputStream;
+import java.net.URLDecoder;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import jxl.Sheet;
+import jxl.Workbook;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+
+import com.amiba.dao.BaseDao;
+import com.platform.common.data.CommonUtil;
+import com.platform.common.servlet.RequestParameter;
+import com.platform.common.sql.SqlUtil;
+import com.sys.common.ERPWebServiceUtil;
+import com.sys.common.PropConfigUtil;
+
+
+/**
+ *商机单管理
+ * @author yl
+ *
+ */
+@Service
+public class BusinessOrderService
+{
+    private static final Logger LOGGER = Logger.getLogger(BusinessOrderService.class);
+
+    @Autowired
+    private BaseDao baseDao;
+
+    /**
+     * 列表
+     * @param request
+     * @return
+     */
+    public Map<String, Object> queryBusinessOrderInfoList(HttpServletRequest request)
+    {
+
+        int page = RequestParameter.getIntGreaterThen(request, "page", 0, 0,
+            false);
+        int count = RequestParameter.getInt(request, "count", 10, 1, 20, false);
+
+        String BO_ONO = request.getParameter("BO_ONO");//商机单号
+        String BO_CUS_NAME = request.getParameter("BO_CUS_NAME");//客户姓名
+        String BO_CUS_PHONE = request.getParameter("BO_CUS_PHONE");//客户电话
+
+        String sqlWhere = "";
+        if (null != BO_ONO && !"".equals(BO_ONO))
+        {
+            sqlWhere += " AND BO_ONO LIKE '%" + BO_ONO + "%'";
+        }
+
+        if (null != BO_CUS_NAME && !"".equals(BO_CUS_NAME))
+        {
+            sqlWhere += " AND BO_CUS_NAME LIKE '%" + BO_CUS_NAME + "%'";
+        }
+
+        if (null != BO_CUS_PHONE && !"".equals(BO_CUS_PHONE))
+        {
+            sqlWhere += " AND BO_CUS_PHONE LIKE '%" + BO_CUS_PHONE + "%'";
+        }
+
+        Map<String, Object> map = null;
+        String sql = "";
+
+        sql = "SELECT W.*,(SELECT S_NAME FROM SYS_STORE WHERE S_ID=W.S_ID) S_NAME "
+              + "FROM SYS_BUSINESS_ORDER W WHERE 1=1" + sqlWhere;
+        map = this.baseDao.pagination(page, count, sql);
+
+        return map;
+    }
+
+    /**
+     * 
+     *  查询商机单详情
+     * @param request
+     * @return Map<String,Object>
+     */
+    public Map<String, Object> queryBusinessOrderInfo(HttpServletRequest request)
+    {
+        int BO_ID = RequestParameter.getInt(request, "BO_ID");
+        String sql = "";
+        sql = "SELECT W.*,(SELECT S_NAME FROM SYS_STORE WHERE S_ID=W.S_ID) S_NAME "
+              + "FROM SYS_BUSINESS_ORDER W WHERE BO_ID=?";
+
+        return this.baseDao.getUtil().read(sql, BO_ID);
+    }
+
+    /**
+     * 
+     *解析excel
+     * @param request
+     * @return String
+     */
+    public String saveBusinessOrder(HttpServletRequest request)
+    {
+        String flag = "0";
+        Map map = new HashMap();
+        Workbook workbook = null;
+        InputStream input = null;
+        SqlUtil su = this.baseDao.getUtil();
+        try
+        {
+            String tableName = RequestParameter.getString(request, "tableName");
+            if (null == tableName || "".equals(tableName))
+            {
+                return "3";
+            }
+            int columnRowCount = RequestParameter.getInt(request,
+                "columnRowCount");//表格字段处于第几行
+            int dataRowCount = RequestParameter.getInt(request, "dataRowCount");//从第几行开始解析数据
+            int columnCount = RequestParameter.getInt(request, "columnCount");//数据列数
+            //先上传，后读取
+            MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest)request;
+            MultipartFile file = multipartRequest.getFile("businessOrderFile");
+            String fileName = URLDecoder.decode(file.getOriginalFilename(),
+                "utf-8");
+            // 获得输入流：
+            input = file.getInputStream();
+            workbook = Workbook.getWorkbook(input);//excel文档
+            Sheet sheet = workbook.getSheet(0);//excel的sheet
+            String sql = "";
+            sql = "INSERT INTO " + tableName + "(";
+            String columnName = "";
+            String columns = "";
+            //获得数据库列的信息
+            for (int i = 0; i < columnCount; i++ )
+            {
+                columnName = sheet.getCell(i, columnRowCount).getContents();
+                if (null != columnName && !"".equals(columnName))
+                {
+                    columns += null != columns && !"".equals(columns) ? ","
+                                                                        + columnName : columnName;
+                }
+            }
+            sql += columns + " ) VALUES ( ";
+            String columnValue = "";
+            String columnValues = "";
+            String sqlVal = "";
+            su.beginTransaction();
+            for (int i = dataRowCount; i < sheet.getRows(); i++ )//sheet.getRows()为excel数据的总行数
+            {
+                columnValues = "";
+                for (int j = 0; j < columnCount; j++ )
+                {
+                    columnValue = sheet.getCell(j, i).getContents();
+                    if (j == 0)
+                    {//默认第一个字段为主键，当主键为空时，不执行
+                        if (null == columnValue || "".equals(columnValue))
+                        {
+                            break;
+                        }
+                    }
+                    columnValues += null != columnValues
+                                    && !"".equals(columnValues) ? ",'"
+                                                                  + columnValue
+                                                                  + "'" : "'"
+                                                                          + columnValue
+                                                                          + "'";
+                }
+                if (null != columnValues && !"".equals(columnValues))
+                {
+                    sqlVal = sql + columnValues + ")";
+                    su.execute(sqlVal);
+                    LOGGER.info("----插入成功--" + sqlVal);
+                }
+
+                // System.out.println(data1 + "---" + data2 + "---" + data3);
+            }
+            workbook.close();
+            input.close();
+            file = null;
+            flag = "1";
+            su.commitTransaction();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            LOGGER.info(e);
+            flag = "2";
+        }
+        finally
+        {
+            su.close();
+        }
+        return flag;
+    }
+
+    /**
+     * 
+     * 商机单同步
+     * @return String
+     */
+    public void businessOrderSyn()
+    {
+        System.out.println("----商机单同步开始-----");
+        //String erp_busins_record = PropConfigUtil.getVal("erp.businessrecord").trim();
+        //查询所有未进入审核的商机单信息
+        String sql = "SELECT * FROM SYS_BUSINESS_ORDER WHERE BO_STATUS='0' OR BO_STATUS='3'";
+        List<Map<String, Object>> list = this.baseDao.getUtil().query(sql);
+        if (null != list && list.size() > 0)
+        {
+            Map<String, Object> erpData = null;
+            String jsonStr = "";
+            for (final Map<String, Object> map : list)
+            {
+                //拼写erp中需要的参数信息
+                erpData = new HashMap<String, Object>();
+                erpData.put("FStreet", map.get("BO_STREET_NO"));
+                erpData.put("FTel", map.get("BO_CUS_PHONE"));
+                erpData.put("FDept", map.get("S_STORE_NO"));
+                erpData.put("FArea", map.get("BO_DIS_NO"));
+                erpData.put("FCountry", map.get("BO_COUNTRY_NO"));
+                erpData.put("FProvinces", map.get("BO_PROVINCE_NO"));
+                erpData.put("FCity", map.get("BO_CITY_NO"));
+                erpData.put("FCustomer", map.get("BO_CUS_NAME"));
+                erpData.put("FOrgId", map.get("BO_COMPANY_NO"));
+                erpData.put("FResalut", map.get("BO_RESULT_NO"));
+                erpData.put("FAddress", map.get("BO_DETAILADD"));
+                erpData.put("FReason", map.get("BO_REASON_NO"));
+                erpData.put("FCuName", map.get("FCUSTOMER_NAME"));
+                erpData.put("FBillNo", map.get("BO_ONO"));
+                erpData.put("FDate", map.get("BO_TIME"));
+                erpData.put("FModifyDate", new Date());
+                erpData.put("FBuyInfo", map.get("BO_BUY_INTENTION"));
+                erpData.put("FSGTel", map.get("BO_OTHER_PHONE"));
+                erpData.put("FCuAdd", map.get("BO_LONG_ADD"));
+                erpData.put("FCreatorId", map.get("BO_CREATE_USER_NO"));
+                erpData.put("FCreateDate", map.get("BO_CREATE_TIME"));
+
+                jsonStr = CommonUtil.toJSONString(erpData);
+                String erpBusinsRecordSave = PropConfigUtil.getVal(
+                    "erp.tj_businessrecord_Save").trim();
+                String resultFromERP = ERPWebServiceUtil.getResultFromERP(
+                    jsonStr, erpBusinsRecordSave);
+            }
+        }
+        System.out.println("----商机单同步结束-----");
+    }
+}

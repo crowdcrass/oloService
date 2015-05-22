@@ -1,0 +1,121 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ include file="/commons/taglibs.jsp" %>
+<%
+	String path = request.getContextPath();
+	String basePath = request.getScheme() + "://"
+			+ request.getServerName() + ":" + request.getServerPort()
+			+ path + "/";
+%>
+<html>
+<head>   
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=8" />
+
+	<title>物料分类维护</title>
+	<link rel="stylesheet" type="text/css" href="../css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap-responsive.css" />
+    <link rel="stylesheet" type="text/css" href="../css/style.css" />
+    
+    <script type="text/javascript" src="../js/jquery-1.8.1.min.js"></script>
+    <script type="text/javascript" src="../js/bootstrap.js"></script>
+    <script type="text/javascript" src="../js/ckform.js"></script>
+    <script type="text/javascript" src="../js/common.js"></script>
+    <script type="text/javascript" src="../js/layer/layer.js"></script>
+	
+   </script>
+</head>
+<body>
+<input type="hidden" name="mt_id" id="mt_id" value="${mt_id }" />
+<input type="hidden" name="mt_name" id="mt_name" value="${mt_name }" />
+<form class="form-inline definewidth m20" action="index.html" method="get">  
+    <button type="button" class="btn btn-success" id="addnew" onclick="window.location.href='<%=basePath%>attrType/addPage?mt_id=${mt_id }&mt_name=${mt_name }'">新增物料分类</button>
+</form>
+<table class="table table-bordered table-hover definewidth m10" >
+    <thead>
+    <tr>
+        <th>编号</th>
+        <th>名称</th>	
+        <th>系列分类</th>	
+        <th>排序</th>	
+        <th>添加时间</th>	
+		<th>操作</th>	
+    </tr>
+    </thead>
+    	<c:forEach items="${attributeMap.result}" var="attrType" varStatus="status">
+       	<tr>
+			<td>${status.index+1 }</td>
+			<td>${attrType.AT_NAME}</td>
+			<td>${attrType.MT_NAME}</td>
+			<td>${attrType.AT_SORT_NUM}</td>
+			<td>${attrType.AT_TIME}</td>
+			<td>
+				<a href="<%=basePath%>attrType/edit?at_id=${attrType.AT_ID}">编辑</a> | 
+				<a href="javascript:;" onclick="deleteMenu('${attrType.AT_ID }','${attrType.AT_NAME }')" >删除</a>
+			</td>
+		</tr>
+     	</c:forEach>
+	     </table>
+	     <div class="pagediv">
+			<div class="pageleft " style="float: left;">
+				<a href="javascript:loadpage(0,'${mt_id }')">首页</a>
+				<a href="javascript:loadpage('${attributeMap.page - 1}','${mt_id }')">上一页</a>
+				<a href="javascript:loadpage('${attributeMap.page + 1}','${mt_id }')">下一页</a>
+				<a href="javascript:loadpage('${attributeMap.pageCount-1}','${mt_id }')">尾页</a>
+			</div>
+			<div class="pageright">
+				当前显示第${attributeMap.page+1}页，共有${attributeMap.pageCount}页
+			</div>
+		</div>
+		<input type="hidden" id="totalpage" name="totalpage" value="${attributeMap.pageCount}">
+		<div class="clr"></div>
+	</body>
+	
+<script type="text/javascript">
+	//分页
+	function loadpage(currpage,mt_id){
+		var totalpage =document.getElementById("totalpage").value;
+		if(((currpage+1)*1)<1){
+			layer.msg("现在是第一页");
+			return;
+		}else if((currpage*1)>(totalpage*1)){
+			layer.msg("现在是最后一页");
+			return;
+		}else if((currpage*1)==(totalpage*1)){
+			layer.msg("现在是最后一页");
+			return;
+		}
+		location.href='<%=basePath%>attrType/queryAttrType?mt_id='+mt_id+'&page='+currpage;
+	}
+	
+	function deleteMenu(at_id,at_name){
+		if(at_name == "未分配"){
+			layer.msg("该节点不能删除！");
+			return false;
+		}
+		layer.confirm('删除后数据将无法恢复，您确定删除吗？', {icon: 4}, function(index){
+			$.ajax({
+				url:"<%=basePath %>attrType/delType?at_id="+at_id,
+				type:"post",
+				dataType:"json",
+				async: false,
+				error: function(request) {
+					layer.msg("删除失败，请稍后重试！");
+				},
+				success:function(data){
+					if(data =="1"){
+						layer.msg("删除成功");
+						var mt_id = $("#mt_id").val();
+						location.href='<%=basePath%>attrType/queryAttrType?mt_id='+mt_id;
+					}else if(data =="2"){
+						layer.msg("该分类存在下级分类,不允许删除");
+					}else if(data =="3"){
+						layer.msg("用户已失效，请重新登录后再删除");
+					}else{
+						layer.msg("删除失败，请稍后重试");
+						return false;
+					}
+				}
+			});
+		});
+	}
+</script>

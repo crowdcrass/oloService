@@ -1,0 +1,156 @@
+package com.amiba.app.web;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.amiba.app.service.CaseTypeService4App;
+import com.platform.common.servlet.JSONWeb;
+
+
+/**
+ * 
+ * 案例
+ * @author zfj
+ *
+ */
+@Controller
+@RequestMapping("/app/case")
+public class CaseTypeAction4App
+{
+    @Autowired
+    private CaseTypeService4App caseTypeService4App;
+
+    /**
+     * 保存案例
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception String
+     */
+    @ResponseBody
+    @RequestMapping("/saveCaseType")
+    public String save(final HttpServletRequest request,
+                       HttpServletResponse response)
+        throws Exception
+    {
+        return new JSONWeb()
+        {
+            protected Object execute()
+            {
+                return caseTypeService4App.saveCaseType(request);
+            }
+        }.toString();
+    }
+
+    /**
+     * 查询案例分类
+     * @return
+     * @throws Exception String
+     */
+    @ResponseBody
+    @RequestMapping("/caseTypeCategory")
+    public String caseTypeCategory()
+        throws Exception
+    {
+        return new JSONWeb()
+        {
+            protected Object execute()
+            {
+                return caseTypeService4App.findCaseTypeCategory();
+            }
+        }.toString();
+    }
+
+    /**
+     * 根据案例名称模糊查询〉
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception String
+     */
+    @ResponseBody
+    @RequestMapping("/findCaseByNameBlur")
+    public String findCaseByNameBlur(final HttpServletRequest request,
+                                     HttpServletResponse response)
+        throws Exception
+    {
+        return new JSONWeb()
+        {
+            protected Object execute()
+            {
+                return caseTypeService4App.findCaseByNameBlur(request);
+            }
+        }.toString();
+    }
+
+    /**
+     * 根据案例id查询案例
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception String
+     */
+    @ResponseBody
+    @RequestMapping("/findCaseById")
+    public String findCaseById(final HttpServletRequest request,
+                               HttpServletResponse response)
+        throws Exception
+    {
+        return new JSONWeb()
+        {
+            protected Object execute()
+            {
+                return caseTypeService4App.findCaseById(request);
+            }
+        }.toString();
+    }
+
+    /**
+     * 模糊查询案例详情
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception String
+     */
+    @ResponseBody
+    @RequestMapping("/findCaseBlur")
+    public String findCaseBlur(final HttpServletRequest request,
+                               HttpServletResponse response)
+        throws Exception
+    {
+        return new JSONWeb()
+        {
+            protected Object execute()
+            {
+                return caseTypeService4App.findCaseBlur(request);
+            }
+        }.toString();
+    }
+
+    /**
+     * 查找所有案例
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception String
+     */
+    @ResponseBody
+    @RequestMapping("/findAllCase")
+    public String findAllCase(final HttpServletRequest request,
+                              HttpServletResponse response)
+        throws Exception
+    {
+        return new JSONWeb()
+        {
+            protected Object execute()
+            {
+                return caseTypeService4App.findAllCase(request);
+            }
+        }.toString();
+    }
+}

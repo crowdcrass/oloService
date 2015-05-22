@@ -1,0 +1,177 @@
+package com.sys.wx.service;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import net.sg.common.util.common.ImgUtil;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.amiba.dao.BaseDao;
+import com.platform.common.servlet.SessionAttribute;
+
+/**
+ * 菜单树维护
+ * @author yl
+ *
+ */
+@Service
+public class ProductTypeService {
+
+	@Autowired
+	private BaseDao baseDao;
+	
+	/**
+	 * 查询树形数据
+	 * @return
+	 */
+	public List<Map<String,Object>> findMenus(){
+		String sql = "";
+		sql = "SELECT MT_ID id, MT_NAME name, MT_PARENT_ID pid FROM SYS_MATTER_TYPE ORDER BY ID ";
+		List<Map<String,Object>> list = baseDao.queryForList(sql);
+		return list;
+	}
+	
+	/**
+	 * 查询节点列表详细信息
+	 * @param request
+	 * @return
+	 */
+	public List<Map<String,Object>> queryTreeNodeList(HttpServletRequest request){
+		String id = request.getParameter("id");
+		String sql = "";
+		List<Map<String,Object>> map = null;
+		if(id!=null&&!"".equals(id)){
+			sql = "SELECT m1.*,m2.MT_NAME pname FROM SYS_MATTER_TYPE m1 "+ 
+					"LEFT JOIN SYS_MATTER_TYPE m2 ON m2.MT_ID = m1.MT_PARENT_ID "+
+					"WHERE m1.MT_ID IN(SELECT m1.MT_ID FROM SYS_MATTER_TYPE m1 "+
+					"LEFT JOIN SYS_MATTER_TYPE m2 ON m2.MT_ID = m1.MT_PARENT_ID "+
+					"WHERE m1.MT_ID=? OR m1.MT_PARENT_ID = ?) "+
+					"OR m1.MT_PARENT_ID IN(SELECT m1.MT_ID FROM SYS_MATTER_TYPE m1 "+
+					"LEFT JOIN SYS_MATTER_TYPE m2 ON m2.MT_ID = m1.MT_PARENT_ID "+
+					"WHERE m1.MT_ID=? OR m1.MT_PARENT_ID = ?)";
+			map = baseDao.queryForList(sql, id,id,id,id);
+		}else{
+			sql = "SELECT m1.*,m2.MT_NAME pname FROM SYS_MATTER_TYPE m1 "+ 
+					"LEFT JOIN SYS_MATTER_TYPE m2 ON m2.MT_ID = m1.MT_PARENT_ID "+
+					"WHERE m1.MT_ID IN(SELECT m1.MT_ID FROM SYS_MATTER_TYPE m1 "+
+					"LEFT JOIN SYS_MATTER_TYPE m2 ON m2.MT_ID = m1.MT_PARENT_ID "+
+					" ) "+
+					"OR m1.MT_PARENT_ID IN(SELECT m1.MT_ID FROM SYS_MATTER_TYPE m1 "+
+					"LEFT JOIN SYS_MATTER_TYPE m2 ON m2.MT_ID = m1.MT_PARENT_ID "+
+					" )";
+			map = baseDao.queryForList(sql);
+		}
+		return map;
+	}
+	
+	/**
+	 * 查询节点详细信息
+	 * @param request
+	 * @return
+	 */
+	public Map<String,Object> queryTreeNode(HttpServletRequest request){
+		String id = request.getParameter("id");
+		String sql = "";
+		sql = "SELECT m1.*,m2.MT_NAME pname FROM SYS_MATTER_TYPE m1 "+
+				"left join SYS_MATTER_TYPE m2 on m2.MT_ID = m1.MT_PARENT_ID "+
+				"WHERE m1.MT_ID=? ";
+		Map<String,Object> map = baseDao.queryForMap(sql, id);
+		return map;
+	}
+	
+	/**
+	 * 修改
+	 * @param request
+	 * @return
+	 */
+	public String edit(HttpServletRequest request){
+		String flag = "0";
+		String MT_NAME = request.getParameter("MT_NAME");
+		String MT_NUM = request.getParameter("MT_NUM");
+		String MT_DESC = request.getParameter("MT_DESC");
+		String MT_PARENT_ID = request.getParameter("MT_PARENT_ID");
+		String IS_LAST = request.getParameter("IS_LAST");
+		String uploadPath = request.getParameter("MT_PIC");
+		String MT_LEVEL = request.getParameter("MT_LEVEL");
+		if(MT_LEVEL.equals("")||MT_LEVEL==null){
+			MT_LEVEL = "0";
+		}
+		String id = request.getParameter("Id");
+		String sql = "";
+		sql = "UPDATE SYS_MATTER_TYPE SET MT_NUM=?,MT_NAME=?,MT_DESC=?,MT_PARENT_ID=?,IS_LAST=?,MT_PIC=?,MT_LEVEL=? " +
+				" WHERE MT_ID=?";
+		baseDao.getUtil().execute(sql, MT_NUM,MT_NAME,MT_DESC,MT_PARENT_ID,IS_LAST,uploadPath,MT_LEVEL,id);
+		flag = "1";
+		return flag;
+	}
+	
+	/**
+	 * 删除
+	 * @param request
+	 * @return
+	 */
+	public String deleteMenu(HttpServletRequest request){
+		String id = request.getParameter("id");
+		String level = request.getParameter("level");
+		
+		if(null == request.getSession().getAttribute("user") || "".equals(request.getSession().getAttribute("user"))){
+			return "3";
+		}
+		Map<String,Object> userMap = SessionAttribute.get(request.getSession(), "user");
+		
+		String sql = "";
+		if(level.equals("0")||level.equals("1")){
+			sql = "SELECT m1.*,m2.MT_NAME pname FROM SYS_MATTER_TYPE m1 "+ 
+					"LEFT JOIN SYS_MATTER_TYPE m2 ON m2.MT_ID = m1.MT_PARENT_ID "+
+					"WHERE m1.MT_ID IN(SELECT m1.MT_ID FROM SYS_MATTER_TYPE m1 "+
+					"LEFT JOIN SYS_MATTER_TYPE m2 ON m2.MT_ID = m1.MT_PARENT_ID "+
+					"WHERE  m1.MT_PARENT_ID = ?) "+
+					"OR m1.MT_PARENT_ID IN(SELECT m1.MT_ID FROM SYS_MATTER_TYPE m1 "+
+					"LEFT JOIN SYS_MATTER_TYPE m2 ON m2.MT_ID = m1.MT_PARENT_ID "+
+					"WHERE m1.MT_PARENT_ID = ?)";
+			List<Map<String,Object>> map = baseDao.queryForList(sql, id,id);
+			if(map.size()>0){
+				return "2";
+			}
+		}
+		sql = "DELETE FROM SYS_MATTER_TYPE WHERE MT_ID=?";
+		baseDao.execute(sql, id);
+		
+		sql = "INSERT INTO SYS_DELETE(MS,LR_RY,LR_SJ) VALUES (?,?,?)";
+		baseDao.execute(sql, "模块:功能树维护"+id,userMap.get("S_ID"),new Date());
+		
+		return "1";
+	} 
+	
+	/**
+	 * 增加
+	 * @param request
+	 * @return
+	 */
+	public String add(HttpServletRequest request){
+		String flag = "0";
+		String MT_NAME = request.getParameter("MT_NAME");
+		String MT_NUM = request.getParameter("MT_NUM");
+		String MT_DESC = request.getParameter("MT_DESC");
+		String MT_PARENT_ID = request.getParameter("MT_PARENT_ID");
+		String MT_LEVEL = request.getParameter("MT_LEVEL");
+		String IS_LAST = request.getParameter("IS_LAST");
+		String uploadPath = request.getParameter("MT_PIC");
+		if(MT_LEVEL.equals("")||MT_LEVEL==null){
+			MT_LEVEL = "0";
+		}
+		
+		String sql = "";
+		sql="SELECT IFNULL(MAX(MT_ID),1)+1 AS MT_ID FROM SYS_MATTER_TYPE";
+		String MT_ID = baseDao.getUtil().getString(sql);
+		sql = "INSERT INTO SYS_MATTER_TYPE(MT_ID,MT_NUM,MT_NAME,MT_DESC,MT_PARENT_ID,LR_SJ,IS_LAST,MT_PIC,MT_LEVEL) VALUES (?,?,?,?,?,?,?,?,?)";
+		baseDao.getUtil().execute(sql, MT_ID,MT_NUM,MT_NAME,MT_DESC,MT_PARENT_ID,new Date(),IS_LAST,uploadPath,MT_LEVEL);
+		flag = "1";
+		return flag;
+	}
+}

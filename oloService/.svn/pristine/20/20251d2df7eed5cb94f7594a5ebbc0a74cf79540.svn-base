@@ -1,0 +1,211 @@
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.text.ParseException;
+
+import org.apache.log4j.Logger;
+
+import com.sys.common.PropConfigUtil;
+
+
+/**
+ * 解析erp系统接口
+ * @author    xmL
+ * @version   V1.00 2015-10-15
+ * @since     olo V1.0R001
+ */
+public class ParseErpWebService
+{
+    private static final Logger LOGGER = Logger.getLogger(ParseErpWebService.class);
+
+    private static final String POST_URL_Login = PropConfigUtil.getVal("erp.websvc.login");
+
+    public static String checkLogin()
+        throws IOException
+    {
+        URL postUrl = new URL(POST_URL_Login);
+        HttpURLConnection connection = (HttpURLConnection)postUrl.openConnection();
+        if ( !connection.getDoOutput())
+        {
+            connection.setDoOutput(true);
+        }
+        connection.setRequestMethod("POST");
+        connection.setUseCaches(false);
+        connection.setInstanceFollowRedirects(true);
+        connection.setRequestProperty("Content-Type", "application/json");
+        DataOutputStream out = new DataOutputStream(
+            connection.getOutputStream());
+        // 登陆验证字串
+        String content = "{\"provider\":\"credentials\",\"UserName\":\"Administrator\",\"Password\":\"jinjia123\",\"RememberMe\":false\"PasswordIsEncrypted\":false}";
+        out.writeBytes(content);
+        out.flush();
+        out.close();
+        // 获取Cookie
+        String key = null;
+        String cookieVal = null;
+        for (int i = 1; (key = connection.getHeaderFieldKey(i)) != null; i++ )
+        {
+            if (key.equalsIgnoreCase("Set-Cookie"))
+            {
+                cookieVal = connection.getHeaderField(i);
+                break;
+            }
+        }
+        BufferedReader reader = new BufferedReader(new InputStreamReader(
+            connection.getInputStream()));
+        String line;
+        LOGGER.info("Contents of post request-----------------------");
+        while ( (line = reader.readLine()) != null)
+        {
+            LOGGER.info(line);
+        }
+        LOGGER.info("Contents of post request ends-----------------");
+        reader.close();
+        connection.disconnect();
+        return cookieVal;
+    }
+
+    public static String getResultFromPost(String content, String ifUrl)
+        throws IOException
+    {
+        String cookieVal = checkLogin();
+        if (null == cookieVal)
+        {
+            return "";
+        }
+        URL postUrlInvoke = new URL(ifUrl);
+        HttpURLConnection connectionInvoke = (HttpURLConnection)postUrlInvoke.openConnection();
+        connectionInvoke.setRequestProperty("Cookie", cookieVal);
+        if ( !connectionInvoke.getDoOutput())
+        {
+            connectionInvoke.setDoOutput(true);
+        }
+        connectionInvoke.setRequestMethod("POST");
+        connectionInvoke.setUseCaches(false);
+        connectionInvoke.setInstanceFollowRedirects(true);
+        connectionInvoke.setRequestProperty("Content-Type", "application/json");
+        DataOutputStream out = new DataOutputStream(
+            connectionInvoke.getOutputStream());
+        out.writeBytes(content);
+        out.flush();
+        out.close();
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(
+            connectionInvoke.getInputStream()));
+        LOGGER.info("Contents of post request----------------");
+        String jsonStr = reader.readLine();
+        LOGGER.info(jsonStr);
+        LOGGER.info("Contents of post request ends------------");
+        reader.close();
+        connectionInvoke.disconnect();
+        return jsonStr;
+    }
+
+    public static String ERP_BUSINS_RECORD = PropConfigUtil.getVal(
+        "erp.businessrecord").trim();
+
+    @SuppressWarnings("static-access")
+    public static void main(String[] args)
+        throws IOException, ParseException
+    {
+        String content = "{\"CreateOrgId\":0,\"Number\":\"\",\"Id\":\"100057\"}";
+        String resultFromPost = getResultFromPost(content, ERP_BUSINS_RECORD);
+        LOGGER.info("resultFromPost777777== " + resultFromPost);
+
+        /*
+         * SimpleDateFormat format = new SimpleDateFormat("SZ"); DateFormat df5
+         * = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss EEEEEE", Locale.US); Date
+         * d = new Date(1413344187000L);
+         * System.out.println(df5.parse("1413344187000+0800"));
+         * System.out.println("---------"); Date parse =
+         * format.parse("1413344187000+0800");
+         */
+        /*
+         * Date date = new Date(); System.out.println(date); SimpleDateFormat
+         * sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss E Z"); String sDate =
+         * sdf.format(date); System.out.println(sDate);
+         */
+        /* String x = "Sat Apr 18 17:47:03 CST 2015";
+         SimpleDateFormat sdf1 = new SimpleDateFormat(
+             "EEE MMM dd HH:mm:ss Z yyyy", Locale.UK);
+         try
+         {
+             Date date = sdf1.parse(x);
+             SimpleDateFormat sdf = new SimpleDateFormat(
+                 "yyyy-MM-dd HH:mm:ss E Z");
+             String sDate = sdf.format(date);
+             System.out.println(sDate);
+         }
+         catch (ParseException e)
+         {
+             e.printStackTrace();
+         }
+
+         
+          * String ss = "Sat Apr 18 17:47:03 CST 2015"; SimpleDateFormat format =
+          * new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss E Z"); Date parse =
+          * format.parse(ss);
+          
+
+         FileReader fr = new FileReader(
+             "G:\\myeclipse10workspace\\oloService\\src\\json.txt");
+         BufferedReader bf = new BufferedReader(fr);
+         String readLine = bf.readLine();
+         String jsonStr = readLine.substring(20, readLine.length() - 1);
+         System.out.println(jsonStr);
+
+         JsonConfig jsonConfig = new JsonConfig();
+         jsonConfig.findJavaPropertyNameProcessor(new DefaultValueProcessor()
+         {
+             @Override
+             public Object getDefaultValue(Class type)
+             {
+                 if (type == java.util.Date.class)
+                 {
+                     SimpleDateFormat sdf = new SimpleDateFormat(
+                         "yyyy-MM-dd HH:mm:ss E Z");
+                     String sDate = sdf.format(type);
+                     System.out.println(sDate + "=====");
+                 }
+                 return null;
+             }
+         }.getClass());
+         // 再使用JsonObject遍历一个个的对像
+         JSONObject obj = JSONObject.fromObject(jsonStr);
+         Result bean = (Result)obj.toBean(obj, Result.class);
+         System.out.println(bean.getFCreateDate());
+         System.out.println(bean.toString());*/
+
+        /********* 处理js格式问题 ************/
+        // JsonConfig config = new JsonConfig();
+        // config.setIgnoreDefaultExcludes(false);
+        // config.registerJsonBeanProcessor(Date.class, new
+        // JsDateJsonBeanProcessor());
+        /************** 处理Integer为null时输出为0的问题 版本需要2.3 **************/
+        // JsonConfig jsonConfig = new JsonConfig();
+        // jsonConfig.registerDefaultValueProcessor(Integer.class, new
+        // MyDefaultIntegerValueProcessor());
+        // JsonConfig jsonConfig = new JsonConfig();
+        // jsonConfig.findJsonValueProcessor(Integer.class, new
+        // DefaultValueProcessor()
+        // {
+        // public Object getDefaultValue(Class type)
+        // {
+        // return null;
+        // }
+        // });
+
+        // Order oo = (Order) obj.toBean(obj, Order.class);//
+        // 指定转换的类型，但仍需要强制转化-成功
+        // System.err.println(oo.getDt() + "," + oo.getConsignee());
+
+        // TODO Auto-generated method stub
+        /*
+         * try { readContentFromPost(); } catch (IOException e) { // TODO
+         * Auto-generated catch block e.printStackTrace(); }
+         */
+    }
+}

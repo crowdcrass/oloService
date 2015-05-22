@@ -1,0 +1,58 @@
+package com.sys.web.web;
+
+
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.sys.web.service.EmployeeService;
+
+/**
+ * 店员管理
+ * @author yl
+ */
+@Controller
+@RequestMapping("/employeeAction")
+public class EmployeeAction {
+	@Autowired
+	private EmployeeService employeeService;
+	
+	/**
+	 * 门店列表查询
+	 *  @author yl
+	 */
+	@RequestMapping(value="/index")
+	public String index(ModelMap model,HttpServletRequest request,HttpServletResponse response) { 
+		Map<String,Object> employeeMap = employeeService.queryEmployeeList(request);
+		model.put("employeeMap", employeeMap);
+		model.put("storeList", employeeService.quereyStore(request));
+		String e_name = request.getParameter("e_name");
+		model.put("e_name", e_name);
+		String selStore = request.getParameter("selStore");
+		model.put("selStore", selStore);
+		return "/basic/employee/index";
+	}
+	
+	/**
+	 * 密码重置
+	 * @param model
+	 * @param request
+	 * @param response
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value="/resetPwd")
+	public String resetPwd(ModelMap model,HttpServletRequest request,HttpServletResponse response) { 
+		String flag = "";
+		flag = employeeService.resetPwd(request);
+		return flag;
+	}
+}

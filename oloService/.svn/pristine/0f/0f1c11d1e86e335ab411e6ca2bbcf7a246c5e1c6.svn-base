@@ -1,0 +1,32 @@
+package com.amiba.util;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+
+
+/**
+ * spring 容器包装
+ * @author    xmL
+ * @version   V1.00 2015-10-15
+ * @since     olo V1.0R001
+ */
+public final class ContainerContext implements ApplicationContextAware
+{
+    private static ApplicationContext applicationContext;
+
+    /**
+     * 容器信息处理
+     * 
+     * @param applicationContext
+     */
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext)
+    {
+        ContainerContext.applicationContext = applicationContext;
+    }
+
+    public static ApplicationContext getApplicationContext()
+    {
+        return ContainerContext.applicationContext;
+    }
+}

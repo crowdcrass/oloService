@@ -1,0 +1,40 @@
+package com.amiba.util.log;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import org.apache.log4j.Logger;
+
+/**
+ * 
+ * @author lz
+ *
+ */
+public class Log4jUtil {
+	private static Logger log = Logger.getLogger(Log4jUtil.class);
+
+	/**
+	 * 打印日志
+	 * @param errorInfo  发生异常的类中的方法
+	 * @param e  异常信息
+	 */
+	public static void logPrint(String errorInfo,Exception e){
+		log.debug(errorInfo+e);
+	}
+
+	/**
+	 * 获得当前发生日志的时间
+	 * @return
+	 */
+	public static String getTimeDate() {
+		String time = null;
+		try {
+			SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+			time = sf.format(new Date());
+		} catch (Exception e) {
+			e.printStackTrace();
+			Log4jUtil.logPrint("Log4jUtil===>getTimeDate", e);
+		}
+		return time;
+	}
+}

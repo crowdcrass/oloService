@@ -1,0 +1,419 @@
+package com.amiba.app.web;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.amiba.app.service.MyInfoService;
+import com.platform.common.servlet.JSONWeb;
+
+
+/**
+ * 我的信息
+ * @author zsl
+ */
+@Controller
+@RequestMapping("/app/userApp")
+public class MyInfoAction
+{
+    @Autowired
+    private MyInfoService myInfoService;
+
+    /**
+     * 随手记
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception
+     */
+    @ResponseBody
+    @RequestMapping("/customerInfo")
+    public String customerInfo(final HttpServletRequest request,
+                               HttpServletResponse response)
+        throws Exception
+    {
+        return new JSONWeb()
+        {
+            protected Object execute()
+            {
+                return myInfoService.customerInfo(request);
+            }
+        }.toString();
+    }
+
+    /**
+     * 随手记(添加)
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception
+     */
+    @ResponseBody
+    @RequestMapping("/addCustomerInfo")
+    public String addCustomerInfo(final HttpServletRequest request,
+                                  HttpServletResponse response)
+        throws Exception
+    {
+        return new JSONWeb()
+        {
+            protected Object execute()
+            {
+                return myInfoService.addCustomerInfo(request);
+            }
+        }.toString();
+    }
+
+//    /**
+//     * 随手记(修改)
+//     * @param request
+//     * @param response
+//     * @return
+//     * @throws Exception
+//     */
+//    @ResponseBody
+//    @RequestMapping("/updateCustomerInfo")
+//    public String updateCustomerInfo(final HttpServletRequest request,
+//                                     HttpServletResponse response)
+//        throws Exception
+//    {
+//        return new JSONWeb()
+//        {
+//            protected Object execute()
+//            {
+//                return myInfoService.updateCustomerInfo(request);
+//            }
+//        }.toString();
+//    }
+
+    /**
+     * 商机单(提交添加)
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception
+     */
+    @ResponseBody
+    @RequestMapping("/addBusinessOrder")
+    public String addBusinessOrder(final HttpServletRequest request,
+                                   HttpServletResponse response)
+        throws Exception
+    {
+        return new JSONWeb()
+        {
+            protected Object execute()
+            {
+                return myInfoService.addBusinessOrder(request);
+            }
+        }.toString();
+    }
+
+    /**
+     * 商机单(提交修改)
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception
+     */
+    @ResponseBody
+    @RequestMapping("/editBusinessOrder")
+    public String editBusinessOrder(final HttpServletRequest request,
+                                    HttpServletResponse response)
+        throws Exception
+    {
+        return new JSONWeb()
+        {
+            protected Object execute()
+            {
+                return myInfoService.editBusinessOrder(request);
+            }
+        }.toString();
+    }
+
+    /**
+     * 商机单(查询详情)
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception
+     */
+    @ResponseBody
+    @RequestMapping("/queryBusinessOrderDetail")
+    public String queryBusinessOrderDetail(final HttpServletRequest request,
+                                           HttpServletResponse response)
+        throws Exception
+    {
+        return new JSONWeb()
+        {
+            protected Object execute()
+            {
+                return myInfoService.queryBusinessOrderDetail(request);
+            }
+        }.toString();
+    }
+
+    //	/**
+    //	 * 商机单(修改状态)
+    //	 * @param request
+    //	 * @param response
+    //	 * @return
+    //	 * @throws Exception
+    //	 */
+    //	@ResponseBody
+    //	@RequestMapping("/updateBusinessOrderStatus")
+    //	public String updateBusinessOrderStatus(final HttpServletRequest request,HttpServletResponse response) 
+    //	throws Exception{
+    //		return new JSONWeb() {
+    //			protected Object execute() {
+    //				return myInfoService.updateBusinessOrderStatus(request);
+    //			}
+    //		}.toString();
+    //	}
+
+    /**
+     * 预约单(添加提交)
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception
+     */
+    @ResponseBody
+    @RequestMapping("/addAppointmentOrder")
+    public String addAppointmentOrder(final HttpServletRequest request,
+                                      HttpServletResponse response)
+        throws Exception
+    {
+        return new JSONWeb()
+        {
+            protected Object execute()
+            {
+                return myInfoService.addAppointmentOrder(request);
+            }
+        }.toString();
+    }
+
+    /**
+     * 预约单(修改提交)
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception
+     */
+    @ResponseBody
+    @RequestMapping("/editAppointmentOrder")
+    public String editAppointmentOrder(final HttpServletRequest request,
+                                       HttpServletResponse response)
+        throws Exception
+    {
+        return new JSONWeb()
+        {
+            protected Object execute()
+            {
+                return myInfoService.editAppointmentOrder(request);
+            }
+        }.toString();
+    }
+
+    /**
+     * 
+     *〈预约单查询详情信息〉
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception String
+     */
+    @ResponseBody
+    @RequestMapping("/queryAppointmentOrderDetail")
+    public String queryAppointmentOrderDetail(final HttpServletRequest request,
+                                              HttpServletResponse response)
+        throws Exception
+    {
+        return new JSONWeb()
+        {
+            protected Object execute()
+            {
+                return myInfoService.queryAppointmentOrderDetail(request);
+            }
+        }.toString();
+    }
+
+    /**
+     * 商机单列表
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception
+     */
+    @ResponseBody
+    @RequestMapping("/businessOrderList")
+    public String businessOrderList(final HttpServletRequest request,
+                                    HttpServletResponse response)
+        throws Exception
+    {
+        return new JSONWeb()
+        {
+            protected Object execute()
+            {
+                return myInfoService.businessOrderList(request);
+            }
+        }.toString();
+    }
+
+    /**
+     * 预约单列表
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception
+     */
+    @ResponseBody
+    @RequestMapping("/appointmentOrderList")
+    public String appointmentOrderList(final HttpServletRequest request,
+                                       HttpServletResponse response)
+        throws Exception
+    {
+        return new JSONWeb()
+        {
+            protected Object execute()
+            {
+                return myInfoService.appointmentOrderList(request);
+            }
+        }.toString();
+    }
+
+    /**
+     * 查询省
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception
+     */
+    @ResponseBody
+    @RequestMapping("/queryProvince")
+    public String queryProvince(final HttpServletRequest request,
+                                HttpServletResponse response)
+        throws Exception
+    {
+        return new JSONWeb()
+        {
+            protected Object execute()
+            {
+                return myInfoService.queryProvince(request);
+            }
+        }.toString();
+    }
+
+    /**
+     * 查询市
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception
+     */
+    @ResponseBody
+    @RequestMapping("/queryCity")
+    public String queryCity(final HttpServletRequest request,
+                            HttpServletResponse response)
+        throws Exception
+    {
+        return new JSONWeb()
+        {
+            protected Object execute()
+            {
+                return myInfoService.queryCity(request);
+            }
+        }.toString();
+    }
+
+    /**
+     * 查询区
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception
+     */
+    @ResponseBody
+    @RequestMapping("/queryDistrict")
+    public String queryDistrict(final HttpServletRequest request,
+                                HttpServletResponse response)
+        throws Exception
+    {
+        return new JSONWeb()
+        {
+            protected Object execute()
+            {
+                return myInfoService.queryDistrict(request);
+            }
+        }.toString();
+    }
+
+    /**
+     * 商机单搜索
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception
+     */
+    @ResponseBody
+    @RequestMapping("/searchBusinessOrder")
+    public String searchBusinessOrder(final HttpServletRequest request,
+                                      HttpServletResponse response)
+        throws Exception
+    {
+        return new JSONWeb()
+        {
+            protected Object execute()
+            {
+                return myInfoService.searchBusinessOrder(request);
+            }
+        }.toString();
+    }
+
+    /**
+     * 预约单搜索
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception
+     */
+    @ResponseBody
+    @RequestMapping("/searchAppointmentOrder")
+    public String searchAppointmentOrder(final HttpServletRequest request,
+                                         HttpServletResponse response)
+        throws Exception
+    {
+        return new JSONWeb()
+        {
+            protected Object execute()
+            {
+                return myInfoService.searchAppointmentOrder(request);
+            }
+        }.toString();
+    }
+
+    /**
+     * 查询活动
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception
+     */
+    @ResponseBody
+    @RequestMapping("/searchAct")
+    public String searchAct(final HttpServletRequest request,
+                            HttpServletResponse response)
+        throws Exception
+    {
+        return new JSONWeb()
+        {
+            protected Object execute()
+            {
+                return myInfoService.searchAct();
+
+            }
+        }.toString();
+    }
+}

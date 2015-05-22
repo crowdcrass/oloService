@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="erpSql">
+	<typeAlias alias="BusinessBillInfo" type="com.sys.entity.BusinessBillInfo" />
+	<typeAlias alias="CustMdyyBillInfo" type="com.sys.entity.CustMdyyBillInfo" />
+	<typeAlias alias="EntryInfo" type="com.sys.entity.EntryInfo" />
+	<typeAlias alias="PayInfo" type="com.sys.entity.PayInfo" />
+
+	<!-- 插入商机单信息 -->
+	<insert id="saveCustBusinessRecord" parameterClass="BusinessBillInfo">
+    <![CDATA[
+      INSERT INTO sys_business_order(
+            BO_ONO,
+			BO_TIME,
+			BO_STATUS,
+			BO_COMPANY,
+			S_ID, 
+			BO_CUS_NAME,
+			BO_CUS_PHONE,
+			BO_OTHER_PHONE,
+			BO_COUNTRY,
+			BO_PROVINCE,
+			BO_CITY,
+			BO_DIS,
+			BO_STREET,
+			BO_RESULT,
+			BO_DETAILADD,
+			BO_REASON,
+			BO_LONG_ADD,
+			BO_BUY_INTENTION,
+			BO_SYN_FLAG,
+			BO_CREATE_USER,
+			BO_UPDATE_USER,
+			BO_CREATE_TIME,
+			BO_UPDATE_TIME
+      )
+      VALUES(#boOno#,TIMESTAMP(#boTime#),#boStatus#,#boCompany#,#sId#,#boCusName#,#boCusPhone#,
+             #boOtherPhone#,#boCountry#,#boProvince#,#boCity#,#boDis#,#boStreet#,
+             #boResult#,#boDetailAdd#,#boReason#,#boLongAdd#,#boBuyIntention#,
+             #boSynFlag#,#boCreateUser#,#boUpdateUser#,TIMESTAMP(#boCreateTime#),TIMESTAMP(#boUpdateTime#)   
+      )
+    ]]>
+	</insert>
+	<!-- 商机单修改 -->
+	<update id="editCustBusinessRecord" parameterClass="BusinessBillInfo">
+		UPDATE
+		sys_business_order
+		SET
+		BO_TIME = TIMESTAMP(#boTime#),
+		BO_STATUS =
+		#boStatus#,
+		BO_COMPANY= #boCompany#,
+		S_ID = #sId#,
+		BO_CUS_NAME =
+		#boCusName#,
+		BO_CUS_PHONE = #boCusPhone#,
+		BO_OTHER_PHONE =
+		#boOtherPhone#,
+		BO_COUNTRY = #boCountry#,
+		BO_PROVINCE = #boProvince#,
+		BO_CITY =
+		#boCity#,
+		BO_DIS = #boDis#,
+		BO_STREET = #boStreet#,
+		BO_RESULT =
+		#boResult#,
+		BO_DETAILADD = #boDetailAdd#,
+		BO_REASON = #boReason#,
+		BO_LONG_ADD = #boLongAdd#,
+		BO_BUY_INTENTION= #boBuyIntention#,
+		BO_SYN_FLAG = #boSynFlag#,
+		BO_CREATE_USER = #boCreateUser#,
+		BO_UPDATE_USER = #boUpdateUser#,
+		BO_CREATE_TIME =
+		TIMESTAMP(#boCreateTime#),
+		BO_UPDATE_TIME = TIMESTAMP(#boUpdateTime#)
+		WHERE BO_ONO=#boOno#
+	</update>
+
+	<!-- 插入预约单信息 -->
+	<insert id="saveCustMdyyBill" parameterClass="CustMdyyBillInfo">
+    <![CDATA[
+      INSERT INTO sys_appointment_order(
+            AO_NO,
+			AO_TIME,
+			AO_STATUS,
+			AO_COMPANY,
+			AO_SPEC_STORE,
+			AO_BB_NO,
+			AO_CUS_NAME,
+			AO_CUS_PHONE,
+			AO_OTHER_PHONE,
+			AO_ATTN_USER,
+			AO_ATTN_PHONE,
+			AO_CUS_ADD,
+			AO_STORE_MANAGER,
+			AO_STORE_PHONE,
+			AO_PAYMENT,
+			AO_TOTAL_DEPOSIT,
+			AO_TEST,
+			AO_PRODUCT_TYPE,
+			AO_CABINET_PRICE,
+			AO_CUPBOARD_PRICE,
+			AO_TABLE_PRICE,
+			AO_CABINET_M,
+			AO_CUPBOARD_M,
+			A_NO,
+			A_NAME,
+			AO_PRICE,
+			A_DESC,
+			A_OTHER_ACC_ITEM,
+			A_CUSTOMER_REQ,
+			AO_REMARK,
+			AO_ORDER_STATUS,
+			AO_CREATEER,
+			AO_CREATE_TIME    
+      )
+      VALUES(
+		#aoNo#,
+		TIMESTAMP(#aoTime#),
+		#aoStatus#,
+		#aoCompany#,
+		#aOSpecStore#,
+		#aoBbNo#,
+		#aOCusName#,
+		#aoCusPhone#,
+		#aoOtherPhone#,
+		#aoAttnUser#,
+		#aoAttnPhone#,
+		#aoCusAdd#,
+		#aoStoreManager#,
+		#aoStorePhone#,
+		#aoPayment#,
+		#aoTotalDeposit#,
+		#aoTest#,
+		#aoProductType#,
+		#aoCabinetPrice#,
+		#aoCupboardPrice#,
+		#aoTablePrice#,
+		#aoCabinetm#,
+		#aoCupboardm#,
+		#aNo#,
+		#aName#,
+		#aoPrice#,
+		#aDesc#,
+		#aOtherAccItem#,
+		#aCustomerReq#,
+		#aoRemark#,
+		#aoOrderStatus#,
+		#aoCreateer#,
+		TIMESTAMP(#aoCreateTime#)
+      )
+    ]]>
+	</insert>
+	<!-- 修改预约单信息 -->
+	<update id="editCustMdyyBill" parameterClass="CustMdyyBillInfo">
+    <![CDATA[
+      update sys_appointment_order
+      set
+		  AO_NO            =#aoNo#,
+		  AO_TIME          =TIMESTAMP(#aoTime#),
+		  AO_STATUS        =#aoStatus#,
+		  AO_COMPANY       =#aoCompany#,
+		  AO_SPEC_STORE    =#aOSpecStore#,
+		  AO_BB_NO         =#aoBbNo#,
+		  AO_CUS_NAME      =#aOCusName#,
+		  AO_CUS_PHONE     =#aoCusPhone#,
+		  AO_OTHER_PHONE   =#aoOtherPhone#,
+		  AO_ATTN_USER     =#aoAttnUser#,
+		  AO_ATTN_PHONE    =#aoAttnPhone#,
+		  AO_CUS_ADD       =#aoCusAdd#,
+		  AO_STORE_MANAGER =#aoStoreManager#,
+		  AO_STORE_PHONE   =#aoStorePhone#,
+		  AO_PAYMENT       =#aoPayment#,
+		  AO_TOTAL_DEPOSIT =#aoTotalDeposit#,
+		  AO_TEST          =#aoTest#,
+		  AO_PRODUCT_TYPE  =#aoProductType#,
+		  AO_CABINET_PRICE =#aoCabinetPrice#,
+		  AO_CUPBOARD_PRICE=#aoCupboardPrice#,
+		  AO_TABLE_PRICE   =#aoTablePrice#,
+		  AO_CABINET_M     =#aoCabinetm#,
+		  AO_CUPBOARD_M    =#aoCupboardm#,
+		  A_NO             =#aNo#,
+		  A_NAME           =#aName#,
+		  AO_PRICE         =#aoPrice#,
+		  A_DESC           =#aDesc#,
+		  A_OTHER_ACC_ITEM =#aOtherAccItem#,
+		  A_CUSTOMER_REQ   =#aCustomerReq#,
+		  AO_REMARK        =#aoRemark#,
+		  AO_ORDER_STATUS  =#aoOrderStatus#,
+		  AO_CREATEER      =TIMESTAMP(#aoCreateer#),
+		  AO_CREATE_TIME   =TIMESTAMP(#aoCreateTime#)
+    WHERE AO_NO            =#aoNo#
+    ]]>
+	</update>
+
+	<!-- 插入物料信息 -->
+	<insert id="saveEntry" parameterClass="EntryInfo">
+    <![CDATA[
+      INSERT INTO sys_matter(
+        M_ID,
+		M_NAME,
+		M_DESC,
+		M_PRICE,
+		MT_ID,
+		MT_SPEC_MODEL,
+		MT_NO
+      )
+      VALUES(#mId#,#mName#,#mDesc#,#mPrice#,#mtSpecModel#,#mtNo#)
+    ]]>
+	</insert>
+	<!-- 修改物料信息 -->
+	<update id="editEntry" parameterClass="EntryInfo">
+    <![CDATA[
+      update sys_matter
+      SET
+        M_ID=#mId#,
+		M_NAME=#mName#, 
+		M_DESC=#mDesc#,
+		M_PRICE=#mPrice#,
+		MT_SPEC_MODEL=#mtSpecModel#,
+		MT_NO=#mtNo#
+    WHERE M_ID=#mId#
+     ]]>
+	</update>
+
+	<!-- 插入支付方式信息 -->
+	<insert id="savePay" parameterClass="PayInfo">
+    <![CDATA[
+      INSERT INTO w_pay(
+        P_ID,
+		P_NAME
+      )
+      VALUES(#pId#,#pName#)
+    ]]>
+	</insert>
+	<!-- 修改支付方式信息 -->
+	<update id="editPay" parameterClass="PayInfo">
+    <![CDATA[
+      update w_pay
+      SET P_ID=#pId#,P_NAME=#pName#
+     WHERE P_ID=#pId#
+     ]]>
+	</update>
+
+</sqlMap>

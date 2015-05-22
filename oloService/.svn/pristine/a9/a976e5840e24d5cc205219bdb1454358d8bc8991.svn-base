@@ -1,0 +1,112 @@
+package com.sys.wx.service;
+
+import java.util.Date;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.amiba.dao.BaseDao;
+import com.platform.common.servlet.RequestParameter;
+import com.sys.wx.model.AttributeModel;
+
+
+/**
+ * 处理产品属性的类
+ * @author sk
+ *
+ */
+@Service
+public class ProAttributeService
+{
+    private static Logger log = Logger.getLogger(ProAttributeService.class);
+
+    @Autowired
+    private BaseDao baseDao;
+
+    /**
+     * 查询
+     */
+    public Map<String, Object> get(HttpServletRequest request)
+    {
+        int page = RequestParameter.getIntGreaterThen(request, "page", 0, 0,
+            false);
+        int count = RequestParameter.getInt(request, "count", 10, 1, 20, false);
+        String typeId = request.getParameter("a_tid");
+        String attrName = request.getParameter("at_name");
+
+        String sql = "SELECT t1.*,t2.AT_NAME FROM wx_attribute t1 "
+                     + "LEFT JOIN wx_attr_type t2 ON t1.A_TID=t2.AT_ID "
+                     + " WHERE t2.AT_ID=? ";
+        if (null != attrName && !"".equals(attrName.trim()))
+        {
+            sql += " AND t1.A_NAME like '%" + attrName + "%' ";
+        }
+        sql += " ORDER BY t1.A_ID ASC ";
+
+        return baseDao.pagination(page, count, sql, typeId);
+    }
+
+    /**
+     * 增加属性
+     * @param request
+     */
+    public void saveOrUpdate(AttributeModel m)
+    {
+        if (null != m.getA_id() && !"".equals(m.getA_id()))
+        {
+            String sql = "update wx_attribute set A_NAME=?,A_PIC=?,"
+                         + "A_PRICE=?,A_UNIT=?,A_REMARK=?,A_TID=? where A_ID=?";
+            baseDao.execute(sql, m.getA_name(), m.getA_pic(), m.getA_price(),
+                m.getA_unit(), m.getA_remark(), m.getA_tid(), m.getA_id());
+        }
+        else
+        {
+            String sql = "insert wx_attribute(A_NAME,A_PIC,A_PRICE,A_UNIT,A_REMARK,A_TID,A_TIME) values(?,?,?,?,?,?,?)";
+            Date date = new Date();
+            baseDao.execute(sql, m.getA_name(), m.getA_pic(), m.getA_price(),
+                m.getA_unit(), m.getA_remark(), m.getA_tid(), date);
+        }
+    }
+
+    /**
+     * 修改
+     * @param request
+     */
+    public Map<String, Object> get(Integer id)
+    {
+        String sql = "SELECT t1.*,t2.AT_NAME FROM wx_attribute t1 "
+                     + "LEFT JOIN wx_attr_type t2 ON t1.A_TID=t2.AT_ID where t1.A_ID=?";
+        return baseDao.queryForMap(sql, id);
+    }
+
+    /**
+     * 删除
+     * @param request
+     */
+    public void delete(Integer id)
+    {
+        String sql = "delete from wx_attribute where A_ID=?";
+        baseDao.execute(sql, id);
+    }
+
+    /**
+     * 统计
+     * @return
+     */
+    public boolean count(Integer atId)
+    {
+        boolean flag = false;
+        String sql = "select count(*) count from wx_attribute where A_TID=?";
+        Map<String, Object> map = baseDao.queryForMap(sql, atId);
+        int count = Integer.parseInt(map.get("count").toString());
+        if (count > 0)
+        {
+            flag = true;
+        }
+        return flag;
+    }
+}

@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="erpSql">
+	<typeAlias alias="BusinessBillInfo" type="com.sys.entity.BusinessBillInfo" />
+	<typeAlias alias="CustMdyyBillInfo" type="com.sys.entity.CustMdyyBillInfo" />
+	<typeAlias alias="EntryInfo" type="com.sys.entity.EntryInfo" />
+	<typeAlias alias="PayInfo" type="com.sys.entity.PayInfo" />
+	<select id="checkBoNoExt" parameterClass="java.lang.String"
+		resultClass="java.lang.Integer">
+		<![CDATA[
+		  select count(*) from sys_business_order where BO_ONO =#boOno#
+		]]>
+	</select>
+	
+	<!-- 插入商机单信息  -->
+	<insert id="saveCustBusinessRecord" parameterClass="BusinessBillInfo">
+    <![CDATA[
+      INSERT INTO sys_business_order(
+            BO_ONO,
+			BO_TIME,
+			BO_STATUS,
+			BO_COMPANY,
+			S_ID, 
+			BO_CUS_NAME,
+			BO_CUS_PHONE,
+			BO_OTHER_PHONE,
+			BO_COUNTRY,
+			BO_PROVINCE,
+			BO_CITY,
+			BO_DIS,
+			BO_STREET,
+			BO_RESULT,
+			BO_DETAILADD,
+			BO_REASON,
+			BO_LONG_ADD,
+			BO_BUY_INTENTION,
+			BO_CREATE_TIME,
+			BO_UPDATE_TIME,
+			BO_COMPANY_NO,
+	        S_STORE_NO,
+	        S_STORE_NAME,
+	        BO_CUS_NO,
+	        BO_COUNTRY_NO,
+	        BO_PROVINCE_NO,
+	        BO_CITY_NO,
+	        BO_DIS_NO,
+	        BO_STREET_NO,
+	        BO_RESULT_NO,
+	        BO_REASON_NO,
+	        BO_CREATE_USER_NO,
+	        BO_CREATE_USER_NAME,
+	        BO_UPDATE_USER_NO,
+	        BO_UPDATE_USER_NAME,
+	        BO_AUDITOR_NO,
+	        BO_AUDITOR_NANE,
+	        BO_AUDIT_TIME,
+	        FCUSTOMER_NAME,
+	        ERP_ID
+      )
+      VALUES( #boOno#,#boTime#,#boStatus#,#boCompany#,#sId#,#boCusName#,#boCusPhone#,
+              #boOtherPhone#,#boCountry#,#boProvince#,#boCity#,#boDis#,#boStreet#,
+              #boResult#,#boDetailAdd#,#boReason#,#boLongAdd#,#boBuyIntention#,
+              #boCreateTime#,#boUpdateTime#,
+              #boCompanyNo#,
+	          #sStoreNo#,
+	          #sStoreName#,
+	          #boCusNo#,
+	          #boCountryNo#,
+	          #boProvinceNo#,
+	          #boCityNo#,
+	          #boDisNo#,
+	          #boStreetNo#,
+	          #boResultNo#,
+	          #boReasonNo#,
+	          #boCreateUserNo#,
+	          #boCreateUserName#,
+	          #boUpdateUserNo#,
+	          #boUpdateUserName#,
+	          #boAuditorNo#,
+	          #boAuditorName#,
+	          #boAuditTime#,
+	          #fCustomerName#,
+	          #erpId# 
+      )
+    ]]>
+	</insert>
+	<!-- 商机单修改 -->
+	<update id="editCustBusinessRecord" parameterClass="BusinessBillInfo">
+		UPDATE
+		sys_business_order
+		SET
+		BO_TIME = #boTime#,
+		BO_STATUS =
+		#boStatus#,
+		BO_COMPANY= #boCompany#,
+		S_ID = #sId#,
+		BO_CUS_NAME =
+		#boCusName#,
+		BO_CUS_PHONE = #boCusPhone#,
+		BO_OTHER_PHONE =
+		#boOtherPhone#,
+		BO_COUNTRY = #boCountry#,
+		BO_PROVINCE = #boProvince#,
+		BO_CITY =
+		#boCity#,
+		BO_DIS = #boDis#,
+		BO_STREET = #boStreet#,
+		BO_RESULT =#boResult#,
+		BO_DETAILADD = #boDetailAdd#,
+		BO_REASON = #boReason#,
+		BO_LONG_ADD = #boLongAdd#,
+		BO_BUY_INTENTION= #boBuyIntention#,
+		BO_CREATE_TIME =#boCreateTime#,
+		BO_UPDATE_TIME = #boUpdateTime#,
+		BO_COMPANY_NO=#boCompanyNo#,
+        S_STORE_NO=#sStoreNo#,
+        S_STORE_NAME=#sStoreName#,
+        BO_CUS_NO=#boCusNo#,
+        BO_COUNTRY_NO=#boCountryNo#,
+        BO_PROVINCE_NO=#boProvinceNo#,
+        BO_CITY_NO=#boCityNo#,
+        BO_DIS_NO=#boDisNo#,
+        BO_STREET_NO=#boStreetNo#,
+        BO_RESULT_NO=#boResultNo#,
+        BO_REASON_NO=#boReasonNo#,
+        BO_CREATE_USER_NO=#boCreateUserNo#,
+        BO_CREATE_USER_NAME=#boCreateUserName#,
+        BO_UPDATE_USER_NO=#boUpdateUserNo#,
+        BO_UPDATE_USER_NAME=#boUpdateUserName#,
+        BO_AUDITOR_NO=#boAuditorNo#,
+        BO_AUDITOR_NANE=#boAuditorName#,
+        BO_AUDIT_TIME=#boAuditTime#,
+        FCUSTOMER_NAME=#fCustomerName#,
+        ERP_ID=#erpId# 
+		WHERE BO_ONO=#boOno#
+	</update>
+    <select id="checkAoNoExt" parameterClass="java.lang.String"
+		resultClass="java.lang.Integer">
+		<![CDATA[
+		  select count(*) from sys_appointment_order where AO_NO =#aoNo#
+		]]>
+	</select>
+	<!-- 插入预约单信息 -->
+	<insert id="saveCustMdyyBill" parameterClass="CustMdyyBillInfo">
+    <![CDATA[
+      INSERT INTO sys_appointment_order(
+            AO_NO,
+			AO_TIME,
+			AO_STATUS,
+			AO_COMPANY,
+			AO_SPEC_STORE,
+			AO_BB_NO,
+			AO_CUS_NAME,
+			AO_CUS_PHONE,
+			AO_OTHER_PHONE,
+			AO_ATTN_USER,
+			AO_ATTN_PHONE,
+			AO_CUS_ADD,
+			AO_STORE_MANAGER,
+			AO_STORE_PHONE,
+			AO_PAYMENT,
+			AO_TOTAL_DEPOSIT,
+			AO_TEST,
+			AO_PRODUCT_TYPE,
+			AO_CABINET_PRICE,
+			AO_CUPBOARD_PRICE,
+			AO_TABLE_PRICE,
+			AO_CABINET_M,
+			AO_CUPBOARD_M,
+			A_NO,
+			A_NAME,
+			AO_PRICE,
+			A_DESC,
+			A_OTHER_ACC_ITEM,
+			A_CUSTOMER_REQ,
+			AO_REMARK,
+			AO_ORDER_STATUS,
+			AO_CREATEER,
+			AO_CREATE_TIME,
+			AO_COMPANY_NO,  
+			AO_SPEC_STORE_NO,
+			AO_CUS_NO,        
+			AO_ATTN_USER_NO,     
+			AO_STORE_MANAGER_NO,
+			AO_PAYMENT_NO,       
+			AO_PRODUCT_TYPE_NO,
+			AO_RYXX_NO,   
+			A_OTHER_ACC_ITEM,
+			AO_CREATEER_NO,    
+			AO_CREATEER_NAME,    
+			AO_UPADTE_NO,      
+			AO_UPADTE_NAME,      
+			AO_UPADTE_TIME,      
+			AO_AUDIT_NO,       
+			AO_AUDIT_NAME,       
+			AO_AUDIT_TIME,       
+			ERP_ID       
+      )
+      VALUES(
+		#aoNo#,
+		#aoTime#,
+		#aoStatus#,
+		#aoCompany#,
+		#aOSpecStore#,
+		#aoBbNo#,
+		#aOCusName#,
+		#aoCusPhone#,
+		#aoOtherPhone#,
+		#aoAttnUser#,
+		#aoAttnPhone#,
+		#aoCusAdd#,
+		#aoStoreManager#,
+		#aoStorePhone#,
+		#aoPayment#,
+		#aoTotalDeposit#,
+		#aoTest#,
+		#aoProductType#,
+		#aoCabinetPrice#,
+		#aoCupboardPrice#,
+		#aoTablePrice#,
+		#aoCabinetm#,
+		#aoCupboardm#,
+		#aNo#,
+		#aName#,
+		#aoPrice#,
+		#aDesc#,
+		#aOtherAccItem#,
+		#aCustomerReq#,
+		#aoRemark#,
+		#aoOrderStatus#,
+		#aoCreateer#,
+		#aoCreateTime#,
+		#aoCompanyNo#,  
+		#aoSpecStoreNo#,   
+		#aoCusNo#,     
+		#aoAttnUserNo#,    
+		#aoStoreManagerNo#,
+		#aoPaymentNo#, 
+		#aoProductTypeNo#, 
+		#aoRyxxNo#,
+		#aoCreateerNo#,    
+		#aoCreateerName#,  
+		#aoUpadteNo#,  
+		#aoUpadteName#,    
+		#aoUpadteTime#,    
+		#aoAuditNo#,   
+		#aoAuditName#,     
+		#aoAuditTime#, 
+		#erpId#     
+      )
+    ]]>
+	</insert>
+	<!-- 修改预约单信息 -->
+	<update id="editCustMdyyBill" parameterClass="CustMdyyBillInfo">
+    <![CDATA[
+      update sys_appointment_order
+      set
+		  AO_NO            =#aoNo#,
+		  AO_TIME          =#aoTime#,
+		  AO_STATUS        =#aoStatus#,
+		  AO_COMPANY       =#aoCompany#,
+		  AO_SPEC_STORE    =#aOSpecStore#,
+		  AO_BB_NO         =#aoBbNo#,
+		  AO_CUS_NAME      =#aOCusName#,
+		  AO_CUS_PHONE     =#aoCusPhone#,
+		  AO_OTHER_PHONE   =#aoOtherPhone#,
+		  AO_ATTN_USER     =#aoAttnUser#,
+		  AO_ATTN_PHONE    =#aoAttnPhone#,
+		  AO_CUS_ADD       =#aoCusAdd#,
+		  AO_STORE_MANAGER =#aoStoreManager#,
+		  AO_STORE_PHONE   =#aoStorePhone#,
+		  AO_PAYMENT       =#aoPayment#,
+		  AO_TOTAL_DEPOSIT =#aoTotalDeposit#,
+		  AO_TEST          =#aoTest#,
+		  AO_PRODUCT_TYPE  =#aoProductType#,
+		  AO_CABINET_PRICE =#aoCabinetPrice#,
+		  AO_CUPBOARD_PRICE=#aoCupboardPrice#,
+		  AO_TABLE_PRICE   =#aoTablePrice#,
+		  AO_CABINET_M     =#aoCabinetm#,
+		  AO_CUPBOARD_M    =#aoCupboardm#,
+		  A_NO             =#aNo#,
+		  A_NAME           =#aName#,
+		  AO_PRICE         =#aoPrice#,
+		  A_DESC           =#aDesc#,
+		  A_OTHER_ACC_ITEM =#aOtherAccItem#,
+		  A_CUSTOMER_REQ   =#aCustomerReq#,
+		  AO_REMARK        =#aoRemark#,
+		  AO_ORDER_STATUS  =#aoOrderStatus#,
+		  AO_CREATEER      =#aoCreateer#,
+		  AO_CREATE_TIME   =#aoCreateTime#,
+		  AO_COMPANY_NO    = #aoCompanyNo#,        
+		  AO_SPEC_STORE_NO =#aoSpecStoreNo#,      
+		  AO_CUS_NO        =#aoCusNo#,            
+		  AO_ATTN_USER_NO  =#aoAttnUserNo#,       
+		  AO_STORE_MANAGER_NO=#aoStoreManagerNo#,   
+		  AO_PAYMENT_NO     =#aoPaymentNo#,        
+		  AO_PRODUCT_TYPE_NO=#aoProductTypeNo#,    
+		  AO_RYXX_NO=#aoRyxxNo#,           
+		  AO_CREATEER_NO= #aoCreateerNo#,  
+		  AO_CREATEER_NAME=#aoCreateerName#,    
+		  AO_UPADTE_NO=   #aoUpadteNo#,   
+		  AO_UPADTE_NAME=#aoUpadteName#,     
+		  AO_UPADTE_TIME=#aoUpadteTime#,     
+		  AO_AUDIT_NO =#aoAuditNo#,      
+		  AO_AUDIT_NAME=#aoAuditName#,   
+		  AO_AUDIT_TIME=#aoAuditTime#,                 
+		  ERP_ID =#erpId#       
+    WHERE AO_NO=#aoNo#
+    ]]>
+	</update>
+    <select id="checkMtNoExt" parameterClass="java.lang.String"
+		resultClass="java.lang.Integer">
+		<![CDATA[
+		  select count(*) from sys_matter where MT_NO=#mtNo#
+		]]>
+	</select>
+	<!-- 插入物料信息 -->
+	<insert id="saveEntry" parameterClass="EntryInfo">
+    <![CDATA[
+      INSERT INTO sys_matter(
+        M_ID,
+		M_NAME,
+		M_DESC,
+		M_PRICE,
+		MT_ID,
+		MT_SPEC_MODEL,
+		MT_NO
+      )
+      VALUES(#mId#,#mName#,#mDesc#,#mPrice#,#mtSpecModel#,#mtNo#)
+    ]]>
+	</insert>
+	<!-- 修改物料信息 -->
+	<update id="editEntry" parameterClass="EntryInfo">
+    <![CDATA[
+      update sys_matter
+      SET
+        M_ID=#mId#,
+		M_NAME=#mName#, 
+		M_DESC=#mDesc#,
+		M_PRICE=#mPrice#,
+		MT_SPEC_MODEL=#mtSpecModel#,
+		MT_NO=#mtNo#
+    WHERE MT_NO=#mtNo#
+     ]]>
+	</update>
+
+    <select id="checkPayNoExt" parameterClass="java.lang.String"
+		resultClass="java.lang.Integer">
+		<![CDATA[
+		  select count(*) from w_pay where P_ID=#pId#
+		]]>
+	</select>
+	<!-- 插入支付方式信息 -->
+	<insert id="savePay" parameterClass="PayInfo">
+    <![CDATA[
+      INSERT INTO w_pay(
+        P_ID,
+		P_NAME
+      )
+      VALUES(#pId#,#pName#)
+    ]]>
+	</insert>
+	<!-- 修改支付方式信息 -->
+	<update id="editPay" parameterClass="PayInfo">
+    <![CDATA[
+      update w_pay
+      SET P_ID=#pId#,P_NAME=#pName#
+     WHERE P_ID=#pId#
+     ]]>
+	</update>
+
+</sqlMap>

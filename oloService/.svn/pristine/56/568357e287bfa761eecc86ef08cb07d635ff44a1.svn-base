@@ -1,0 +1,112 @@
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %> 
+
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>预约单管理</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap-responsive.css" />
+    <link rel="stylesheet" type="text/css" href="../css/style.css" />
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    
+    <script type="text/javascript" src="../js/bootstrap.js"></script>
+    <script type="text/javascript" src="../js/ckform.js"></script>
+    <script type="text/javascript" src="../js/common.js"></script>
+
+    <style type="text/css">
+        body {
+            padding-bottom: 40px;
+        }
+        .sidebar-nav {
+            padding: 9px 0;
+        }
+
+        @media (max-width: 980px) {
+            /* Enable use of floated navbar text */
+            .navbar-text.pull-right {
+                float: none;
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+        }
+    </style>
+    
+    <script type="text/javascript">
+	//分页
+	function loadpage(currpage){
+		var totalpage =document.getElementById("totalpage").value;
+		if(((currpage+1)*1)<1){
+			alert('现在是第一页');
+			return;
+		}else if((currpage*1)>(totalpage*1)){
+			alert('现在是最后一页');
+			return;
+		}else if((currpage*1)==(totalpage*1)){
+			alert('现在是最后一页');
+			return;
+		}
+		location.href='<%=basePath%>appointmentOrderOrderAction/index?page='+currpage+"&AO_NO=${AO_NO }&AO_CUS_NAME=${AO_CUS_NAME}&AO_CUS_PHONE=${AO_CUS_PHONE}";
+	}
+</script>
+</head>
+<body>
+<form class="form-inline definewidth m20" action="<%=basePath%>filling/index" method="get">  
+单号：<input type="text" class="ipt" name="FBillNo" id="FBillNo" value="${FBillNo }" style="margin-bottom: 0px;">
+    客户姓名：<input type="text" class="ipt" name="FCuName" id="FCuName" value="${FCuName }" style="margin-bottom: 0px;">
+    联系电话：<input type="text" class="ipt" name="FTel" id="FTel" value="${FTel }" style="margin-bottom: 0px;">
+    报备日期：<input type="text" class="ipt" name="FBaoBeiDate" id="FBaoBeiDate" value="${FBaoBeiDate }" placeholder="格式：yyyy-MM-dd" style="margin-bottom: 0px;">
+       	<button type="submit" class="btn btn-primary" >查询</button> 
+</form>
+<table class="table table-bordered table-hover definewidth m10" >
+    <thead>
+    <tr>
+        <th width="5%">序号</th>
+        <th width="15%">报备单号</th>
+        <th width="15%">客户姓名</th>
+        <th width="15%">客户电话</th>
+        <th width="15%">客户地址</th>
+        <th width="15%">报备人名称</th>
+        <th width="15%">报备日期</th>
+        <th width="*">操作</th>
+    </tr>
+    </thead>
+    <c:if test="${not empty fillingMap}">
+    	<c:forEach  var="resultList" items="${fillingMap.result}" varStatus="status">
+       	<tr>
+			<td>${status.index+1 }</td>
+			<td>${resultList.FBillNo }</td>
+			<td>${resultList.FCuName }</td>
+			<td>${resultList.FTel }</td>
+			<td>${resultList.FCuAdd }</td>
+			<td>${resultList.FBBPersonName }</td>
+			<td>${resultList.FBaoBeiDate }</td>
+			<td><a href="<%=basePath%>filling/get?id=${resultList.id}">查看</a></td>
+		</tr>
+     	</c:forEach>
+     </c:if>
+	     </table>
+	     <div class="pagediv">
+			<div class="pageleft " style="float: left;">
+				<a href="javascript:loadpage(0)">首页</a>
+				<a href="javascript:loadpage('${fillingMap.page - 1}')">上一页</a>
+				<a href="javascript:loadpage('${fillingMap.page + 1}')">下一页</a>
+				<a href="javascript:loadpage('${fillingMap.pageCount-1}')">尾页</a>
+			</div>
+			<div class="pageright">
+				当前显示第${fillingMap.page+1}页，共有${fillingMap.pageCount}页
+			</div>
+		</div>
+		<input type="hidden" id="totalpage" name="totalpage" value="${fillingMap.pageCount}">
+		<div class="clr"></div>
+	</body>
+</html>
+<script>
+   
+</script>

@@ -1,0 +1,105 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ include file="/commons/taglibs.jsp" %>
+<%
+	String path = request.getContextPath();
+	String basePath = request.getScheme() + "://"
+			+ request.getServerName() + ":" + request.getServerPort()
+			+ path + "/";
+%>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>属性分类管理</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap-responsive.css" />
+    <link rel="stylesheet" type="text/css" href="../css/style.css" />
+    <script type="text/javascript" src="../js/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="../js/bootstrap.js"></script>
+    <script type="text/javascript" src="../js/ckform.js"></script>
+    <script type="text/javascript" src="../js/common.js"></script>
+    
+    <style type="text/css">
+        body {padding-bottom: 40px;}
+        .sidebar-nav {padding: 9px 0;}
+		@media (max-width: 980px) {.navbar-text.pull-right {float: none;padding-left: 5px;padding-right: 5px;}}
+        #menuContent{margin-top: 10px;border: 1px solid #617775;background: #f0f6e4;width: 220px;height: 360px;overflow-y: scroll;overflow-x: auto;}
+    </style>
+    
+    <script type="text/javascript">
+  //分页
+	function loadpage(currpage,xxfl,bzmc,fbrq,jsrq){
+		var totalpage =document.getElementById("totalpage").value; 
+		if(((currpage+1)*1)<1){
+			alert('现在是第一页');
+			return;
+		}else if((currpage*1)>(totalpage*1)){
+			alert('现在是最后一页');
+			return;
+		}else if((currpage*1)==(totalpage*1)){
+			alert('现在是最后一页');
+			return;
+		}
+		location.href='<%=basePath%>attrType/list?page='+currpage;
+	}
+	
+	$(function () {
+		$('#addnew').click(function(){
+			var mtId = $("#mtId").val();
+			if(mtId == '' || mtId == null){
+				alert("请先选择属性分类");
+				return;
+			}else{
+				location.href ="<%=basePath %>attrType/add?AT_MTID="+mtId;
+			}
+		 });
+    });
+</script>
+</head>
+<body>
+<form class="form-inline definewidth m20" action="<%=basePath %>attrType/list"  method="get">  
+	名称：<input type="text" class="ipt" name="attrName" value="${attrName }" style="margin-bottom: 0px;"> 
+         <button type="submit" class="btn btn-primary" >查询</button> 
+    <button type="button" class="btn btn-success" id="addnew" >新增属性分类</button>
+    <input type="hidden" value="${mtId}" name="AT_MTID" id="mtId">
+</form>
+<table class="table table-bordered table-hover definewidth m10" >
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>属性分类名称</th>
+        <th>所属商品分类</th>
+        <th>创建时间</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    	<c:if test="${not empty attrMap}">
+           	<c:forEach var="attrList" items="${attrMap.result }">
+             <tr>
+               <td>${attrList.AT_ID }</td>
+               <td>${attrList.AT_NAME }</td>
+               <td>${attrList.MT_NAME }</td>
+               <td>${attrList.AT_TIME }</td>
+               <td>
+               	<a href="<%=basePath %>attrType/edit?id=${attrList.AT_ID }&AT_MTID=${attrList.AT_MTID }" id="" >修改</a> | 
+               	<a href="javascript:if(confirm('确实要删除吗?'))location='<%=basePath %>attrType/del?id=${attrList.AT_ID }&mtId=${attrList.AT_MTID }'" >删除</a>
+               	</td>
+             </tr>
+            </c:forEach>
+         </c:if>
+	     </table>
+	     <div class="pagediv">
+			<div class="pageleft " style="float: left;">
+				<a href="javascript:loadpage(0)">首页</a>
+				<a href="javascript:loadpage('${attrMap.page - 1}')">上一页</a>
+				<a href="javascript:loadpage('${attrMap.page + 1}')">下一页</a>
+				<a href="javascript:loadpage('${attrMap.pageCount-1}')">尾页</a>
+			</div>
+			<div class="pageright">
+				当前显示第${attrMap.page+1}页，共有${attrMap.pageCount}页
+			</div>
+		</div>
+		<input type="hidden" id="totalpage" name="totalpage" value="${attrMap.pageCount}">
+		<div class="clr"></div>
+	</body>
+</html>

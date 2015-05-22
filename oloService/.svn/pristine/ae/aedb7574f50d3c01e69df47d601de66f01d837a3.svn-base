@@ -1,0 +1,123 @@
+package com.sys.wx.web;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.sys.wx.service.MemberService;
+
+
+@Controller
+@RequestMapping("/member")
+public class MemberController {
+
+	
+	@Autowired
+	private MemberService memberService;
+	
+	
+	@RequestMapping("/listMember")
+	public String listMember(ModelMap model,HttpServletRequest request,HttpServletResponse response){
+		Map<String,Object> memMap = memberService.queryMemberList(request,response);
+		List<Map<String,Object>> provinceData = memberService.queryProvinceList(request);
+		model.put("memMap", memMap);
+		model.put("provinceData", provinceData);
+		return "/member/memberList";
+	}
+	
+	
+	/**
+	 * 根据id查询出会员信息
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/queryHyById")
+	public ModelAndView queryHyById(HttpServletRequest request,HttpServletResponse response)
+				throws Exception{
+		String id = request.getParameter("id");
+		Map<String,Object> memData = memberService.queryHyById(id);
+		List<Map<String,Object>> provinceData = memberService.queryProvinceList(request);
+		request.setAttribute("provinceData", provinceData);
+		return new ModelAndView("/member/memberUpdate",memData);
+	}
+	
+	/**
+	 * 根据省份id查询出他下面的城市
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
+	@ResponseBody
+	@RequestMapping("/queryCityById")
+	public List<Map<String,Object>> queryCityById(HttpServletRequest request,HttpServletResponse response)
+				throws Exception{
+		List<Map<String,Object>> provinceData = memberService.queryCityList(request);
+		return provinceData;
+	}
+	
+	/**
+	 * 根据省份id查询出他下面的城市
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
+	@ResponseBody
+	@RequestMapping("/queryDistrictById")
+	public List<Map<String,Object>> queryDistrictById(HttpServletRequest request,HttpServletResponse response)
+				throws Exception{
+		List<Map<String,Object>> districtData = memberService.queryDistrictList(request);
+		return districtData;
+	}
+	
+	
+	/**
+	 * 根据id修改信息
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/updateMember")
+	public String updateMember(ModelMap model,HttpServletRequest request,HttpServletResponse response)
+				throws Exception{
+		
+		int flag = memberService.updateMember(request);
+		Map map=new HashMap();
+		model.put("flag", flag);
+		return "/member/memberUpdate";
+	}
+	
+	/**
+	 * 删除会员信息
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
+	@ResponseBody
+	@RequestMapping("/delMember")
+	public Map delMember(HttpServletRequest request,HttpServletResponse response)
+				throws Exception{
+		String flag = memberService.DeleteMember(request);
+		Map map=new HashMap();
+		map.put("flag", flag);
+		return map;
+	}
+}

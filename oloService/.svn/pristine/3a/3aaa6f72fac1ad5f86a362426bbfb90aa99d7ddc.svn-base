@@ -1,0 +1,309 @@
+package com.sys.web.service;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.amiba.dao.BaseDao;
+import com.platform.common.servlet.RequestParameter;
+import com.platform.common.servlet.SessionAttribute;
+import com.platform.common.sql.SqlUtil;
+
+
+/**
+ *案例管理
+ * @author yl
+ *
+ */
+@Service
+public class CaseService
+{
+
+    @Autowired
+    private BaseDao baseDao;
+
+    /**
+     * 分类列表
+     * @param request
+     * @return
+     */
+    public Map<String, Object> queryCaseTypeList(HttpServletRequest request)
+    {
+
+        int page = RequestParameter.getIntGreaterThen(request, "page", 0, 0,
+            false);
+        int count = RequestParameter.getInt(request, "count", 5, 1, 20, false);
+        Map<String, Object> map = null;
+        String sql = "";
+        sql = "SELECT * FROM W_CASE_TYPE";
+        map = baseDao.pagination(page, count, sql);
+
+        return map;
+    }
+
+    /**
+     * 查询树形数据
+     * @return
+     */
+    public List<Map<String, Object>> findMenus()
+    {
+        String sql = "";
+        sql = "SELECT DISTINCT GNS.CT_ID \"id\",GNS.C_PARENT_ID \"pid\","
+              + "GNS.C_NAME \"name\",gns.c_sort_num "
+              + "FROM W_CASE_TYPE GNS ORDER BY CONVERT(GNS.C_SORT_NUM ,SIGNED)";
+        List<Map<String, Object>> list = baseDao.queryForList(sql);
+        return list;
+    }
+
+    /**
+     * 案例列表
+     * @param request
+     * @return
+     */
+    public Map<String, Object> queryCaseByTypeId(HttpServletRequest request)
+    {
+
+        int page = RequestParameter.getIntGreaterThen(request, "page", 0, 0,
+            false);
+        int count = RequestParameter.getInt(request, "count", 5, 1, 20, false);
+        int ct_id = RequestParameter.getInt(request, "ct_id");
+        String c_name = RequestParameter.getString(request, "c_name");
+        Map<String, Object> map = null;
+        String sql = "";
+        String sqlWhere = "";
+        String orderBy = " ORDER BY XG_SJ,LR_SJ DESC";
+        if (null != c_name && !"".equals(c_name))
+        {
+            sqlWhere = " AND C_NAME LIKE '%" + c_name + "%'";
+            sql = "SELECT * FROM W_CASE WHERE CT_ID=?" + sqlWhere + orderBy;
+            map = baseDao.pagination(page, count, sql, ct_id);
+        }
+        else
+        {
+            sql = "SELECT * FROM W_CASE WHERE CT_ID=?" + orderBy;
+            map = baseDao.pagination(page, count, sql, ct_id);
+        }
+
+        return map;
+    }
+
+    /**
+     * 
+     * 案例保存
+     * @param request
+     * @return String
+     */
+    public String saveCase(HttpServletRequest request)
+    {
+        String flag = "0";
+        String sql = "";
+        int ct_id = RequestParameter.getInt(request, "ct_id");
+        String c_name = RequestParameter.getString(request, "C_NAME");
+        String c_desc = RequestParameter.getString(request, "C_DESC");
+
+        if (null == request.getSession().getAttribute("user")
+            || "".equals(request.getSession().getAttribute("user")))
+        {
+            return "3";
+        }
+        Map<String, Object> userMap = SessionAttribute.get(
+            request.getSession(), "user");
+        sql = "SELECT IFNULL(MAX(C_ID),1)+1 AS C_ID FROM W_CASE";
+        int c_id = this.baseDao.getUtil().getInt(sql);
+        sql = "INSERT INTO W_CASE (C_ID,CT_ID,C_NAME,C_DESC,LR_RY,LR_SJ) VALUES(?,?,?,?,?,?)";
+        this.baseDao.getUtil().execute(sql, c_id, ct_id, c_name, c_desc,
+            userMap.get("S_ID"), new Date());
+        flag = "1";
+        return flag;
+    }
+
+    public Map<String, Object> queryCaseById(HttpServletRequest request)
+    {
+        int c_id = RequestParameter.getInt(request, "c_id");
+        String sql = "";
+        sql = "SELECT * FROM W_CASE WHERE C_ID=?";
+        Map<String, Object> map = this.baseDao.getUtil().read(sql, c_id);
+        return map;
+    }
+
+    /**
+     * 
+     * 案例编辑
+     * @param request
+     * @return String
+     */
+    public String editCase(HttpServletRequest request)
+    {
+        String flag = "0";
+        String sql = "";
+        int c_id = RequestParameter.getInt(request, "c_id");
+        String c_name = RequestParameter.getString(request, "C_NAME");
+        String c_desc = RequestParameter.getString(request, "C_DESC");
+
+        if (null == request.getSession().getAttribute("user")
+            || "".equals(request.getSession().getAttribute("user")))
+        {
+            return "3";
+        }
+        Map<String, Object> userMap = SessionAttribute.get(
+            request.getSession(), "user");
+        sql = "UPDATE W_CASE SET C_NAME=?,C_DESC=?,XG_RY=?,XG_SJ=? WHERE C_ID=?";
+        this.baseDao.getUtil().execute(sql, c_name, c_desc,
+            userMap.get("S_ID"), new Date(), c_id);
+        flag = "1";
+        return flag;
+    }
+
+    /**
+     *案例删除
+     * @param request
+     * @return String
+     */
+    public String delCase(HttpServletRequest request)
+    {
+        String flag = "0";
+        String sql = "";
+        if (null == request.getSession().getAttribute("user")
+            || "".equals(request.getSession().getAttribute("user")))
+        {
+            return "3";
+        }
+        Map<String, Object> userMap = SessionAttribute.get(
+            request.getSession(), "user");
+        SqlUtil su = this.baseDao.getUtil();
+        try
+        {
+            su.beginTransaction();
+            int c_id = RequestParameter.getInt(request, "c_id");
+
+            sql = "DELETE FROM W_CASE_PIC WHERE C_ID=?";
+            su.execute(sql, c_id);
+            sql = "DELETE FROM W_CASE WHERE C_ID=?";
+            su.execute(sql, c_id);
+            sql = "INSERT INTO SYS_DELETE(MS,LR_RY,LR_SJ) VALUES (?,?,?)";
+            su.execute(sql, "模块:案例删除" + c_id, userMap.get("S_ID"), new Date());
+            flag = "1";
+            su.commitTransaction();
+        }
+        catch (Exception e)
+        {
+
+        }
+        finally
+        {
+            su.close();
+        }
+        return flag;
+    }
+
+    /**
+     *查询案例图片信息
+     * @param request
+     * @return List<Map<String,Object>>
+     */
+    public List<Map<String, Object>> queryCasePicByCId(HttpServletRequest request)
+    {
+        int c_id = RequestParameter.getInt(request, "c_id");
+        String sql = "";
+        sql = "SELECT * FROM W_CASE_PIC  WHERE C_ID=? ORDER BY CP_SORT_NUM DESC";
+        List<Map<String, Object>> list = this.baseDao.getUtil().query(sql, c_id);
+        return list;
+    }
+
+    public String savePic(HttpServletRequest request)
+    {
+        String flag = "0";
+        String c_id = RequestParameter.getString(request, "c_id");
+        String[] cp_name = RequestParameter.getStringArray(request, "cp_name");
+        String[] P_PIC = RequestParameter.getStringArray(request, "P_PIC");
+        String[] cp_desc = RequestParameter.getStringArray(request, "cp_desc");
+        int[] cp_sort_num = RequestParameter.getIntArray(request, "cp_sort_num");
+        String sql = "";
+        SqlUtil su = this.baseDao.getUtil();
+        try
+        {
+            if (null == request.getSession().getAttribute("user")
+                || "".equals(request.getSession().getAttribute("user")))
+            {
+                return "3";
+            }
+            Map<String, Object> userMap = SessionAttribute.get(
+                request.getSession(), "user");
+            su.beginTransaction();
+            if (null != c_id && !"".equals(c_id))
+            {
+                if (cp_name.length > 0)
+                {
+                    for (int i = 0; i < cp_name.length; i++ )
+                    {
+                        sql = "SELECT IFNULL(MAX(CP_ID),1)+1 AS CP_ID FROM W_CASE_PIC";
+                        int cp_id = su.getInt(sql);
+                        sql = "INSERT INTO W_CASE_PIC(CP_ID,C_ID,CP_NAME,CP_DESC,CP_URL,"
+                              + "CP_SORT_NUM,LR_RY,LR_SJ) VALUES(?,?,?,?,?,?,?,?)";
+                        su.execute(sql, cp_id, c_id, cp_name[i], cp_desc[i],
+                            P_PIC[i], cp_sort_num[i], userMap.get("S_ID"),
+                            new Date());
+
+                    }
+                }
+            }
+            flag = "1";
+            su.commitTransaction();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            su.close();
+        }
+        return flag;
+    }
+
+    /**
+     *案例删除
+     * @param request
+     * @return String
+     */
+    public String delCasePic(HttpServletRequest request)
+    {
+        String flag = "0";
+        String sql = "";
+        if (null == request.getSession().getAttribute("user")
+            || "".equals(request.getSession().getAttribute("user")))
+        {
+            return "3";
+        }
+        Map<String, Object> userMap = SessionAttribute.get(
+            request.getSession(), "user");
+        SqlUtil su = this.baseDao.getUtil();
+        try
+        {
+            su.beginTransaction();
+            int cp_id = RequestParameter.getInt(request, "cp_id");
+            sql = "DELETE FROM W_CASE_PIC WHERE CP_ID=?";
+            su.execute(sql, cp_id);
+            sql = "INSERT INTO SYS_DELETE(MS,LR_RY,LR_SJ) VALUES (?,?,?)";
+            su.execute(sql, "模块:案例图片删除" + cp_id, userMap.get("S_ID"),
+                new Date());
+            flag = "1";
+            su.commitTransaction();
+        }
+        catch (Exception e)
+        {
+
+        }
+        finally
+        {
+            su.close();
+        }
+        return flag;
+    }
+
+}

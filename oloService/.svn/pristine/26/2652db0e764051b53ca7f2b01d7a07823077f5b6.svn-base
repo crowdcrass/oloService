@@ -1,0 +1,795 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://webservice.service.web.sys.com"
+	xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+	xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+	xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:ns1="http://org.apache.axis2/xsd"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ax21="http://entity.sys.com/xsd"
+	xmlns:ax23="http://common.sys.com/xsd" xmlns:ns="http://webservice.service.web.sys.com"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+	<wsdl:documentation>oloWebService</wsdl:documentation>
+	<wsdl:types>
+		<xs:schema targetNamespace="http://entity.sys.com/xsd"
+			elementFormDefault="qualified" attributeFormDefault="qualified">
+			<xs:complexType name="BusinessBillInfo">
+				<xs:sequence>
+					<xs:element name="boBuyIntention" type="xs:string"
+						nillable="true" minOccurs="0" />
+					<xs:element name="boCity" type="xs:string" nillable="true"
+						minOccurs="0" />
+					<xs:element name="boCompany" type="xs:string" nillable="true"
+						minOccurs="0" />
+					<xs:element name="boCountry" type="xs:string" nillable="true"
+						minOccurs="0" />
+					<xs:element name="boCreateTime" type="xs:string"
+						nillable="true" minOccurs="0" />
+					<xs:element name="boCreateUser" type="xs:string"
+						nillable="true" minOccurs="0" />
+					<xs:element name="boCusName" type="xs:string" nillable="true"
+						minOccurs="0" />
+					<xs:element name="boCusPhone" type="xs:string" nillable="true"
+						minOccurs="0" />
+					<xs:element name="boDetailAdd" type="xs:string"
+						nillable="true" minOccurs="0" />
+					<xs:element name="boDis" type="xs:string" nillable="true"
+						minOccurs="0" />
+					<xs:element name="boLongAdd" type="xs:string" nillable="true"
+						minOccurs="0" />
+					<xs:element name="boOno" type="xs:string" nillable="true"
+						minOccurs="0" />
+					<xs:element name="boOtherPhone" type="xs:string"
+						nillable="true" minOccurs="0" />
+					<xs:element name="boProvince" type="xs:string" nillable="true"
+						minOccurs="0" />
+					<xs:element name="boReason" type="xs:string" nillable="true"
+						minOccurs="0" />
+					<xs:element name="boResult" type="xs:string" nillable="true"
+						minOccurs="0" />
+					<xs:element name="boStatus" type="xs:string" nillable="true"
+						minOccurs="0" />
+					<xs:element name="boStreet" type="xs:string" nillable="true"
+						minOccurs="0" />
+					<xs:element name="boSynFlag" type="xs:string" nillable="true"
+						minOccurs="0" />
+					<xs:element name="boTime" type="xs:string" nillable="true"
+						minOccurs="0" />
+					<xs:element name="boUpdateTime" type="xs:string"
+						nillable="true" minOccurs="0" />
+					<xs:element name="boUpdateUser" type="xs:string"
+						nillable="true" minOccurs="0" />
+					<xs:element name="sId" type="xs:string" nillable="true"
+						minOccurs="0" />
+				</xs:sequence>
+			</xs:complexType>
+			
+			<xs:complexType name="CustMdyyBillInfo">
+				
+				<xs:sequence>
+					<xs:element name="aoAttnPhone" type="xs:string"
+						nillable="true" minOccurs="0" />
+					<xs:element name="aoAttnUser" type="xs:string" nillable="true"
+						minOccurs="0" />
+					<xs:element name="aoBbNo" type="xs:string" nillable="true"
+						minOccurs="0" />
+					<xs:element name="aoCabinetPrice" type="xs:string"
+						nillable="true" minOccurs="0" />
+					<xs:element name="aoCabinetm" type="xs:string" nillable="true"
+						minOccurs="0" />
+					<xs:element name="aoCompany" type="xs:string" nillable="true"
+						minOccurs="0" />
+					<xs:element name="aoCreateTime" type="xs:string"
+						nillable="true" minOccurs="0" />
+					<xs:element name="aoCreateer" type="xs:string" nillable="true"
+						minOccurs="0" />
+					<xs:element name="aoCupboardPrice" type="xs:string"
+						nillable="true" minOccurs="0" />
+					<xs:element name="aoCupboardm" type="xs:string"
+						nillable="true" minOccurs="0" />
+					<xs:element name="aoCusAdd" type="xs:string" nillable="true"
+						minOccurs="0" />
+					<xs:element name="aoCusPhone" type="xs:string" nillable="true"
+						minOccurs="0" />
+					<xs:element name="aoNo" type="xs:string" nillable="true"
+						minOccurs="0" />
+					<xs:element name="aoOrderStatus" type="xs:string"
+						nillable="true" minOccurs="0" />
+					<xs:element name="aoOtherPhone" type="xs:string"
+						nillable="true" minOccurs="0" />
+					<xs:element name="aoPayment" type="xs:string" nillable="true"
+						minOccurs="0" />
+					<xs:element name="aoPrice" type="xs:string" nillable="true"
+						minOccurs="0" />
+					<xs:element name="aoProductType" type="xs:string"
+						nillable="true" minOccurs="0" />
+					<xs:element name="aoRemark" type="xs:string" nillable="true"
+						minOccurs="0" />
+					<xs:element name="aoStatus" type="xs:string" nillable="true"
+						minOccurs="0" />
+					<xs:element name="aoStoreManager" type="xs:string"
+						nillable="true" minOccurs="0" />
+					<xs:element name="aoStorePhone" type="xs:string"
+						nillable="true" minOccurs="0" />
+					<xs:element name="aoTablePrice" type="xs:string"
+						nillable="true" minOccurs="0" />
+					<xs:element name="aoTest" type="xs:string" nillable="true"
+						minOccurs="0" />
+					<xs:element name="aoTime" type="xs:string" nillable="true"
+						minOccurs="0" />
+					<xs:element name="aoTotalDeposit" type="xs:string"
+						nillable="true" minOccurs="0" />
+					<xs:element name="aCustomerReq" type="xs:string"
+						nillable="true" minOccurs="0" />
+					<xs:element name="aDesc" type="xs:string" nillable="true"
+						minOccurs="0" />
+					<xs:element name="aName" type="xs:string" nillable="true"
+						minOccurs="0" />
+					<xs:element name="aNo" type="xs:string" nillable="true"
+						minOccurs="0" />
+					<xs:element name="aOCusName" type="xs:string" nillable="true"
+						minOccurs="0" />
+					<xs:element name="aOSpecStore" type="xs:string"
+						nillable="true" minOccurs="0" />
+					<xs:element name="aOtherAccItem" type="xs:string"
+						nillable="true" minOccurs="0" />
+				</xs:sequence>
+			</xs:complexType>
+			
+			<xs:complexType name="EntryInfo">
+				
+				<xs:sequence>
+					<xs:element name="mtNo" type="xs:string" nillable="true"
+						minOccurs="0" />
+					<xs:element name="mtSpecModel" type="xs:string"
+						nillable="true" minOccurs="0" />
+					<xs:element name="mDesc" type="xs:string" nillable="true"
+						minOccurs="0" />
+					<xs:element name="mId" type="xs:string" nillable="true"
+						minOccurs="0" />
+					<xs:element name="mName" type="xs:string" nillable="true"
+						minOccurs="0" />
+					<xs:element name="mPrice" type="xs:string" nillable="true"
+						minOccurs="0" />
+				</xs:sequence>
+			</xs:complexType>
+			
+			<xs:complexType name="PayInfo">
+				
+				<xs:sequence>
+					<xs:element name="pId" type="xs:string" nillable="true"
+						minOccurs="0" />
+					<xs:element name="pName" type="xs:string" nillable="true"
+						minOccurs="0" />
+				</xs:sequence>
+			</xs:complexType>
+		</xs:schema>
+		
+		<xs:schema targetNamespace="http://common.sys.com/xsd"
+			elementFormDefault="qualified" attributeFormDefault="qualified">
+			
+			<xs:complexType name="IfResponse">
+				
+				<xs:sequence>
+					<xs:element name="message" type="xs:string" nillable="true"
+						minOccurs="0" />
+					<xs:element name="success" type="xs:string" nillable="true"
+						minOccurs="0" />
+				</xs:sequence>
+			</xs:complexType>
+		</xs:schema>
+		
+		<xs:schema targetNamespace="http://webservice.service.web.sys.com"
+			elementFormDefault="qualified" attributeFormDefault="qualified"
+			xmlns:ax22="http://entity.sys.com/xsd" xmlns:ax24="http://common.sys.com/xsd">
+			<xs:import namespace="http://entity.sys.com/xsd" />
+			<xs:import namespace="http://common.sys.com/xsd" />
+			
+			<xs:element name="editCustBusinessRecord">
+				
+				<xs:complexType>
+					
+					<xs:sequence>
+						<xs:element name="businessBillInfo" type="ax22:BusinessBillInfo"
+							nillable="true" minOccurs="0" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name="editCustBusinessRecordResponse">
+				
+				<xs:complexType>
+					
+					<xs:sequence>
+						<xs:element name="return" type="ax24:IfResponse"
+							nillable="true" minOccurs="0" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name="editCustMdyyBill">
+				
+				<xs:complexType>
+					
+					<xs:sequence>
+						<xs:element name="custMdyyBillInfo" type="ax22:CustMdyyBillInfo"
+							nillable="true" minOccurs="0" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name="editCustMdyyBillResponse">
+				
+				<xs:complexType>
+					
+					<xs:sequence>
+						<xs:element name="return" type="ax24:IfResponse"
+							nillable="true" minOccurs="0" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name="editEntry">
+				
+				<xs:complexType>
+					
+					<xs:sequence>
+						<xs:element name="entryInfo" type="ax22:EntryInfo"
+							nillable="true" minOccurs="0" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name="editEntryResponse">
+				
+				<xs:complexType>
+					
+					<xs:sequence>
+						<xs:element name="return" type="ax24:IfResponse"
+							nillable="true" minOccurs="0" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name="editPay">
+				
+				<xs:complexType>
+					
+					<xs:sequence>
+						<xs:element name="payInfo" type="ax22:PayInfo"
+							nillable="true" minOccurs="0" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name="editPayResponse">
+				
+				<xs:complexType>
+					
+					<xs:sequence>
+						<xs:element name="return" type="ax24:IfResponse"
+							nillable="true" minOccurs="0" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name="saveCustBusinessRecord">
+				
+				<xs:complexType>
+					
+					<xs:sequence>
+						<xs:element name="businessBillInfo" type="ax22:BusinessBillInfo"
+							nillable="true" minOccurs="0" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name="saveCustBusinessRecordResponse">
+				
+				<xs:complexType>
+					
+					<xs:sequence>
+						<xs:element name="return" type="ax24:IfResponse"
+							nillable="true" minOccurs="0" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name="saveCustMdyyBill">
+				
+				<xs:complexType>
+					
+					<xs:sequence>
+						<xs:element name="custMdyyBillInfo" type="ax22:CustMdyyBillInfo"
+							nillable="true" minOccurs="0" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name="saveCustMdyyBillResponse">
+				
+				<xs:complexType>
+					
+					<xs:sequence>
+						<xs:element name="return" type="ax24:IfResponse"
+							nillable="true" minOccurs="0" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name="saveEntry">
+				
+				<xs:complexType>
+					
+					<xs:sequence>
+						<xs:element name="entryInfo" type="ax22:EntryInfo"
+							nillable="true" minOccurs="0" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name="saveEntryResponse">
+				
+				<xs:complexType>
+					
+					<xs:sequence>
+						<xs:element name="return" type="ax24:IfResponse"
+							nillable="true" minOccurs="0" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name="savePay">
+				
+				<xs:complexType>
+					
+					<xs:sequence>
+						<xs:element name="payInfo" type="ax22:PayInfo"
+							nillable="true" minOccurs="0" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			
+			<xs:element name="savePayResponse">
+				
+				<xs:complexType>
+					
+					<xs:sequence>
+						<xs:element name="return" type="ax24:IfResponse"
+							nillable="true" minOccurs="0" />
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:schema>
+	</wsdl:types>
+	
+	<wsdl:message name="editCustBusinessRecordRequest">
+		<wsdl:part name="parameters" element="ns:editCustBusinessRecord" />
+	</wsdl:message>
+	
+	<wsdl:message name="editCustBusinessRecordResponse">
+		<wsdl:part name="parameters" element="ns:editCustBusinessRecordResponse" />
+	</wsdl:message>
+	
+	<wsdl:message name="saveCustBusinessRecordRequest">
+		<wsdl:part name="parameters" element="ns:saveCustBusinessRecord" />
+	</wsdl:message>
+	
+	<wsdl:message name="saveCustBusinessRecordResponse">
+		<wsdl:part name="parameters" element="ns:saveCustBusinessRecordResponse" />
+	</wsdl:message>
+	
+	<wsdl:message name="saveEntryRequest">
+		<wsdl:part name="parameters" element="ns:saveEntry" />
+	</wsdl:message>
+	
+	<wsdl:message name="saveEntryResponse">
+		<wsdl:part name="parameters" element="ns:saveEntryResponse" />
+	</wsdl:message>
+	
+	<wsdl:message name="savePayRequest">
+		<wsdl:part name="parameters" element="ns:savePay" />
+	</wsdl:message>
+	
+	<wsdl:message name="savePayResponse">
+		<wsdl:part name="parameters" element="ns:savePayResponse" />
+	</wsdl:message>
+	
+	<wsdl:message name="editEntryRequest">
+		<wsdl:part name="parameters" element="ns:editEntry" />
+	</wsdl:message>
+	
+	<wsdl:message name="editEntryResponse">
+		<wsdl:part name="parameters" element="ns:editEntryResponse" />
+	</wsdl:message>
+	
+	<wsdl:message name="editPayRequest">
+		<wsdl:part name="parameters" element="ns:editPay" />
+	</wsdl:message>
+	
+	<wsdl:message name="editPayResponse">
+		<wsdl:part name="parameters" element="ns:editPayResponse" />
+	</wsdl:message>
+	
+	<wsdl:message name="editCustMdyyBillRequest">
+		<wsdl:part name="parameters" element="ns:editCustMdyyBill" />
+	</wsdl:message>
+	
+	<wsdl:message name="editCustMdyyBillResponse">
+		<wsdl:part name="parameters" element="ns:editCustMdyyBillResponse" />
+	</wsdl:message>
+	
+	<wsdl:message name="saveCustMdyyBillRequest">
+		<wsdl:part name="parameters" element="ns:saveCustMdyyBill" />
+	</wsdl:message>
+	
+	<wsdl:message name="saveCustMdyyBillResponse">
+		<wsdl:part name="parameters" element="ns:saveCustMdyyBillResponse" />
+	</wsdl:message>
+	
+	<wsdl:portType name="oloWebServicePortType">
+		
+		<wsdl:operation name="editCustBusinessRecord">
+			<wsdl:input wsaw:Action="urn:editCustBusinessRecord"
+				message="ns:editCustBusinessRecordRequest" />
+			<wsdl:output wsaw:Action="urn:editCustBusinessRecordResponse"
+				message="ns:editCustBusinessRecordResponse" />
+		</wsdl:operation>
+		
+		<wsdl:operation name="saveCustBusinessRecord">
+			<wsdl:input wsaw:Action="urn:saveCustBusinessRecord"
+				message="ns:saveCustBusinessRecordRequest" />
+			<wsdl:output wsaw:Action="urn:saveCustBusinessRecordResponse"
+				message="ns:saveCustBusinessRecordResponse" />
+		</wsdl:operation>
+		
+		<wsdl:operation name="saveEntry">
+			<wsdl:input wsaw:Action="urn:saveEntry" message="ns:saveEntryRequest" />
+			<wsdl:output wsaw:Action="urn:saveEntryResponse" message="ns:saveEntryResponse" />
+		</wsdl:operation>
+		
+		<wsdl:operation name="savePay">
+			<wsdl:input wsaw:Action="urn:savePay" message="ns:savePayRequest" />
+			<wsdl:output wsaw:Action="urn:savePayResponse" message="ns:savePayResponse" />
+		</wsdl:operation>
+		
+		<wsdl:operation name="editEntry">
+			<wsdl:input wsaw:Action="urn:editEntry" message="ns:editEntryRequest" />
+			<wsdl:output wsaw:Action="urn:editEntryResponse" message="ns:editEntryResponse" />
+		</wsdl:operation>
+		
+		<wsdl:operation name="editPay">
+			<wsdl:input wsaw:Action="urn:editPay" message="ns:editPayRequest" />
+			<wsdl:output wsaw:Action="urn:editPayResponse" message="ns:editPayResponse" />
+		</wsdl:operation>
+		
+		<wsdl:operation name="editCustMdyyBill">
+			<wsdl:input wsaw:Action="urn:editCustMdyyBill" message="ns:editCustMdyyBillRequest" />
+			<wsdl:output wsaw:Action="urn:editCustMdyyBillResponse"
+				message="ns:editCustMdyyBillResponse" />
+		</wsdl:operation>
+		
+		<wsdl:operation name="saveCustMdyyBill">
+			<wsdl:input wsaw:Action="urn:saveCustMdyyBill" message="ns:saveCustMdyyBillRequest" />
+			<wsdl:output wsaw:Action="urn:saveCustMdyyBillResponse"
+				message="ns:saveCustMdyyBillResponse" />
+		</wsdl:operation>
+	</wsdl:portType>
+	
+	<wsdl:binding name="oloWebServiceSoap11Binding" type="ns:oloWebServicePortType">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		
+		<wsdl:operation name="editCustBusinessRecord">
+			<soap:operation style="document" soapAction="urn:editCustBusinessRecord" />
+			
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+			
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		
+		<wsdl:operation name="saveCustBusinessRecord">
+			<soap:operation style="document" soapAction="urn:saveCustBusinessRecord" />
+			
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+			
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		
+		<wsdl:operation name="saveEntry">
+			<soap:operation style="document" soapAction="urn:saveEntry" />
+			
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+			
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		
+		<wsdl:operation name="savePay">
+			<soap:operation style="document" soapAction="urn:savePay" />
+			
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+			
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		
+		<wsdl:operation name="editEntry">
+			<soap:operation style="document" soapAction="urn:editEntry" />
+			
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+			
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		
+		<wsdl:operation name="editPay">
+			<soap:operation style="document" soapAction="urn:editPay" />
+			
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+			
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		
+		<wsdl:operation name="editCustMdyyBill">
+			<soap:operation style="document" soapAction="urn:editCustMdyyBill" />
+			
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+			
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		
+		<wsdl:operation name="saveCustMdyyBill">
+			<soap:operation style="document" soapAction="urn:saveCustMdyyBill" />
+			
+			<wsdl:input>
+				<soap:body use="literal" />
+			</wsdl:input>
+			
+			<wsdl:output>
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	
+	<wsdl:binding name="oloWebServiceSoap12Binding" type="ns:oloWebServicePortType">
+		<soap12:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		
+		<wsdl:operation name="editCustBusinessRecord">
+			<soap12:operation style="document" soapAction="urn:editCustBusinessRecord" />
+			
+			<wsdl:input>
+				<soap12:body use="literal" />
+			</wsdl:input>
+			
+			<wsdl:output>
+				<soap12:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		
+		<wsdl:operation name="saveCustBusinessRecord">
+			<soap12:operation style="document" soapAction="urn:saveCustBusinessRecord" />
+			
+			<wsdl:input>
+				<soap12:body use="literal" />
+			</wsdl:input>
+			
+			<wsdl:output>
+				<soap12:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		
+		<wsdl:operation name="saveEntry">
+			<soap12:operation style="document" soapAction="urn:saveEntry" />
+			
+			<wsdl:input>
+				<soap12:body use="literal" />
+			</wsdl:input>
+			
+			<wsdl:output>
+				<soap12:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		
+		<wsdl:operation name="savePay">
+			<soap12:operation style="document" soapAction="urn:savePay" />
+			
+			<wsdl:input>
+				<soap12:body use="literal" />
+			</wsdl:input>
+			
+			<wsdl:output>
+				<soap12:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		
+		<wsdl:operation name="editEntry">
+			<soap12:operation style="document" soapAction="urn:editEntry" />
+			
+			<wsdl:input>
+				<soap12:body use="literal" />
+			</wsdl:input>
+			
+			<wsdl:output>
+				<soap12:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		
+		<wsdl:operation name="editPay">
+			<soap12:operation style="document" soapAction="urn:editPay" />
+			
+			<wsdl:input>
+				<soap12:body use="literal" />
+			</wsdl:input>
+			
+			<wsdl:output>
+				<soap12:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		
+		<wsdl:operation name="editCustMdyyBill">
+			<soap12:operation style="document" soapAction="urn:editCustMdyyBill" />
+			
+			<wsdl:input>
+				<soap12:body use="literal" />
+			</wsdl:input>
+			
+			<wsdl:output>
+				<soap12:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+		
+		<wsdl:operation name="saveCustMdyyBill">
+			<soap12:operation style="document" soapAction="urn:saveCustMdyyBill" />
+			
+			<wsdl:input>
+				<soap12:body use="literal" />
+			</wsdl:input>
+			
+			<wsdl:output>
+				<soap12:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	
+	<wsdl:binding name="oloWebServiceHttpBinding" type="ns:oloWebServicePortType">
+		<http:binding verb="POST" />
+		
+		<wsdl:operation name="editCustBusinessRecord">
+			<http:operation location="oloWebService/editCustBusinessRecord" />
+			
+			<wsdl:input>
+				<mime:content type="text/xml" part="editCustBusinessRecord" />
+			</wsdl:input>
+			
+			<wsdl:output>
+				<mime:content type="text/xml" part="editCustBusinessRecord" />
+			</wsdl:output>
+		</wsdl:operation>
+		
+		<wsdl:operation name="saveCustBusinessRecord">
+			<http:operation location="oloWebService/saveCustBusinessRecord" />
+			
+			<wsdl:input>
+				<mime:content type="text/xml" part="saveCustBusinessRecord" />
+			</wsdl:input>
+			
+			<wsdl:output>
+				<mime:content type="text/xml" part="saveCustBusinessRecord" />
+			</wsdl:output>
+		</wsdl:operation>
+		
+		<wsdl:operation name="saveEntry">
+			<http:operation location="oloWebService/saveEntry" />
+			
+			<wsdl:input>
+				<mime:content type="text/xml" part="saveEntry" />
+			</wsdl:input>
+			
+			<wsdl:output>
+				<mime:content type="text/xml" part="saveEntry" />
+			</wsdl:output>
+		</wsdl:operation>
+		
+		<wsdl:operation name="savePay">
+			<http:operation location="oloWebService/savePay" />
+			
+			<wsdl:input>
+				<mime:content type="text/xml" part="savePay" />
+			</wsdl:input>
+			
+			<wsdl:output>
+				<mime:content type="text/xml" part="savePay" />
+			</wsdl:output>
+		</wsdl:operation>
+		
+		<wsdl:operation name="editEntry">
+			<http:operation location="oloWebService/editEntry" />
+			
+			<wsdl:input>
+				<mime:content type="text/xml" part="editEntry" />
+			</wsdl:input>
+			
+			<wsdl:output>
+				<mime:content type="text/xml" part="editEntry" />
+			</wsdl:output>
+		</wsdl:operation>
+		
+		<wsdl:operation name="editPay">
+			<http:operation location="oloWebService/editPay" />
+			
+			<wsdl:input>
+				<mime:content type="text/xml" part="editPay" />
+			</wsdl:input>
+			
+			<wsdl:output>
+				<mime:content type="text/xml" part="editPay" />
+			</wsdl:output>
+		</wsdl:operation>
+		
+		<wsdl:operation name="editCustMdyyBill">
+			<http:operation location="oloWebService/editCustMdyyBill" />
+			
+			<wsdl:input>
+				<mime:content type="text/xml" part="editCustMdyyBill" />
+			</wsdl:input>
+			
+			<wsdl:output>
+				<mime:content type="text/xml" part="editCustMdyyBill" />
+			</wsdl:output>
+		</wsdl:operation>
+		
+		<wsdl:operation name="saveCustMdyyBill">
+			<http:operation location="oloWebService/saveCustMdyyBill" />
+			
+			<wsdl:input>
+				<mime:content type="text/xml" part="saveCustMdyyBill" />
+			</wsdl:input>
+			
+			<wsdl:output>
+				<mime:content type="text/xml" part="saveCustMdyyBill" />
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	
+	<wsdl:service name="oloWebService">
+		
+		<wsdl:port name="oloWebServiceHttpSoap11Endpoint" binding="ns:oloWebServiceSoap11Binding">
+			<soap:address
+				location="http://192.168.0.168:8080/oloService/services/oloWebService.oloWebServiceHttpSoap11Endpoint/" />
+		</wsdl:port>
+		
+		<wsdl:port name="oloWebServiceHttpSoap12Endpoint" binding="ns:oloWebServiceSoap12Binding">
+			<soap12:address
+				location="http://192.168.0.168:8080/oloService/services/oloWebService.oloWebServiceHttpSoap12Endpoint/" />
+		</wsdl:port>
+		
+		<wsdl:port name="oloWebServiceHttpEndpoint" binding="ns:oloWebServiceHttpBinding">
+			<http:address
+				location="http://192.168.0.168:8080/oloService/services/oloWebService.oloWebServiceHttpEndpoint/" />
+		</wsdl:port>
+	</wsdl:service>
+</wsdl:definitions>

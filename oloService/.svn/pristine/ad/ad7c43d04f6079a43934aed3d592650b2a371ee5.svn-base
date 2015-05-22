@@ -1,0 +1,289 @@
+package com.sys.web.service.webservice;
+
+import java.util.List;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.orm.ibatis.support.SqlMapClientDaoSupport;
+
+import com.sys.common.ResultCode;
+import com.sys.common.exception.CreateException;
+import com.sys.common.exception.DeleteException;
+import com.sys.common.exception.ReadException;
+import com.sys.common.exception.UpdateException;
+
+
+public class BaseServiceImpl extends SqlMapClientDaoSupport
+{
+    protected final Log log = LogFactory.getLog(getClass());
+
+    public BaseServiceImpl()
+    {}
+
+    protected String getDomainName()
+    {
+        return "erpSql";
+    }
+
+    /** 
+     * 
+     * saveCustBusinessRecord封装
+     * 
+     * @param String
+     *            statementName
+     * @Object parameterObject
+     * @return Object @ CreateException
+     */
+    protected Object saveCustBusinessRecord(String statementName,
+                                            Object parameterObject)
+        throws CreateException
+    {
+        try
+        {
+            return this.getSqlMapClientTemplate().insert(statementName,
+                parameterObject);
+        }
+        catch (Exception ex)
+        {
+            throw new CreateException(ResultCode.DBError, ex);
+        }
+    }
+
+    /**
+     * 
+     * editCustBusinessRecord封装
+     * 
+     * @param String
+     *            statementName
+     * @Object parameterObject
+     * @return int @ UpdateException
+     */
+    protected int editCustBusinessRecord(String statementName,
+                                         Object parameterObject)
+        throws UpdateException
+    {
+        try
+        {
+            return this.getSqlMapClientTemplate().update(statementName,
+                parameterObject);
+
+        }
+        catch (Exception ex)
+        {
+            throw new UpdateException(ResultCode.DBError, ex);
+        }
+
+    }
+
+    /**
+     * 
+     * saveCustMdyyBill封装
+     * 
+     * @param String
+     *            statementName
+     * @Object parameterObject
+     * @return Object @ CreateException
+     */
+    protected Object saveCustMdyyBill(String statementName,
+                                      Object parameterObject)
+        throws CreateException
+    {
+        try
+        {
+            return this.getSqlMapClientTemplate().insert(statementName,
+                parameterObject);
+        }
+        catch (Exception ex)
+        {
+            throw new CreateException(ResultCode.DBError, ex);
+        }
+    }
+
+    /**
+     * 
+     * editCustMdyyBill封装
+     * 
+     * @param String
+     *            statementName
+     * @Object parameterObject
+     * @return Object @ CreateException
+     */
+    protected Object editCustMdyyBill(String statementName,
+                                      Object parameterObject)
+        throws UpdateException
+    {
+        try
+        {
+            return this.getSqlMapClientTemplate().update(statementName,
+                parameterObject);
+        }
+        catch (Exception ex)
+        {
+            throw new UpdateException(ResultCode.DBError, ex);
+        }
+    }
+
+    /**
+     * 
+     * saveEntry
+     * 
+     * @param String
+     *            statementName
+     * @Object parameterObject
+     * @return Object @ CreateException
+     */
+    protected Object saveEntry(String statementName, Object parameterObject)
+        throws CreateException
+    {
+        try
+        {
+            return this.getSqlMapClientTemplate().insert(statementName,
+                parameterObject);
+        }
+        catch (Exception ex)
+        {
+            throw new CreateException(ResultCode.DBError, ex);
+        }
+    }
+
+    /**
+     * 
+     * editEntry
+     * 
+     * @param String
+     *            statementName
+     * @Object parameterObject
+     * @return Object @ CreateException
+     */
+    protected Object editEntry(String statementName, Object parameterObject)
+        throws UpdateException
+    {
+        try
+        {
+            return this.getSqlMapClientTemplate().update(statementName,
+                parameterObject);
+        }
+        catch (Exception ex)
+        {
+            throw new UpdateException(ResultCode.DBError, ex);
+        }
+    }
+
+    /**
+     * 
+     * savePay封装
+     * 
+     * @param String
+     *            statementName
+     * @Object parameterObject
+     * @return Object @ CreateException
+     */
+    protected Object savePay(String statementName, Object parameterObject)
+        throws CreateException
+    {
+        try
+        {
+            return this.getSqlMapClientTemplate().insert(statementName,
+                parameterObject);
+        }
+        catch (Exception ex)
+        {
+            throw new CreateException(ResultCode.DBError, ex);
+        }
+    }
+
+    /**
+     * 
+     * editPay封装
+     * 
+     * @param String
+     *            statementName
+     * @Object parameterObject
+     * @return Object @ CreateException
+     */
+    protected Object editPay(String statementName, Object parameterObject)
+        throws UpdateException
+    {
+        try
+        {
+            return this.getSqlMapClientTemplate().update(statementName,
+                parameterObject);
+        }
+        catch (Exception ex)
+        {
+            throw new UpdateException(ResultCode.DBError, ex);
+        }
+    }
+
+    /**
+     * 
+     * queryForObject
+     * 
+     * @param String
+     *            statementName
+     * @Object parameterObject
+     * @return Object @ ReadException
+     */
+    protected Object queryForObject(String statementName, Object parameterObject)
+        throws ReadException
+    {
+        try
+        {
+            return this.getSqlMapClientTemplate().queryForObject(statementName,
+                parameterObject);
+        }
+        catch (Exception ex)
+        {
+            throw new ReadException(ResultCode.DBError, ex);
+        }
+    }
+
+    /**
+     * 
+     * queryForList封装
+     * 
+     * @param String
+     *            statementName
+     * @Object parameterObject
+     * @return List @ ReadException
+     */
+    protected List<?> queryForList(String statementName, Object parameterObject)
+        throws ReadException
+    {
+        try
+        {
+            return this.getSqlMapClientTemplate().queryForList(statementName,
+                parameterObject);
+        }
+        catch (Exception ex)
+        {
+            throw new ReadException(ResultCode.DBError, ex);
+        }
+
+    }
+
+    /**
+     * 
+     * delete delete封装
+     * 
+     * @param String
+     *            statementName
+     * @Object parameterObject
+     * @return int @ DeleteException
+     */
+    protected int delete(String statementName, Object parameterObject)
+        throws DeleteException
+    {
+        try
+        {
+            return this.getSqlMapClientTemplate().delete(statementName,
+                parameterObject);
+
+        }
+        catch (Exception ex)
+        {
+            throw new DeleteException(ResultCode.DBError, ex);
+        }
+
+    }
+}

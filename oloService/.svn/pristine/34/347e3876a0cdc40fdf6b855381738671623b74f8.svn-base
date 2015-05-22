@@ -1,0 +1,30 @@
+package com.sys.wx.web;
+
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.sys.wx.service.ImgMessageService;
+import com.sys.wx.service.TextMessageService;
+
+
+@Controller
+@RequestMapping("/textMessage")
+public class TextMessageController {
+
+	@Autowired
+	private TextMessageService textMessageService;
+	
+	@RequestMapping("/listtextMessage")
+	public String loadListImgMessage(ModelMap model,HttpServletRequest request,HttpServletResponse response){
+		Map<String,Object> textMap = textMessageService.queryTextMessageList(request);
+		model.put("textMap", textMap);
+		return "/wx/textList";
+	}
+}

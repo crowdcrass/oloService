@@ -1,0 +1,163 @@
+package com.sys.index.web;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+
+import com.platform.common.servlet.SessionAttribute;
+import com.sys.index.service.SysUserService;
+
+/**
+ * 用户管理
+ * @author yl
+ */
+@Controller
+@RequestMapping("/sysUserAction")
+public class SysUserAction {
+	@Autowired
+	private SysUserService userService;
+	
+	/**
+	 *  用户管理
+	 *  @author yl
+	 */
+	@RequestMapping(value="/index")
+	public String index(ModelMap model,HttpServletRequest request,HttpServletResponse response) { 
+		Map<String,Object> userMap = userService.queryUserList(request);
+		model.put("userMap", userMap);
+		return "/user/index";
+	}
+	
+	/**
+	 *  增加页面
+	 *  @author yl
+	 */
+	@RequestMapping(value="/newPage")
+	public String newPage(ModelMap model,HttpServletRequest request,HttpServletResponse response) { 
+		return "/user/new";
+	}
+	/**
+	 *  保存新增
+	 *  @author yl
+	 */
+	@RequestMapping(value="/saveUser")
+	public String saveUser(ModelMap model,HttpServletRequest request,HttpServletResponse response) { 
+		String flag = "0";
+		flag = userService.saveUser(request);
+		model.put("flag", flag);
+		return "/user/new";
+	}
+	/**
+	 *  编辑页面
+	 *  @author yl
+	 */
+	@RequestMapping(value="/editPage")
+	public String editPage(ModelMap model,HttpServletRequest request,HttpServletResponse response) { 
+		String s_id = request.getParameter("s_id");
+		model.put("userMap", userService.queryUserById(request));
+		model.put("s_id", s_id);
+		return "/user/edit";
+	}
+	/**
+	 *  修改
+	 *  @author yl
+	 */
+	@RequestMapping(value="/editUser")
+	public String editUser(ModelMap model,HttpServletRequest request,HttpServletResponse response) { 
+		String flag = "0";
+		flag = userService.editUser(request);
+		model.put("flag", flag);
+		return "/user/edit";
+	}
+	/**
+	 *  删除
+	 *  @author yl
+	 */
+	@ResponseBody
+	@RequestMapping(value="/deleteUser")
+	public String deleteUser(ModelMap model,HttpServletRequest request,HttpServletResponse response) { 
+		String flag = "0";
+		flag = userService.deleteUser(request);
+		return flag;
+	}
+	
+	/**
+	 *  角色
+	 *  @author yl
+	 */
+	@RequestMapping(value="/editRole")
+	public String editRole(ModelMap model,HttpServletRequest request,HttpServletResponse response) {
+		String s_id = request.getParameter("s_id");
+		model.put("roleList", userService.queryRoleList(request));
+		model.put("s_id", s_id);
+		return "/user/roleList";
+	}
+	
+	/**
+	 * 分配角色
+	 *  @author yl
+	 */
+	@ResponseBody
+	@RequestMapping(value="/editUserRole")
+	public String editUserRole(ModelMap model,HttpServletRequest request,HttpServletResponse response) { 
+		String flag = "0";
+		flag = userService.editUserRole(request);
+		return flag;
+	}
+	/**
+	 *  跳转到密码修改页面
+	 *  @author yl
+	 */
+	@RequestMapping(value="/editPwdPage")
+	public String editPwdPage(ModelMap model,HttpServletRequest request,HttpServletResponse response) {
+		if(null != request.getSession().getAttribute("user") && !"".equals(request.getSession().getAttribute("user"))){
+			model.put("user", "yes");
+		}else{
+			model.put("user", "none");
+		}
+		return "/xgmm";
+	}
+	
+	/**
+	 *  修改密码
+	 *  @author yl
+	 */
+	@RequestMapping(value="/updatePwd")
+	public String updatePwd(ModelMap model,HttpServletRequest request,HttpServletResponse response) {
+		String oldPwd = request.getParameter("oldPwd");//原密码
+		String newPwd = request.getParameter("newPwd");//新密码
+		if(null != request.getSession().getAttribute("user") && !"".equals(request.getSession().getAttribute("user"))){
+			Map<String,Object> map = SessionAttribute.get(request.getSession(), "user");
+			model.put("flag", "yes");
+			String userId = map.get("S_ID").toString();
+			String userName = userService.valUserPwd(userId, oldPwd);
+			if(null != userName && !"".equals(userName)){
+				String flag = userService.updatePwd(userId, newPwd);
+				model.put("flag", flag);
+			}else{
+				model.put("flag", "errorPwd");
+			}
+		}else{
+			model.put("flag", "none");
+		}
+		return "/xgmm";
+	}
+	/**
+	 * 重置密码
+	 *  @author yl
+	 */
+	@ResponseBody
+	@RequestMapping(value="/updateUserPwd")
+	public String updateUserPwd(ModelMap model,HttpServletRequest request,HttpServletResponse response) { 
+		String flag = "0";
+		flag = userService.updateUserPwd(request);
+		return flag;
+	}
+}

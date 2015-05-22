@@ -1,0 +1,144 @@
+package com.sys.index.service;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.amiba.dao.BaseDao;
+
+
+/**
+ * 用户登录
+ * @author yl
+ *
+ */
+@Service
+public class LoginUserService
+{
+
+    @Autowired
+    private BaseDao baseDao;
+
+    public Map<String, Object> findUserByUserName(String userName)
+    {
+        String sql = "SELECT * FROM SYS_USER WHERE USERNAME=?";
+        Map<String, Object> map = baseDao.queryForMap(sql, userName);
+        return map;
+    }
+
+    public List<Map<String, Object>> findMenus(String userId)
+    {
+        String sql = "";
+        sql = "SELECT DISTINCT GNS.GN_DM \"id\",GNS.SJGN_DM \"pid\","
+              + "GNS.MC \"name\",IFNULL(GNS.TARGET, '') \"file\",gns.cd_xh "
+              + "FROM SYS_GNS GNS WHERE GN_DM IN (SELECT DISTINCT GN_DM "
+              + "FROM SYS_ROLE_TREE WHERE R_ID IN(SELECT R_ID FROM "
+              + "SYS_USER_ROLES WHERE U_ID=?)) ORDER BY CONVERT(GNS.CD_XH ,SIGNED)";
+        List<Map<String, Object>> list = baseDao.queryForList(sql, userId);
+        return list;
+    }
+
+    /**
+     * 查询上级菜单
+     * @param userId
+     * @param pId
+     * @return
+     */
+    public List<Map<String, Object>> findUserMenus(String userId, String pId)
+    {
+        String sql = "";
+        List<Map<String, Object>> list = null;
+        if ("1".equals(userId))
+        {
+            sql = "SELECT DISTINCT GNS.GN_DM id,GNS.SJGN_DM pid,"
+                  + "GNS.MC text,IFNULL(GNS.TARGET, '') href,GNS.CD_XH ,IMGURL FROM SYS_GNS GNS "
+                  + "WHERE SJGN_DM=? ORDER BY CONVERT(GNS.CD_XH ,SIGNED)";
+            list = baseDao.queryForList(sql, pId);
+        }
+        else
+        {
+            sql = "SELECT DISTINCT GNS.GN_DM id,GNS.SJGN_DM pid,"
+                  + "GNS.MC text,IFNULL(GNS.TARGET, '') href,GNS.CD_XH ,IMGURL FROM SYS_GNS GNS WHERE "
+                  + "GN_DM IN (SELECT DISTINCT GN_DM FROM SYS_ROLE_TREE WHERE R_ID IN(SELECT R_ID "
+                  + "FROM SYS_USER_ROLES WHERE U_ID=?)) AND SJGN_DM=? ORDER BY CONVERT(GNS.CD_XH ,SIGNED)";
+            list = baseDao.queryForList(sql, userId, pId);
+        }
+        return list;
+    }
+
+    /**
+     * 查询菜单
+     * @param userId
+     * @param menuList
+     * @return
+     */
+    public List<Map<String, Object>> findUserMenus(String userId,
+                                                   List<Map<String, Object>> menuList)
+    {
+        if (null != menuList && menuList.size() > 0)
+        {
+            for (Map<String, Object> map : menuList)
+            {
+                List<Map<String, Object>> menuList2 = findUserMenus(userId,
+                    map.get("id").toString());
+                map.put("menu", menuList2);
+                if (null != menuList2 && menuList2.size() > 0)
+                {
+                    for (Map<String, Object> map2 : menuList2)
+                    {
+                        List<Map<String, Object>> menuList3 = findUserMenus(
+                            userId, map2.get("id").toString());
+                        map2.put("items", menuList3);
+                    }
+                }
+            }
+        }
+        return menuList;
+    }
+
+    public void saveUserLoginInfo(HttpServletRequest request,
+                                  Map<String, Object> userMap)
+    {
+        String sql = "";
+        sql = "UPDATE SYS_USER SET LAST_LOGIN_IP=?,LAST_LOGIN_TIME=? WHERE S_ID=?";
+        baseDao.execute(sql, getIp(request), new Date(), userMap.get("S_ID"));
+    }
+
+    public List<Map<String, Object>> queryModulePic(HttpServletRequest request)
+    {
+        String sql = "";
+        sql = "SELECT * FROM SYS_MODULE_PIC";
+
+        return this.baseDao.getUtil().query(sql);
+    }
+
+    /**
+     * 获取IP
+     * @param request
+     * @return
+     * @author mxy
+     */
+    public static String getIp(HttpServletRequest request)
+    {
+        String ip = request.getHeader("x-forwarded-for");
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip))
+        {
+            ip = request.getHeader("Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip))
+        {
+            ip = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip))
+        {
+            ip = request.getRemoteAddr();
+        }
+        return ip;
+    }
+
+}

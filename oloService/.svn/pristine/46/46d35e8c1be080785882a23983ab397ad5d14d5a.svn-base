@@ -1,0 +1,90 @@
+package com.sys.web.service.webservice;
+
+public class OloWebServicePortTypeProxy implements com.sys.web.service.webservice.OloWebServicePortType {
+  private String _endpoint = null;
+  private com.sys.web.service.webservice.OloWebServicePortType oloWebServicePortType = null;
+  
+  public OloWebServicePortTypeProxy() {
+    _initOloWebServicePortTypeProxy();
+  }
+  
+  public OloWebServicePortTypeProxy(String endpoint) {
+    _endpoint = endpoint;
+    _initOloWebServicePortTypeProxy();
+  }
+  
+  private void _initOloWebServicePortTypeProxy() {
+    try {
+      oloWebServicePortType = (new com.sys.web.service.webservice.OloWebServiceLocator()).getoloWebServiceHttpSoap11Endpoint();
+      if (oloWebServicePortType != null) {
+        if (_endpoint != null)
+          ((javax.xml.rpc.Stub)oloWebServicePortType)._setProperty("javax.xml.rpc.service.endpoint.address", _endpoint);
+        else
+          _endpoint = (String)((javax.xml.rpc.Stub)oloWebServicePortType)._getProperty("javax.xml.rpc.service.endpoint.address");
+      }
+      
+    }
+    catch (javax.xml.rpc.ServiceException serviceException) {}
+  }
+  
+  public String getEndpoint() {
+    return _endpoint;
+  }
+  
+  public void setEndpoint(String endpoint) {
+    _endpoint = endpoint;
+    if (oloWebServicePortType != null)
+      ((javax.xml.rpc.Stub)oloWebServicePortType)._setProperty("javax.xml.rpc.service.endpoint.address", _endpoint);
+    
+  }
+  
+  public com.sys.web.service.webservice.OloWebServicePortType getOloWebServicePortType() {
+    if (oloWebServicePortType == null)
+      _initOloWebServicePortTypeProxy();
+    return oloWebServicePortType;
+  }
+  
+  public com.sys.common.xsd.IfResponse editCustBusinessRecord(com.sys.entity.xsd.BusinessBillInfo businessBillInfo) throws java.rmi.RemoteException{
+    if (oloWebServicePortType == null)
+      _initOloWebServicePortTypeProxy();
+    return oloWebServicePortType.editCustBusinessRecord(businessBillInfo);
+  }
+  
+  public com.sys.common.xsd.IfResponse saveCustBusinessRecord(com.sys.entity.xsd.BusinessBillInfo businessBillInfo) throws java.rmi.RemoteException{
+    if (oloWebServicePortType == null)
+      _initOloWebServicePortTypeProxy();
+    return oloWebServicePortType.saveCustBusinessRecord(businessBillInfo);
+  }
+  
+  public com.sys.common.xsd.IfResponse saveEntry(com.sys.entity.xsd.EntryInfo entryInfo) throws java.rmi.RemoteException{
+    if (oloWebServicePortType == null)
+      _initOloWebServicePortTypeProxy();
+    return oloWebServicePortType.saveEntry(entryInfo);
+  }
+  
+  public com.sys.common.xsd.IfResponse savePay(java.lang.String pId, java.lang.String pName) throws java.rmi.RemoteException{
+    if (oloWebServicePortType == null)
+      _initOloWebServicePortTypeProxy();
+    return oloWebServicePortType.savePay(pId, pName);
+  }
+  
+  public com.sys.common.xsd.IfResponse editPay(java.lang.String pId, java.lang.String pName) throws java.rmi.RemoteException{
+    if (oloWebServicePortType == null)
+      _initOloWebServicePortTypeProxy();
+    return oloWebServicePortType.editPay(pId, pName);
+  }
+  
+  public com.sys.common.xsd.IfResponse editCustMdyyBill(com.sys.entity.xsd.CustMdyyBillInfo custMdyyBillInfo) throws java.rmi.RemoteException{
+    if (oloWebServicePortType == null)
+      _initOloWebServicePortTypeProxy();
+    return oloWebServicePortType.editCustMdyyBill(custMdyyBillInfo);
+  }
+  
+  public com.sys.common.xsd.IfResponse saveCustMdyyBill(com.sys.entity.xsd.CustMdyyBillInfo custMdyyBillInfo) throws java.rmi.RemoteException{
+    if (oloWebServicePortType == null)
+      _initOloWebServicePortTypeProxy();
+    return oloWebServicePortType.saveCustMdyyBill(custMdyyBillInfo);
+  }
+  
+  
+}

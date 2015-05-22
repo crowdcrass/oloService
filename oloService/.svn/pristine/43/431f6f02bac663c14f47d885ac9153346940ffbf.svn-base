@@ -1,0 +1,46 @@
+package com.sys.entity;
+
+public class FCustomer
+{
+    private int FCUSTID;
+    private String FNumber;
+    private String FName;
+
+    public int getFCUSTID()
+    {
+        return FCUSTID;
+    }
+
+    public void setFCUSTID(int fCUSTID)
+    {
+        FCUSTID = fCUSTID;
+    }
+
+    public String getFNumber()
+    {
+        return FNumber;
+    }
+
+    public void setFNumber(String fNumber)
+    {
+        FNumber = fNumber;
+    }
+
+    public String getFName()
+    {
+        return FName;
+    }
+
+    public void setFName(String fName)
+    {
+        FName = fName;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "FCustomer [FCUSTID=" + FCUSTID + ", FNumber=" + FNumber
+               + ", FName=" + FName + "]";
+    }
+
+}

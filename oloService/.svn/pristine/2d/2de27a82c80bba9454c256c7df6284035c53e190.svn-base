@@ -1,0 +1,231 @@
+package com.sys.wx.service;
+
+import java.io.UnsupportedEncodingException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import net.sg.common.util.common.ImgUtil;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.amiba.dao.BaseDao;
+import com.platform.common.servlet.RequestParameter;
+
+@Service
+public class MemberService {
+
+	
+	@Autowired
+	private BaseDao baseDao;
+
+	public BaseDao getBaseDao() {
+		return baseDao;
+	}
+
+	public void setBaseDao(BaseDao baseDao) {
+		this.baseDao = baseDao;
+	}
+	
+	
+	/**
+	 * 会员列表
+	 * @param request
+	 * @return
+	 */
+	public Map<String,Object> queryMemberList(HttpServletRequest request,HttpServletResponse response){
+		//response.setContentType("text/html;charset=utf-8");//设置输出转码
+		//request.getParameter("name")
+		try {
+			StringBuffer sb = new StringBuffer(); 
+			//昵称
+			if(request.getParameter("m_nickname")!=null&&!"".equals(request.getParameter("m_nickname"))){
+				String m_nickname = java.net.URLDecoder.decode(request.getParameter("m_nickname"),"UTF-8");
+				sb.append(" AND M_NICKNAME = '"+m_nickname+"' ");
+			}
+			//真实姓名
+			if(request.getParameter("m_act_name")!=null&&!"".equals(request.getParameter("m_act_name"))){
+				String m_act_name = java.net.URLDecoder.decode(request.getParameter("m_act_name"),"UTF-8");
+				sb.append(" AND M_ACT_NAME = '"+m_act_name+"' ");
+			}
+			//性别
+			if(request.getParameter("m_sex")!=null&&!"".equals(request.getParameter("m_sex"))){
+				String m_sex = java.net.URLDecoder.decode(request.getParameter("m_sex"),"UTF-8");
+				sb.append(" AND M_SEX = '"+m_sex+"' ");
+			}
+			//来源
+			if(request.getParameter("m_source")!=null&&!"".equals(request.getParameter("m_source"))){
+				String m_source = java.net.URLDecoder.decode(request.getParameter("m_source"),"UTF-8");
+				sb.append(" AND M_SOURCE = '"+m_source+"' ");
+			}
+			//省份
+			if(request.getParameter("m_pid")!=null&&!"".equals(request.getParameter("m_pid"))){
+				String m_pid = java.net.URLDecoder.decode(request.getParameter("m_pid"),"UTF-8");
+				sb.append(" AND M_PID = '"+m_pid+"' ");
+			}
+			//城市
+			if(request.getParameter("m_cid")!=null&&!"".equals(request.getParameter("m_cid"))){
+				String m_cid = java.net.URLDecoder.decode(request.getParameter("m_cid"),"UTF-8");
+				sb.append(" AND M_CID = '"+m_cid+"' ");
+			}
+			//区域
+			if(request.getParameter("m_did")!=null&&!"".equals(request.getParameter("m_did"))){
+				String m_did = java.net.URLDecoder.decode(request.getParameter("m_did"),"UTF-8");
+				sb.append(" AND M_DID = '"+m_did+"' ");
+			}
+			int page = RequestParameter.getIntGreaterThen(request, "page", 0, 0,false);
+			int count = RequestParameter.getInt(request, "count", 10, 1, 20,false);
+			//String sql = "SELECT * FROM W_MEMBER ORDER BY M_ID ASC";
+			String sql = "SELECT M_ID,M_ACT_NAME,M_NICKNAME,M_LOGIN_CODE,M_ID_CARD,M_OPENID,M_PHONE,M_ADDRESS,M_HEADURL,"
+					+ "M_QQ,M_EMAIL,M_REG_TIME,M_INTEGRAL,M_SOURCE,M_SEX,M_PID,M_CID,M_DID,P_NAME,C_NAME,D_NAME " +
+					  " FROM W_MEMBER M "
+					+ " LEFT JOIN SYS_PROVINCE P ON P.P_ID = M.M_PID "
+					+ " LEFT JOIN SYS_CITY C ON C.C_ID = M.M_CID "
+					+ " LEFT JOIN SYS_DISTRICT D ON D.D_ID = M.M_DID WHERE 1=1 ";
+					if(sb!=null&&"".equals("")){
+						sql+=sb.toString();
+					}
+					sql+= " ORDER BY M_ID ASC";
+			Map<String,Object> map =  baseDao.pagination(page, count, sql);
+			return map;
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	/**
+	 * 省份列表
+	 * @param request
+	 * @return
+	 */
+	public List<Map<String,Object>> queryProvinceList(HttpServletRequest request){
+		String sql = "SELECT * FROM SYS_PROVINCE ORDER BY P_ID ASC";
+		List<Map<String,Object>> listMap = baseDao.queryForList(sql);
+		return listMap;
+	}
+	
+	/**
+	 * 城市列表
+	 * @param request
+	 * @return
+	 */
+	public List<Map<String,Object>> queryCityList(HttpServletRequest request){
+		String id = request.getParameter("provinceId");
+		String sql = "SELECT * FROM SYS_CITY WHERE P_ID = ? ORDER BY C_ID ASC";
+		List<Map<String,Object>> listMap = baseDao.queryForList(sql,id);
+		return listMap;
+	}
+	
+	/**
+	 * 区域列表
+	 * @param request
+	 * @return
+	 */
+	public List<Map<String,Object>> queryDistrictList(HttpServletRequest request){
+		String id = request.getParameter("cityId");
+		String sql = "SELECT * FROM SYS_DISTRICT WHERE C_ID = ? ORDER BY D_ID ASC";
+		List<Map<String,Object>> listMap = baseDao.queryForList(sql,id);
+		return listMap;
+	}
+
+	/**
+	 * 根据ID获得回复信息
+	 * @param 
+	 * @throws Exception 
+	 */
+	public Map<String,Object> queryHyById(String id) throws Exception{
+		String sql = "";
+		sql = "SELECT M_ID,M_ACT_NAME,M_NICKNAME,M_LOGIN_CODE,M_ID_CARD,M_OPENID,M_PHONE,M_ADDRESS,M_HEADURL,"
+				+ "M_QQ,M_EMAIL,M_REG_TIME,M_INTEGRAL,M_SOURCE,M_SEX,M_PID,M_CID,M_DID " +
+				" FROM W_MEMBER WHERE M_ID = ?";
+		List<Map<String,Object>> listMap = baseDao.queryForList(sql, id);
+		Map<String,Object> mapData = null;
+		if(null != listMap && listMap.size()>0){
+			
+			for(Map<String,Object> map:listMap){
+				mapData = new HashMap<String,Object>();
+				mapData.put("M_ID", map.get("M_ID"));
+				mapData.put("M_ACT_NAME", map.get("M_ACT_NAME"));
+				mapData.put("M_NICKNAME", map.get("M_NICKNAME"));
+				mapData.put("M_LOGIN_CODE", map.get("M_LOGIN_CODE"));
+				mapData.put("M_ID_CARD", map.get("M_ID_CARD"));
+				mapData.put("M_OPENID", map.get("M_OPENID"));
+				mapData.put("M_PHONE", map.get("M_PHONE"));
+				mapData.put("M_ADDRESS", map.get("M_ADDRESS"));
+				mapData.put("PIC", map.get("PIC"));
+				mapData.put("M_HEADURL", map.get("M_HEADURL"));
+				mapData.put("M_QQ", map.get("M_QQ"));
+				mapData.put("M_EMAIL", map.get("M_EMAIL"));
+				mapData.put("M_REG_TIME", map.get("M_REG_TIME"));
+				mapData.put("M_INTEGRAL", map.get("M_INTEGRAL"));
+				mapData.put("M_SOURCE", map.get("M_SOURCE"));
+				mapData.put("M_SEX", map.get("M_SEX"));
+				mapData.put("M_PID", map.get("M_PID"));
+				mapData.put("M_CID", map.get("M_CID"));
+				mapData.put("M_DID", map.get("M_DID"));
+			}
+		}
+		return mapData;
+		
+	}
+	
+	
+	/**
+	 * 根据id修改
+	 * @param 
+	 * @throws Exception 
+	 */
+	public int updateMember(HttpServletRequest request) throws Exception{
+		String id = request.getParameter("Id");
+		String sql = "";
+		sql = "SELECT * " +
+				" FROM W_MEMBER WHERE M_ID=?";
+		Map<String,Object> map = baseDao.queryForMap(sql, id);
+		if(null != map && !"".equals(map)){
+			String updateSql = "";
+			String m_act_name = request.getParameter("m_act_name");
+			String m_nickname = request.getParameter("m_nickname");
+			String m_id_card = request.getParameter("m_id_card");
+			String m_sex = request.getParameter("m_sex");
+			String m_pid = request.getParameter("m_pid");
+			String m_cid = request.getParameter("m_cid");
+			String m_did = request.getParameter("m_did");
+			String m_phone = request.getParameter("m_phone");
+			String m_address = request.getParameter("m_address");
+			String m_email = request.getParameter("m_email");
+			String m_integral = request.getParameter("m_integral");
+			String m_source = request.getParameter("m_source");
+			updateSql = "update W_MEMBER set M_ACT_NAME=?, M_NICKNAME=?,M_ID_CARD=?"
+					+ ",M_PHONE=?,M_ADDRESS=?,M_EMAIL=?,M_INTEGRAL=?,M_SOURCE=?,M_SEX=?,M_PID=?,M_CID=?,M_DID=? where M_ID=?";
+			baseDao.execute(updateSql, m_act_name,m_nickname,m_id_card,m_phone,m_address,m_email,m_integral,m_source,m_sex,m_pid,m_cid,m_did,id);
+			return 1;
+		}
+		return 0;
+		
+	}
+	
+	
+	/**
+	 * 根据id删除
+	 * @param 
+	 * @throws Exception 
+	 */
+	public String DeleteMember(HttpServletRequest request) throws Exception{
+		String id = request.getParameter("Id");
+		Map<String,Object> userMap = (Map<String, Object>) request.getSession().getAttribute("user");
+		String flag = "0";
+		String sql = "";
+		sql = "DELETE FROM WX_HFMESSAGE WHERE ID=?";
+		baseDao.execute(sql, id);
+		sql = "INSERT INTO SYS_DELETE(MS,LR_RY,LR_SJ) VALUES (?,?,?)";
+		baseDao.execute(sql, "模块:用户管理"+id,userMap.get("S_ID"),new Date());
+		flag = "1";
+		return flag;
+	}
+}

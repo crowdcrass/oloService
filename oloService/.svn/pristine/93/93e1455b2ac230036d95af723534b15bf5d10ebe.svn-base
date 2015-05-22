@@ -1,0 +1,253 @@
+	var setting = {
+		view: {
+			dblClickExpand: false,
+		},
+		data: {
+			simpleData: {
+				enable: true,
+				idKey: "id",
+				pIdKey: "pid",
+				rootPId: ""
+			}
+		},
+		callback: {
+			onClick: onClick
+		}
+	};
+
+	function onClick(e, treeId, treeNode) {
+		var zTree = $.fn.zTree.getZTreeObj("treeDemo"),
+		nodes = zTree.getSelectedNodes(),
+		v = "";
+		nodes.sort(function compare(a,b){return a.id-b.id;});
+		for (var i=0, l=nodes.length; i<l; i++) {
+			v += nodes[i].name + ",";
+		}
+		if (v.length > 0 ) v = v.substring(0, v.length-1);
+		var cityObj = $("#mtType");
+		cityObj.attr("value", v);
+		//msg(treeNode.id+"======="+treeId);
+		$("#parentid").val(treeNode.id);
+		
+		var checkDiv = $("#checkDiv")[0];
+		
+		$.ajax({
+			type : 'get',
+			url : '../product/queryMatterType?mtId='+treeNode.id,
+			dataType : 'json',
+			contentType : "application/x-www-form-urlencoded; charset=utf-8",
+			success : function(data) {
+				var attr = data.attrList;
+				var html = "";
+				for ( var i = 0; i < attr.length; i++) {
+					html += "<a href=\"javascript:;\" onclick=\"fenpei('"+attr[i].AT_ID+"','${MT_TYPE}');\">"+attr[i].AT_NAME+"</a>：";
+					html += "<ul id='aname_"+attr[i].AT_ID+"'></ul><br>";
+				}
+				$("#mtList").html(html);
+				$("#checkValue").val("");
+				return;
+			},
+			error : function(XMLHttpRequest,
+					textStatus, errorThrown) {
+				layer.msg("提交失败请与管理员联系，错误信息:" + XMLHttpRequest.status);
+
+			}
+		});
+	}
+
+	function showMenu() {
+		var cityObj = $("#mtType");
+		var cityOffset = $("#mtType").offset();
+		$("#menuContent").css({left:cityOffset.left + "px", top:cityOffset.top + cityObj.outerHeight() + "px"}).slideDown("fast");
+
+		$("body").bind("mousedown", onBodyDown);
+	}
+	function hideMenu() {
+		$("#menuContent").fadeOut("fast");
+		$("body").unbind("mousedown", onBodyDown);
+	}
+	function onBodyDown(event) {
+		if (!(event.target.id == "menuBtn" || event.target.id == "menuContent" || $(event.target).parents("#menuContent").length>0)) {
+			hideMenu();
+		}
+	}
+	
+	$(document).ready(function(){
+		//加载树形结构
+		$.fn.zTree.init($("#treeDemo"), setting, zNodes);
+		
+		$(".imgdel").each(function(){
+			var ii=$(this).attr("data-index");
+			var id=$(this).attr("id");
+			$("#"+id).click(function(){
+	        	$("#P_PIC"+ii).val();
+	        	$("#img"+ii).attr('src',"<%=basePath %>/images/default.png"); 
+			});
+		});
+	});
+	
+	var editor;
+	KindEditor.ready(function(K) {
+		editor = K.create('#info', {
+			resizeType : 1,
+			allowPreviewEmoticons : false,
+			allowImageUpload : true,
+			items : [
+			'source','undo','clearhtml','hr','fontsize','forecolor','hilitecolor',
+			'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+			'insertunorderedlist', '|', 'emoticons', 'image','link', 'unlink','baidumap','lineheight',
+			'table','anchor','preview','print','template','code','cut'],
+			imageUploadJson : '../kindeditor/jsp/upload_json.jsp' //服务端上传图片处理URI
+		});
+	});
+	
+	function onchecked(id,aname,atid){
+		var chk_name = [];
+		var chk_value = [];
+		var text = "<input type='hidden' name='checkValue' id='text"+id+"' value='"+id+"'>";
+		var namecontent = "<li id='li"+id+"'><a onclick=\"delattr('"+id+"')\">X</a>"+aname+text+"</li>";
+	    var str = "";
+		//判断是否已经被选中
+		$("input[name='checkValue']").each(function(){
+			chk_value.push($(this).val());
+			if($(this).val() == id){
+				str += "false";
+				return false;
+			}
+		});
+		if(str == "false"){
+			return false;
+		}
+		if($.inArray(id, chk_value) > -1){
+			chk_name.push(namecontent);
+		}
+	     $("#aname_"+atid).append(namecontent);
+	     //$("#text"+id).val(chk_value);
+	}
+	
+	function delattr(id){
+		$("#li"+id).remove();
+		$("#text"+id).remove();
+	}
+	
+	function saveGns(){
+		var P_SN = $("#P_SN").val();
+		if(P_SN.replace(/\s/g,'') == ""){
+			layer.msg('商品货号不能为空');
+			return false;
+		}
+		var P_NAME = $("#P_NAME").val();
+		if(P_NAME.replace(/\s/g,'') == ""){
+			layer.msg('商品名称不能为空');
+			return false;
+		}
+		var checkValue = $("input[name='checkValue']");
+		
+		//var checkValue = $("#checkValue").val();
+		if(checkValue.length<=0){
+			layer.msg('商品物料不能为空');
+			return false;
+		}
+		$("#detailInfo").val(editor.html());//获得编辑器的值赋值给隐藏域
+		document.getElementById("productForm").submit();
+	}
+	
+	function init(){
+		if(null != flag && "" != flag){
+			if(flag == "1"){
+				alert('操作成功');
+				location.href="../product/list";
+			}else if(flag =="3"){
+				layer.msg('用户已失效，请重新登录后再修改');
+			}
+		}
+	}
+	
+function imgClick(id) {
+	var url;
+	url = '${imgurl}';
+	new AjaxUpload(id, {
+		action : url,
+		data : {
+			'timestamp' : (new Date()).getTime(),
+			'token' : '',
+			'key' : "文件将被覆盖"
+		},
+		onSubmit : function(file, ext) {
+			if (ext && /^(jpg|JPG|png|PNG|jpeg|JPEG|gif|GIF)$/.test(ext)) {
+				var pic = $("#P_PIC" + id).val();
+				this.setData({
+					'img' : pic
+				});
+				$('#example2 .text').text('正在上传...' + file);
+			} else {
+				alert('错误: 只能上传允许的图片格式，如JPG|PNG|GIF');
+				// cancel upload
+				return false;
+			}
+		},
+		onComplete : function(file, msg) {
+			if (file == null) {
+				alert('你没有上传任何文件或者选择了取消！');
+				return;
+			}
+			//msg(msg);
+			var flag = eval('(' + msg + ')');
+			if (flag.error != "0") {
+				alert("图片上传失败，请重新上传！");
+			} else {
+				$("#" + id).attr("src", "${imgHttp}" + flag.url);
+				$("#P_PIC" + id).val(flag.url);
+			}
+		}
+	});
+}
+	
+//弹出一个iframe层
+function fenpei(at_id,mt_id){
+	$.ajax({
+		url: "../product/queryMatter?atId="+at_id,
+		dataType : 'json',
+		success: function(data){
+			var attr = data.attrList;
+			var chk_value = [];//$("input[name='checkValue']").val();//判断是否已经被选中
+			
+			//alert(chk_value);
+			var content = "<table class=\"table table-bordered table-hover definewidth m10\" >";
+			content+="<thead><tr><th>编号</th><th>物料名称</th><th>价格</th><th>选择</th></tr></thead>";
+			for ( var i = 0; i < attr.length; i++) {
+				content+="<tr>";
+				var aid = attr[i].A_ID;
+				var aname = attr[i].A_NAME;
+				var aprice = attr[i].A_PRICE;
+				content+="<td>"+aid+"</td>";
+				content+="<td>"+aname+"</td>";
+				content+="<td>"+aprice+"</td>";
+				//alert(aid);
+				//alert(chk_value);
+				var str = "false";
+				$("input[name='checkValue']").each(function(){
+					if($(this).val() == aid){
+						str ="true";
+						return false;
+					}
+				});
+				
+				if (str == "true") {
+	        		content+="<td>已选中</td>";
+	        	}else{
+					content+="<td><a href='javascript:;' onclick=\"onchecked('"+aid+"','"+aname+"','"+at_id+"')\">选择</a></td>";
+	        	}
+				content+="</tr>";
+			}
+			content+="</table>";
+			layer.open({
+		        type: 1,
+		        title: '分配物料',
+		        area: ['600px', '360px'],
+		        shadeClose: true, //点击遮罩关闭
+		        content: content
+		    });
+	     }
+	});
+}

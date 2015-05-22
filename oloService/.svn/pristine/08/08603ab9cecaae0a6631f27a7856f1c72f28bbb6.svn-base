@@ -1,0 +1,140 @@
+package com.sys.wx.service;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.amiba.dao.BaseDao;
+import com.platform.common.servlet.RequestParameter;
+
+
+/**
+ * 
+ * 商品属性管理
+ * @author    yl
+ * @version   V1.00 2015-10-15[版本号, YYYY-MM-DD]
+ * @see       [相关类/方法]
+ * @since     TP V1.0R001 [产品/模块版本]
+ */
+@Service
+public class ProductAttrService
+{
+    private static Logger log = Logger.getLogger(ProductAttrService.class);
+
+    @Autowired
+    private BaseDao baseDao;
+
+    /**
+     * 查询分类树形数据
+     * @return
+     */
+    public List<Map<String, Object>> findTypeMenus()
+    {
+        String sql = "";
+        //        sql = "SELECT DISTINCT AT.AT_ID \"id\",AT.AT_PARENT_ID \"pid\","
+        //              + "AT.AT_NAME \"name\",AT.AT_SORT_NUM "
+        //              + "FROM WX_ATTR_TYPE AT ORDER BY CONVERT(AT.AT_SORT_NUM ,SIGNED)";
+        sql = "SELECT wt.AT_ID id,wt.AT_NAME name,wt.MT_ID pid "
+              + "from WX_ATTR_TYPE wt UNION ALL SELECT * FROM ("
+              + "SELECT mt.MT_ID id,mt.MT_NAME name,mt.MT_PARENT_ID pid "
+              + "FROM sys_matter_type mt ORDER BY mt.MT_NUM) a";
+        List<Map<String, Object>> list = baseDao.queryForList(sql);
+        return list;
+    }
+
+    /**
+     * 根据分类查询属性列表
+     * @param request
+     * @return
+     */
+    public Map<String, Object> queryAttrInfoList(HttpServletRequest request)
+    {
+
+        int page = RequestParameter.getIntGreaterThen(request, "page", 0, 0,
+            false);
+        int count = RequestParameter.getInt(request, "count", 10, 1, 20, false);
+        String at_id = RequestParameter.getString(request, "at_id");
+
+        String FNumber = RequestParameter.getString(request, "FNumber");
+        String A_NAME = RequestParameter.getString(request, "A_NAME");
+
+        Map<String, Object> map = null;
+        String sql = "";
+        String sqlWhere = "";
+        if (null != FNumber && !"".equals(FNumber))
+        {
+            sqlWhere += " AND FNUMBER LIKE '%" + FNumber + "%'";
+        }
+        if (null != A_NAME && !"".equals(A_NAME))
+        {
+            sqlWhere += " AND A_NAME LIKE '%" + A_NAME + "%'";
+        }
+        sql = "SELECT WX.* FROM WX_ATTRIBUTE WX where A_TID=?" + sqlWhere;
+
+        map = this.baseDao.pagination(page, count, sql, at_id);
+        return map;
+    }
+
+    /**
+     *  查询未分配类型的属性列表
+     * @param request
+     * @return
+     */
+    public Map<String, Object> queryAttrByNoTypeList(HttpServletRequest request)
+    {
+
+        int page = RequestParameter.getIntGreaterThen(request, "page", 0, 0,
+            false);
+        int count = RequestParameter.getInt(request, "count", 10, 1, 20, false);
+        String FNumber = RequestParameter.getString(request, "FNumber");
+        String A_NAME = RequestParameter.getString(request, "A_NAME");
+        Map<String, Object> map = null;
+        String sql = "";
+        String sqlWhere = "";
+        if (null != FNumber && !"".equals(FNumber))
+        {
+            sqlWhere += " AND FNUMBER LIKE '%" + FNumber + "%'";
+        }
+        if (null != A_NAME && !"".equals(A_NAME))
+        {
+            sqlWhere += " AND A_NAME LIKE '%" + A_NAME + "%'";
+        }
+        sql = "SELECT WX.* FROM WX_ATTRIBUTE WX WHERE A_TID IS NULL" + sqlWhere;
+        map = this.baseDao.pagination(page, count, sql);
+        return map;
+    }
+
+    public Map<String, Object> queryAttrById(HttpServletRequest request)
+    {
+        String a_id = RequestParameter.getString(request, "a_id");
+
+        String sql = "";
+        sql = "SELECT WX.*,(SELECT AT_NAME FROM WX_ATTR_TYPE "
+              + "WHERE AT_ID=WX.A_TID) AT_NAME FROM WX_ATTRIBUTE WX WHERE A_ID=?";
+        Map<String, Object> map = this.baseDao.getUtil().read(sql, a_id);
+        return map;
+    }
+
+    /**
+     * 修改
+     * @param request
+     * @return String
+     */
+    public String update(HttpServletRequest request)
+    {
+        String flag = "0";
+        String a_id = RequestParameter.getString(request, "A_ID");
+        String a_tid = RequestParameter.getString(request, "A_TID");
+        String P_PIC = RequestParameter.getString(request, "P_PIC");
+        String sql = "";
+        sql = "UPDATE WX_ATTRIBUTE SET A_TID=?,A_PIC=? WHERE A_ID=?";
+        this.baseDao.getUtil().execute(sql, a_tid, P_PIC, a_id);
+        flag = "1";
+        return flag;
+    }
+}

@@ -1,0 +1,44 @@
+package com.sys.wx.model;
+/**
+ * 解析菜单返回json 转对象 内层
+ * @author mxy
+ * @date 2014-03-07 
+ */
+public class SubButton {
+  private String name ;
+  private String type ;
+  private String url ;
+  private String [] sub_button ;
+  private String key ;
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getType() {
+		return type;
+	}
+	public void setType(String type) {
+		this.type = type;
+	}
+	public String getUrl() {
+		return url;
+	}
+	public void setUrl(String url) {
+		this.url = url;
+	}
+	public String[] getSub_button() {
+		return sub_button;
+	}
+	public void setSub_button(String[] subButton) {
+		sub_button = subButton;
+	}
+	public String getKey() {
+		return key;
+	}
+	public void setKey(String key) {
+		this.key = key;
+	}
+	  
+}

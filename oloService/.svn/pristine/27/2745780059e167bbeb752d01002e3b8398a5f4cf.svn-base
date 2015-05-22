@@ -1,0 +1,197 @@
+package com.sys.wx.service;
+
+import java.io.UnsupportedEncodingException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.amiba.dao.BaseDao;
+import com.platform.common.servlet.RequestParameter;
+import com.sys.wx.model.Product;
+
+
+@Service
+public class ProductService {
+	
+	@Autowired
+	private BaseDao baseDao;
+
+	public BaseDao getBaseDao() {
+		return baseDao;
+	}
+
+	public void setBaseDao(BaseDao baseDao) {
+		this.baseDao = baseDao;
+	}
+	
+	/**
+	 * 商品消息列表
+	 * @param request
+	 * @return
+	 */
+	public Map<String,Object> queryCompanyList(HttpServletRequest request){
+		
+		try {
+			StringBuffer sb = new StringBuffer(); 
+			//商品名称
+			if(request.getParameter("P_NAME")!=null&&!"".equals(request.getParameter("P_NAME"))){
+				String P_NAME = java.net.URLDecoder.decode(request.getParameter("P_NAME"),"UTF-8");
+				sb.append(" AND P.P_NAME like '%"+P_NAME+"%' ");
+			}
+			//所属分类
+			if(request.getParameter("MT_TYPE")!=null&&!"".equals(request.getParameter("MT_TYPE"))){
+				String MT_TYPE = java.net.URLDecoder.decode(request.getParameter("MT_TYPE"),"UTF-8");
+				sb.append(" AND P.MT_TYPE like '%"+MT_TYPE+"%' ");
+			}
+			//货号
+			if(request.getParameter("P_SN")!=null&&!"".equals(request.getParameter("P_SN"))){
+				String P_SN = java.net.URLDecoder.decode(request.getParameter("P_SN"),"UTF-8");
+				sb.append(" AND P.P_SN like '%"+P_SN+"%' ");
+			}
+			int page = RequestParameter.getIntGreaterThen(request, "page", 0, 0,false);
+			int count = RequestParameter.getInt(request, "count", 10, 1, 20,false);
+			String sql = "SELECT P.*,MT.MT_NAME FROM WX_PRODUCT P "
+					+ " LEFT JOIN SYS_MATTER_TYPE MT ON MT.MT_ID = P.MT_TYPE WHERE 1=1 ";
+					if(sb!=null&&!"".equals(sb)){
+						sql+=sb.toString();
+					}
+			       sql += " ORDER BY P.P_TIME DESC";
+			Map<String,Object> map =  baseDao.pagination(page, count, sql);
+			return map;
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	
+	/**
+	 * 保存新增
+	 * @param request
+	 * @return
+	 */
+	public Integer saveCompany(HttpServletRequest request){
+		//封装对象
+		Product p = this.getProduct(request);
+		//插入
+		String sql = "INSERT INTO WX_PRODUCT(P_SN,P_NAME,MT_TYPE,P_PRICE,P_INTRO,P_REMARK,"
+				+ "P_TIME,P_PIC,P_ATTRIBUTE) VALUES (?,?,?,?,?,?,?,?,?)";
+		int count = baseDao.getUtil().execute(sql,p.getpSn(),p.getpName(),p.getMtType(),p.getpPrice(),p.getpIntro(),
+				p.getpRemark(),new Date(),p.getpPic(),p.getpAttribute());
+		return count;
+	}
+	
+	public int updateCompany(HttpServletRequest request){
+		String id = request.getParameter("P_ID");
+		String sql = "UPDATE WX_PRODUCT SET P_SN=?,P_NAME=?,MT_TYPE=?,P_PRICE=?,"
+				+ "P_INTRO=?,P_REMARK=?,P_PIC=?,P_ATTRIBUTE=? WHERE P_ID=?";
+		//封装对象
+		Product p = this.getProduct(request);
+		//修改
+		int count = baseDao.getUtil().execute(sql,p.getpSn(),p.getpName(),p.getMtType(),p.getpPrice(),p.getpIntro(),
+				p.getpRemark(),p.getpPic(),p.getpAttribute(),id);
+		return count;
+	}
+	
+	public Map<String,Object> queryCompany(HttpServletRequest request){
+		String id = request.getParameter("id");
+		String sql = "";
+		sql = "SELECT P_ID,P_NAME,P.MT_TYPE,P_SN,P_PRICE,P_INTRO,P_PIC,P_ATTRIBUTE,P_REMARK,MT.MT_NAME " +
+				" FROM WX_PRODUCT P"
+				+ " LEFT JOIN SYS_MATTER_TYPE MT ON MT.MT_ID = P.MT_TYPE "
+				+ " WHERE P_ID = ? ";
+		List<Map<String,Object>> listMap = baseDao.queryForList(sql, id);
+		Map<String,Object> mapData = null;
+		if(null != listMap && listMap.size()>0){
+			
+			for(Map<String,Object> map:listMap){
+				mapData = new HashMap<String,Object>();
+				mapData.put("P_ID", map.get("P_ID"));
+				mapData.put("P_NAME", map.get("P_NAME"));
+				mapData.put("MT_TYPE", map.get("MT_TYPE"));
+				mapData.put("P_SN", map.get("P_SN"));
+				mapData.put("P_PRICE", map.get("P_PRICE"));
+				mapData.put("P_INTRO", map.get("P_INTRO"));
+				mapData.put("P_PIC", map.get("P_PIC"));
+				mapData.put("P_REMARK", map.get("P_REMARK"));
+				mapData.put("MT_NAME", map.get("MT_NAME"));
+				mapData.put("P_ATTRIBUTE", map.get("P_ATTRIBUTE"));
+			}
+		}
+		return mapData;
+	}
+	
+	
+	/**
+	 * 删除
+	 * @param request
+	 * @return
+	 */
+	public String deleteCompany(HttpServletRequest request){
+		Map<String,Object> userMap = (Map<String, Object>) request.getSession().getAttribute("user");
+		String flag = "0";
+		String id = request.getParameter("id");
+		String sql = "";
+		sql = "DELETE FROM WX_PRODUCT WHERE P_ID=?";
+		baseDao.execute(sql, id);
+		sql = "INSERT INTO SYS_DELETE(MS,LR_RY,LR_SJ) VALUES (?,?,?)";
+		baseDao.execute(sql, "模块:用户管理"+id,userMap.get("S_ID"),new Date());
+		flag = "1";
+		return flag;
+	}
+	
+	/**
+	 * 封装产品对象
+	 * @param request
+	 * @return
+	 */
+	public Product getProduct(HttpServletRequest request){
+		String P_SN = request.getParameter("P_SN");
+		String P_NAME = request.getParameter("P_NAME");
+		String MT_TYPE = request.getParameter("MT_TYPE");
+		String P_PRICE = request.getParameter("P_PRICE");
+		String P_INTRO = request.getParameter("detailInfo");
+		String P_REMARK = request.getParameter("P_REMARK");
+		String[] P_PIC = request.getParameterValues("P_PIC");
+		String P_ATTRIBUTE = request.getParameter("checkValue");
+		/* json处理  */
+		/*
+		if(null != P_ATTRIBUTE && !"".equals(P_ATTRIBUTE)){
+			String attr[] = P_ATTRIBUTE.split(",");
+			List attrList = new ArrayList();
+			for (int i = 0; i < attr.length; i++) {
+				String attrSql = "select * from wx_attribute where A_ID=?";
+				Map map = baseDao.queryForMap(attrSql, attr[i]);
+				attrList.add(map);
+			}
+			P_ATTRIBUTE = CommonUtil.toJSONString(attrList);
+		}
+		 */
+		Product p = new Product();
+		p.setpSn(P_SN);
+		p.setpName(P_NAME);
+		if(null != MT_TYPE && !"".equals(MT_TYPE)){
+			p.setMtType(Integer.parseInt(MT_TYPE));
+		}
+		if(null != P_PRICE && !"".equals(P_PRICE)){
+			p.setpPrice(Double.valueOf(P_PRICE));
+		}
+		p.setpIntro(P_INTRO);
+		p.setpRemark(P_REMARK);
+		String picTemp = "";
+		if(null != P_PIC && P_PIC.length > 0){
+			for (int i = 0; i < P_PIC.length; i++) {
+				picTemp += P_PIC[i] + ",";
+			}
+		}
+		p.setpPic(picTemp);
+		p.setpAttribute(P_ATTRIBUTE);
+		return p;
+	}
+}

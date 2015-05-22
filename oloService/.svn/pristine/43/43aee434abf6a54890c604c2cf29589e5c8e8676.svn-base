@@ -1,0 +1,62 @@
+package com.sys.wx.service;
+
+import java.io.UnsupportedEncodingException;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.amiba.dao.BaseDao;
+import com.platform.common.servlet.RequestParameter;
+
+@Service
+public class CodeService {
+
+	
+	@Autowired
+	private BaseDao baseDao;
+
+	public BaseDao getBaseDao() {
+		return baseDao;
+	}
+
+	public void setBaseDao(BaseDao baseDao) {
+		this.baseDao = baseDao;
+	}
+	
+	
+	/**
+	 * 返回码列表
+	 * @param request
+	 * @return
+	 */
+	public Map<String,Object> queryCodeList(HttpServletRequest request){
+		try {
+			StringBuffer sb = new StringBuffer(); 
+			//返回码
+			if(request.getParameter("codenum")!=null&&!"".equals(request.getParameter("codenum"))){
+				String codenum = java.net.URLDecoder.decode(request.getParameter("codenum"),"UTF-8");
+				sb.append(" AND CODENUM like '%"+codenum+"%' ");
+			}
+			//说明
+			if(request.getParameter("remark")!=null&&!"".equals(request.getParameter("remark"))){
+				String remark = java.net.URLDecoder.decode(request.getParameter("remark"),"UTF-8");
+				sb.append(" AND REMARK like '%"+remark+"%' ");
+			}
+			int page = RequestParameter.getIntGreaterThen(request, "page", 0, 0,false);
+			int count = RequestParameter.getInt(request, "count", 10, 1, 20,false);
+			String sql = "SELECT * FROM WX_RECODE WHERE 1=1 ";
+					if(sb!=null&&!"".equals(sb)){
+						sql+=sb.toString();
+					}
+					sql+= " ORDER BY ID ASC";
+			Map<String,Object> map =  baseDao.pagination(page, count, sql);
+			return map;
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+}

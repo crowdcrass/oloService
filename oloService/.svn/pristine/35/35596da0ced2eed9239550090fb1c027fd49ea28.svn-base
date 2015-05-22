@@ -1,0 +1,53 @@
+package com.sys.entity.order;
+
+
+/**
+ * 
+ * @author ZSL
+ *
+ */
+public class ResponseStatus {
+	private String ERRORCODE;
+	private String MESSAGE;
+	private String STACKTRACE;
+	private boolean ISSUCCESS;
+	private Error ERRORS;
+	public String getERRORCODE() {
+		return ERRORCODE;
+	}
+	public void setERRORCODE(String eRRORCODE) {
+		ERRORCODE = eRRORCODE;
+	}
+	public String getMESSAGE() {
+		return MESSAGE;
+	}
+	public void setMESSAGE(String mESSAGE) {
+		MESSAGE = mESSAGE;
+	}
+	public String getSTACKTRACE() {
+		return STACKTRACE;
+	}
+	public void setSTACKTRACE(String sTACKTRACE) {
+		STACKTRACE = sTACKTRACE;
+	}
+	public boolean isISSUCCESS() {
+		return ISSUCCESS;
+	}
+	public void setISSUCCESS(boolean iSSUCCESS) {
+		ISSUCCESS = iSSUCCESS;
+	}
+	public Error getERRORS() {
+		return ERRORS;
+	}
+	public void setERRORS(Error eRRORS) {
+		ERRORS = eRRORS;
+	}
+	
+	@Override
+	public String toString() {
+		return "ResponseStatus [ERRORCODE=" + ERRORCODE + ", MESSAGE=" + MESSAGE
+        + ", STACKTRACE=" + STACKTRACE 
+        + ", ISSUCCESS=" + ISSUCCESS 
+        + ", ERRORS=" + ERRORS +"]";
+	}
+}

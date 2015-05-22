@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<service name="oloWebService">
+<!-- 通过ServiceObjectSupplier参数指定SpringServletContextObjectSupplier类来获得Spring的ApplicationContext对象 -->
+    <parameter name="ServiceObjectSupplier">
+        org.apache.axis2.extensions.spring.receivers.SpringServletContextObjectSupplier
+    </parameter>
+    <parameter name="SpringBeanName">
+        webServiceForERP
+    </parameter>
+    <!-- 全局 MEP ，默认发布所有public方法-->
+    <messageReceivers>  
+       <messageReceiver mep="http://www.w3.org/2004/08/wsdl/in-out" 
+       class="org.apache.axis2.rpc.receivers.RPCMessageReceiver"/>  
+   </messageReceivers>
+</service>

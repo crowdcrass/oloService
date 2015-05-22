@@ -1,0 +1,86 @@
+package com.sys.wx.web;
+
+import java.io.PrintWriter;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import com.sys.wx.model.AttributeModel;
+import com.sys.wx.service.ProAttributeService;
+
+
+@Controller
+@RequestMapping("/attribute")
+public class ProAttributeController
+{
+    private static Logger log = Logger.getLogger(ProAttributeController.class);
+
+    @Autowired
+    private ProAttributeService proAttributeService;
+
+    @RequestMapping("/list")
+    public String list(HttpServletRequest request, AttributeModel m)
+    {
+        Map<String, Object> attrMap = proAttributeService.get(request);
+        request.setAttribute("attrMap", attrMap);
+        String typeId = request.getParameter("a_tid");
+        String attrName = request.getParameter("at_name");
+        request.setAttribute("typeId", typeId);
+        request.setAttribute("attrName", attrName);
+        return "/wx/attribute/attributeList";
+    }
+
+    @RequestMapping("/add")
+    public String add(HttpServletRequest request, AttributeModel m)
+    {
+        if ("GET".equalsIgnoreCase(request.getMethod()))
+        {
+            request.setAttribute("m", m);
+            return "/wx/attribute/attributeAdd";
+        }
+        else
+        {
+            proAttributeService.saveOrUpdate(m);
+            setMessage(request, "保存成功");
+            return list(request, m);
+        }
+    }
+
+    @RequestMapping("/del")
+    public String delete(HttpServletRequest request, AttributeModel m)
+    {
+        PrintWriter out = null;
+        request.setAttribute("m", m);
+        proAttributeService.delete(m.getA_id());
+        setMessage(request, "删除成功");
+        return list(request, m);
+    }
+
+    @RequestMapping("/edit")
+    public String edit(HttpServletRequest request, AttributeModel m)
+    {
+        if ("GET".equalsIgnoreCase(request.getMethod()))
+        {
+            Map map = proAttributeService.get(m.getA_id());
+            request.setAttribute("attr", map);
+            return "/wx/attribute/attributeAdd";
+        }
+        else
+        {
+            proAttributeService.saveOrUpdate(m);
+            setMessage(request, "修改成功");
+            return list(request, m);
+        }
+    }
+
+    private void setMessage(HttpServletRequest request, String msg)
+    {
+        String message = "<script>alert('" + msg + "')</script>";
+        request.setAttribute("message", message);
+    }
+}

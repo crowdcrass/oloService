@@ -1,0 +1,181 @@
+package com.amiba.app.service;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.amiba.dao.BaseDao;
+import com.platform.common.servlet.RequestParameter;
+
+
+/**
+ * 
+ * @author zfj
+ *
+ */
+@Service
+public class ProductTypeService4App
+{
+
+    private static Log log = LogFactory.getLog(ProductTypeService4App.class);
+
+    @Autowired
+    private BaseDao baseDao;
+
+    /**
+     * 查找所有物品
+     * @return List<Map<String,Object>>
+     */
+    public List<Map<String, Object>> findAllProduct()
+    {
+        log.info("findAllProduct");
+        String sql = "";
+        //		sql = " SELECT MT_ID id, MT_NAME name, MT_PARENT_ID pid FROM SYS_MATTER_TYPE ORDER BY ID ";
+        //		List<Map<String,Object>> list = baseDao.queryForList(sql);
+
+        sql = " SELECT * FROM SYS_MATTER_TYPE WHERE MT_PARENT_ID=0 ";
+        List<Map<String, Object>> list = this.baseDao.getUtil().query(sql);
+        if (null != list && list.size() > 0)
+        {
+            for (Map<String, Object> map : list)
+            {
+                String mtId = map.get("MT_ID").toString();
+                sql = " SELECT * FROM SYS_MATTER_TYPE WHERE MT_PARENT_ID=? ";
+                List<Map<String, Object>> list2 = this.baseDao.getUtil().query(
+                    sql, mtId);
+                if (null != list2 && list2.size() > 0)
+                {
+                    for (Map<String, Object> map1 : list2)
+                    {
+                        String mtIdChildSecId = map1.get("MT_ID").toString();
+                        sql = " SELECT * FROM SYS_MATTER_TYPE WHERE MT_PARENT_ID=? ";
+                        List<Map<String, Object>> list3 = this.baseDao.getUtil().query(
+                            sql, mtIdChildSecId);
+                        if (null != list3 && list3.size() > 0)
+                        {
+                            for (Map<String, Object> map2 : list3)
+                            {
+                                String mtIdChildThirdId = map2.get("MT_ID").toString();
+                                sql = "SELECT * FROM SYS_MATTER_TYPE WHERE MT_PARENT_ID=?";
+                                List<Map<String, Object>> list4 = this.baseDao.getUtil().query(
+                                    sql, mtIdChildThirdId);
+                                map2.put("fourList", list4);
+                            }
+                        }
+                        map1.put("thirdList", list3);
+                    }
+
+                }
+                map.put("secList", list2);
+            }
+        }
+        return list;
+    }
+
+    /**
+     * 根据物品节点查询列表详细信息
+     * @param request
+     * @return List<Map<String,Object>>
+     */
+    public List<Map<String, Object>> queryProductTreeNodeList(HttpServletRequest request)
+    {
+        log.info("queryProductTreeNodeList");
+        String id = request.getParameter("id");
+        String sql = "";
+        List<Map<String, Object>> map = null;
+        if (id != null && !"".equals(id))
+        {
+            sql = "SELECT m1.*,m2.MT_NAME pname FROM SYS_MATTER_TYPE m1 "
+                  + "LEFT JOIN SYS_MATTER_TYPE m2 ON m2.MT_ID = m1.MT_PARENT_ID "
+                  + "WHERE m1.MT_ID IN(SELECT m1.MT_ID FROM SYS_MATTER_TYPE m1 "
+                  + "LEFT JOIN SYS_MATTER_TYPE m2 ON m2.MT_ID = m1.MT_PARENT_ID "
+                  + "WHERE m1.MT_ID=? OR m1.MT_PARENT_ID = ?) "
+                  + "OR m1.MT_PARENT_ID IN(SELECT m1.MT_ID FROM SYS_MATTER_TYPE m1 "
+                  + "LEFT JOIN SYS_MATTER_TYPE m2 ON m2.MT_ID = m1.MT_PARENT_ID "
+                  + "WHERE m1.MT_ID=? OR m1.MT_PARENT_ID = ?)";
+            map = baseDao.queryForList(sql, id, id, id, id);
+        }
+        else
+        {
+            sql = "SELECT m1.*,m2.MT_NAME pname FROM SYS_MATTER_TYPE m1 "
+                  + "LEFT JOIN SYS_MATTER_TYPE m2 ON m2.MT_ID = m1.MT_PARENT_ID "
+                  + "WHERE m1.MT_ID IN(SELECT m1.MT_ID FROM SYS_MATTER_TYPE m1 "
+                  + "LEFT JOIN SYS_MATTER_TYPE m2 ON m2.MT_ID = m1.MT_PARENT_ID "
+                  + " ) "
+                  + "OR m1.MT_PARENT_ID IN(SELECT m1.MT_ID FROM SYS_MATTER_TYPE m1 "
+                  + "LEFT JOIN SYS_MATTER_TYPE m2 ON m2.MT_ID = m1.MT_PARENT_ID "
+                  + " )";
+            map = baseDao.queryForList(sql);
+        }
+        return map;
+    }
+
+    /**
+     * 根据类别节点查询所有物品
+     * @param request
+     * @return List<Map<String,Object>>
+     */
+    public List<Map<String, Object>> queryProductsByNode(HttpServletRequest request)
+    {
+        log.info("queryProductsByNode");
+        String id = request.getParameter("id");
+        String sql = " SELECT P_ID, P_NAME, P_INTRO, P_PRICE, P_PIC FROM "
+                     + " WX_PRODUCT WHERE MT_TYPE = ? ORDER BY P_ID DESC ";
+        List<Map<String, Object>> map = null;
+        map = baseDao.queryForList(sql, id);
+        return map;
+    }
+
+    /**
+     * 根据物品名称模糊查询
+     * @param request
+     * @return List<Map<String,Object>>
+     */
+    public List<Map<String, Object>> findProductByNameBlur(HttpServletRequest request)
+    {
+        log.info("findProductByNameBlur");
+        String p_name = RequestParameter.getString(request, "p_name");
+        String sql = " SELECT * FROM WX_PRODUCT WHERE P_NAME LIKE ? ORDER BY P_ID DESC ";
+        return baseDao.queryForList(sql, "%" + p_name + "%");
+    }
+
+    /**
+     * 模糊查询物品〉
+     * @param request
+     * @return List<Map<String,Object>>
+     */
+    public List<Map<String, Object>> findProductBlur(HttpServletRequest request)
+    {
+        log.info("findProductBlur");
+        String condition = RequestParameter.getString(request, "condition");
+        String sql = " SELECT * FROM WX_PRODUCT WHERE 1 = 1";
+        if (null != condition && !"".equals(condition))
+        {
+            sql += " AND P_NAME LIKE '%" + condition + "%'"
+                   + " OR P_SN LIKE '%" + condition + "%'"
+                   + " OR P_INTRO LIKE '%" + condition
+                   + "%' ORDER BY P_ID DESC ";
+        }
+        return baseDao.queryForList(sql);
+    }
+
+    /**
+     * 根据物品ID查询商品
+     * @param request
+     * @return Map<String,Object>
+     */
+    public Map<String, Object> findProductById(HttpServletRequest request)
+    {
+        log.info("findProductById");
+        int p_id = RequestParameter.getInt(request, "p_id");
+        String sql = " SELECT p.P_ID, p.P_NAME, p.P_INTRO, p.P_PRICE, p.P_PIC, smt.MT_NAME FROM WX_PRODUCT p LEFT JOIN SYS_MATTER_TYPE smt on p.MT_TYPE = smt.MT_ID where p.P_ID = ? ";
+        return baseDao.queryForMap(sql, p_id);
+    }
+
+}

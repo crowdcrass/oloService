@@ -1,0 +1,60 @@
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <base href="<%=basePath%>">
+    
+	<title>OLO数据字典</title>
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="expires" content="0">    
+	<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+	<meta http-equiv="description" content="This is my page">
+	<link rel="shortcut icon" href="<%=basePath%>images/logo.png" type="image/x-icon" />
+    <link rel="icon" href="<%=basePath%>images/logo.png" type="image/x-icon" />
+	<!--
+	<link rel="stylesheet" type="text/css" href="styles.css">
+	-->
+  </head>
+  
+  <body>
+  	
+  	<div height="100%" width="100%" style="text-align: center;">
+	  	<h2 style="color:red;">OLO数据字典</h2>
+	  	<c:if test="${not empty list}">
+	  		<c:forEach var="listMap" items="${list}">
+	  			<table width="570px" border="1px" bordercolor="#000000" cellspacing="0px" align="center" style="border-collapse:collapse;">
+			  		<tr style="background-color: #BFBFBF;">
+			  			<td width="260px" colspan="2"><b>表名：</b>${listMap.TABLE_NAME }</td>
+			  			<td width="310px" colspan="2"><b>${listMap.TABLE_COMMENT }</b></td>
+			  		</tr>
+			  		<tr>
+			  			<td width="150px" style="text-align:center;font-weight: bold;">字段名</td>
+			  			<td width="110px" style="text-align:center;font-weight: bold;">数据类型</td>
+			  			<td width="120px" style="text-align:center;font-weight: bold;">允许NULL值</td>
+			  			<td width="190px" style="text-align:center;font-weight: bold;">说明</td>
+			  		</tr>
+			  		<c:if test="${not empty listMap.TABLECOLUMNS}">
+			  			<c:forEach var="columnMap" items="${listMap.TABLECOLUMNS}">
+			  				<tr>
+					  			<td>${columnMap.COLUMN_NAME }</td>
+					  			<td>${columnMap.COLUMN_TYPE }</td>
+					  			<td>${columnMap.IS_NULLABLE eq 'YES' ?'允许':'不允许'}</td>
+					  			<td>${columnMap.COLUMN_COMMENT }</td>
+					  		</tr>
+			  			</c:forEach>
+			  		</c:if>
+			  	</table>
+			  	<br />
+			  	<br />
+	  		</c:forEach>
+	  	</c:if>
+  	</div>
+  </body>
+</html>

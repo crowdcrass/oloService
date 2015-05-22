@@ -1,0 +1,118 @@
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %> 
+
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>随手记管理</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap-responsive.css" />
+    <link rel="stylesheet" type="text/css" href="../css/style.css" />
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    <script type="text/javascript" src="../js/jquery.sorted.js"></script>
+    <script type="text/javascript" src="../js/bootstrap.js"></script>
+    <script type="text/javascript" src="../js/ckform.js"></script>
+    <script type="text/javascript" src="../js/common.js"></script>
+
+    <style type="text/css">
+        body {
+            padding-bottom: 40px;
+        }
+        .sidebar-nav {
+            padding: 9px 0;
+        }
+
+        @media (max-width: 980px) {
+            /* Enable use of floated navbar text */
+            .navbar-text.pull-right {
+                float: none;
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+        }
+    </style>
+    
+    <script type="text/javascript">
+	//分页
+	function loadpage(currpage){
+		var totalpage =document.getElementById("totalpage").value;
+		if(((currpage+1)*1)<1){
+			alert('现在是第一页');
+			return;
+		}else if((currpage*1)>(totalpage*1)){
+			alert('现在是最后一页');
+			return;
+		}else if((currpage*1)==(totalpage*1)){
+			alert('现在是最后一页');
+			return;
+		}
+		location.href='<%=basePath%>customerInfoAction/index?page='+currpage+"&CI_CUS_NAME=${CI_CUS_NAME }&CI_CUS_PHONE=${CI_CUS_PHONE}&CI_CUS_QQ=${CI_CUS_QQ}&CI_CUS_EMAIL=${CI_CUS_EMAIL}&STORE=${STORE}";
+	}
+</script>
+</head>
+<body>
+<form class="form-inline definewidth m20" action="<%=basePath%>customerInfoAction/index" method="get">  
+    客户姓名：<input type="text" class="ipt" name="CI_CUS_NAME" id="CI_CUS_NAME" value="${CI_CUS_NAME }" style="margin-bottom: 0px;">
+    联系电话：<input type="text" class="ipt" name="CI_CUS_PHONE" id="CI_CUS_PHONE" value="${CI_CUS_PHONE }" style="margin-bottom: 0px;">
+ QQ：<input type="text" class="ipt" name="CI_CUS_QQ" id="CI_CUS_QQ" value="${CI_CUS_QQ }" style="margin-bottom: 0px;">
+ Email：<input type="text" class="ipt" name="CI_CUS_EMAIL" id="CI_CUS_EMAIL" value="${CI_CUS_EMAIL }" style="margin-bottom: 0px;"><br />
+ 所属门店：<select name="STORE" id="STORE">
+ 			<option value="">--请选择--</option>
+ 			<c:if test="${not empty storeList }">
+ 				<c:forEach var="storeMap" items="${storeList }">
+ 					<option value="${storeMap.S_ID }" ${storeMap.S_ID eq STORE ?'selected':'' }>${storeMap.S_NAME }</option>
+ 				</c:forEach>
+ 			</c:if>
+		</select>
+       	<button type="submit" class="btn btn-primary" >查询</button> 
+</form>
+<table class="table table-bordered table-hover definewidth m10" >
+    <thead>
+    <tr>
+        <th width="5%">序号</th>
+        <th width="15%">客户姓名</th>
+        <th width="15%">联系电话</th>
+        <th width="15%">QQ</th>
+        <th width="15%">Email</th>
+        <th width="20%">所属门店</th>
+        <th width="*">操作</th>
+    </tr>
+    </thead>
+    <c:if test="${not empty customerInfoMap}">
+    	<c:forEach  var="resultList" items="${customerInfoMap.result}" varStatus="status">
+       	<tr>
+			<td>${status.index+1 }</td>
+			<td>${resultList.CI_CUS_NAME }</td>
+			<td>${resultList.CI_CUS_PHONE }</td>
+			<td>${resultList.CI_CUS_QQ }</td>
+			<td>${resultList.CI_CUS_EMAIL }</td>
+			<td>${resultList.S_NAME }</td>
+			<td><a href="<%=basePath%>customerInfoAction/show?CI_ID=${resultList.CI_ID}">查看</a></td>
+		</tr>
+     	</c:forEach>
+     </c:if>
+	     </table>
+	     <div class="pagediv">
+			<div class="pageleft " style="float: left;">
+				<a href="javascript:loadpage(0)">首页</a>
+				<a href="javascript:loadpage('${customerInfoMap.page - 1}')">上一页</a>
+				<a href="javascript:loadpage('${customerInfoMap.page + 1}')">下一页</a>
+				<a href="javascript:loadpage('${customerInfoMap.pageCount-1}')">尾页</a>
+			</div>
+			<div class="pageright">
+				当前显示第${customerInfoMap.page+1}页，共有${customerInfoMap.pageCount}页
+			</div>
+		</div>
+		<input type="hidden" id="totalpage" name="totalpage" value="${customerInfoMap.pageCount}">
+		<div class="clr"></div>
+	</body>
+</html>
+<script>
+   
+</script>

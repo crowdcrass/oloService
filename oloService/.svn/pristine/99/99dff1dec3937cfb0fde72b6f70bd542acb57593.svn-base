@@ -1,0 +1,94 @@
+package com.amiba.app.service;
+
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.amiba.dao.BaseDao;
+import com.platform.common.servlet.RequestParameter;
+import com.platform.common.servlet.WorkException;
+
+
+/**
+ * 
+ * @author zfj
+ *
+ */
+@Service
+public class MySSJRecordService4App
+{
+
+    private static Log log = LogFactory.getLog(MySSJRecordService4App.class);
+
+    @Autowired
+    private BaseDao baseDao;
+
+    /**
+     * 我的随手记历史
+     * @param request
+     * @return Map<String,Object>
+     */
+    public Map<String, Object> findMyRecords(HttpServletRequest request)
+    {
+        log.info("findMyRecords");
+        String e_phone = RequestParameter.getString(request, "e_phone");
+        String sql = " SELECT E_ID FROM W_EMPLOYEE WHERE E_PHONE = ? ";
+        Map<String, Object> map = baseDao.queryForMap(sql, e_phone);
+        if (null != map && !"".equals(map))
+        {
+            int page = RequestParameter.getIntGreaterThen(request, "page", 0,
+                0, false);
+            int count = RequestParameter.getInt(request, "count", 10, 1, 20,
+                false);
+            sql = " SELECT * FROM W_CUSTOMER_INFO WHERE CI_CREATE_USER = ? ORDER BY CI_ID DESC ";
+            Map<String, Object> map2 = baseDao.pagination(page, count, sql,
+                map.get("E_ID"));
+            return map2;
+        }
+        else
+        {
+            throw new WorkException(13, "请先登录!");
+        }
+    }
+
+    /**
+     * 模糊查询随手记历史
+     * @param request
+     * @return Map<String,Object>
+     */
+    public Map<String, Object> findRecordBlur(HttpServletRequest request)
+    {
+        log.info("findRecordBlur");
+        String e_phone = RequestParameter.getString(request, "e_phone");
+        String condition = RequestParameter.getString(request, "condition");
+        String sql = " SELECT E_ID FROM W_EMPLOYEE WHERE E_PHONE = ? ";
+        Map<String, Object> map = baseDao.queryForMap(sql, e_phone);
+        if (null != map && !"".equals(map))
+        {
+            int page = RequestParameter.getIntGreaterThen(request, "page", 0,
+                0, false);
+            int count = RequestParameter.getInt(request, "count", 10, 1, 20,
+                false);
+            sql = " SELECT * FROM W_CUSTOMER_INFO WHERE CI_CREATE_USER = ? ";
+            if (null != condition && !"".equals(condition))
+            {
+                sql += " AND CI_ONO LIKE '%" + condition + "%'"
+                       + " OR CI_CUS_NAME LIKE '%" + condition + "%'"
+                       + " OR CI_BUY_INTENTION LIKE '%" + condition + "%'"
+                       + " ORDER BY CI_ID desc ";
+            }
+            Map<String, Object> map2 = baseDao.pagination(page, count, sql,
+                map.get("E_ID"));
+            return map2;
+        }
+        else
+        {
+            throw new WorkException(13, "请先登录!");
+        }
+    }
+}

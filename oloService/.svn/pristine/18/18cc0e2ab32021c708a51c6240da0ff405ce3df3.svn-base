@@ -1,0 +1,178 @@
+package com.sys.index.service;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.amiba.dao.BaseDao;
+import com.platform.common.servlet.SessionAttribute;
+
+
+/**
+ * 菜单树维护
+ * @author yl
+ *
+ */
+@Service
+public class XtgnsService
+{
+
+    @Autowired
+    private BaseDao baseDao;
+
+    /**
+     * 查询树形数据
+     * @return
+     */
+    public List<Map<String, Object>> findMenus()
+    {
+        String sql = "";
+        sql = "SELECT DISTINCT GNS.GN_DM \"id\",GNS.SJGN_DM \"pid\","
+              + "GNS.MC \"name\",IFNULL(GNS.TARGET, '') \"file\",gns.cd_xh,mp_id "
+              + "FROM SYS_GNS GNS ORDER BY CONVERT(GNS.CD_XH ,SIGNED)";
+        List<Map<String, Object>> list = baseDao.queryForList(sql);
+        return list;
+    }
+
+    /**
+     * 查询节点详细信息
+     * @param request
+     * @return
+     */
+    public Map<String, Object> queryTreeNode(HttpServletRequest request)
+    {
+        String id = request.getParameter("id");
+        String sql = "";
+        sql = "SELECT S.*,(SELECT MP_URL FROM SYS_MODULE_PIC "
+              + "WHERE MP_ID=S.MP_ID) MP_URL FROM SYS_GNS S WHERE GN_DM=?";
+        Map<String, Object> map = baseDao.queryForMap(sql, id);
+        return map;
+    }
+
+    public List<Map<String, Object>> queryModulePic()
+    {
+        String sql = "SELECT * FROM SYS_MODULE_PIC";
+        return this.baseDao.getUtil().query(sql);
+    }
+
+    /**
+     * 修改
+     * @param request
+     * @return
+     */
+    public String edit(HttpServletRequest request)
+    {
+        String flag = "0";
+        String gn_dm = request.getParameter("GN_DM");
+        String mc = request.getParameter("MC");
+        String mc_j = request.getParameter("MC_J");
+        String sjgn_dm = request.getParameter("SJGN_DM");
+        String cd_xh = request.getParameter("CD_XH");
+        String target = request.getParameter("TARGET");
+        String module_pic = request.getParameter("module_pic");
+
+        if (null == request.getSession().getAttribute("user")
+            || "".equals(request.getSession().getAttribute("user")))
+        {
+            return "3";
+        }
+        Map<String, Object> userMap = SessionAttribute.get(
+            request.getSession(), "user");
+
+        if (null == gn_dm || "".equals(gn_dm))
+        {
+            return "gn_dm";
+        }
+        if (null == mc || "".equals(mc))
+        {
+            return "mc";
+        }
+        if (null == sjgn_dm || "".equals(sjgn_dm))
+        {
+            sjgn_dm = "0";
+        }
+        String sql = "";
+        sql = "UPDATE SYS_GNS SET MC=?,MC_J=?,SJGN_DM=?,CD_XH=?,TARGET=?,XG_RY=?,XG_SJ=?,MP_ID=?"
+              + " WHERE GN_DM=?";
+        baseDao.getUtil().execute(sql, mc, mc_j, sjgn_dm, cd_xh, target,
+            userMap.get("S_ID"), new Date(), module_pic, gn_dm);
+        flag = "1";
+        return flag;
+    }
+
+    /**
+     * 删除
+     * @param request
+     * @return
+     */
+    public String deleteMenu(HttpServletRequest request)
+    {
+        String flag = "0";
+        String gn_dm = request.getParameter("gn_dm");
+
+        if (null == request.getSession().getAttribute("user")
+            || "".equals(request.getSession().getAttribute("user")))
+        {
+            return "3";
+        }
+        Map<String, Object> userMap = SessionAttribute.get(
+            request.getSession(), "user");
+
+        String sql = "";
+        sql = "DELETE FROM SYS_GNS WHERE GN_DM=?";
+        baseDao.execute(sql, gn_dm);
+
+        sql = "INSERT INTO SYS_DELETE(MS,LR_RY,LR_SJ) VALUES (?,?,?)";
+        baseDao.execute(sql, "模块:功能树维护" + gn_dm, userMap.get("S_ID"),
+            new Date());
+
+        flag = "1";
+        return flag;
+    }
+
+    /**
+     * 增加
+     * @param request
+     * @return
+     */
+    public String add(HttpServletRequest request)
+    {
+        String flag = "0";
+        String mc = request.getParameter("MC");
+        String mc_j = request.getParameter("MC_J");
+        String sjgn_dm = request.getParameter("SJGN_DM");
+        String cd_xh = request.getParameter("CD_XH");
+        String target = request.getParameter("TARGET");
+        String module_pic = request.getParameter("module_pic");
+
+        if (null == request.getSession().getAttribute("user")
+            || "".equals(request.getSession().getAttribute("user")))
+        {
+            return "3";
+        }
+        Map<String, Object> userMap = SessionAttribute.get(
+            request.getSession(), "user");
+
+        if (null == mc || "".equals(mc))
+        {
+            return "mc";
+        }
+        if (null == sjgn_dm || "".equals(sjgn_dm))
+        {
+            sjgn_dm = "0";
+        }
+        String sql = "";
+        sql = "SELECT IFNULL(MAX(GN_DM),1)+1 AS GN_DM FROM SYS_GNS";
+        String gn_dm = baseDao.getUtil().getString(sql);
+        sql = "INSERT INTO SYS_GNS(GN_DM,MC,MC_J,SJGN_DM,CD_XH,TARGET,LR_RY,LR_SJ,MP_ID) VALUES (?,?,?,?,?,?,?,?,?)";
+        baseDao.getUtil().execute(sql, gn_dm, mc, mc_j, sjgn_dm, cd_xh, target,
+            userMap.get("S_ID"), new Date(), module_pic);
+        flag = "1";
+        return flag;
+    }
+}

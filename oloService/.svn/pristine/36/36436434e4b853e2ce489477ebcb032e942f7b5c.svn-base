@@ -1,0 +1,136 @@
+package com.sys.wx.web;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import net.sf.json.JSONObject;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.platform.common.data.CommonUtil;
+import com.sys.wx.core.base.WXConfig;
+import com.sys.wx.core.util.WeixinUtil;
+import com.sys.wx.model.Button;
+import com.sys.wx.model.Menu;
+import com.sys.wx.model.MenuBean;
+import com.sys.wx.service.CoreService;
+import com.sys.wx.service.CustomMenuService;
+
+@Controller
+@RequestMapping("/menu")
+public class CustomMenuController {
+
+	@Autowired
+	private  CustomMenuService  customMenuService;
+	
+	@Autowired
+	private CoreService coreService;
+	 
+	private static Logger log = Logger.getLogger(CustomMenuController.class);  
+	/** 
+	 * 跳转到菜单
+	 * @author mxy
+	 */ 
+	@RequestMapping("/index")
+	public  ModelAndView  loadAppId(HttpServletRequest request,HttpServletResponse response) throws Exception{
+    	return new ModelAndView("/wx/expand/customMenu");
+	}
+
+    /**
+     * 创建自定义菜单
+     * @author mxy 
+     */
+	@ResponseBody
+	@RequestMapping("/createMenu")
+	public Map createMenu(HttpServletRequest request,HttpServletResponse response) throws Exception{
+        //组装button
+        Button [] zbtn = customMenuService.menuButton(request, response); 
+        Menu menu = new Menu();   
+        //btn 存放到menu
+        String info="";
+        if(zbtn.length!=0){
+        	menu.setButton(zbtn); 
+        	//创建菜单
+            info = customMenuService.madeMenu(menu,WXConfig.APPID,WXConfig.SECRET);
+        }else{
+        	info="没有菜单项";
+        }
+        log.info(WXConfig.APPID+"于"+new Date()+"创建自定义菜单"+info);
+       
+    	Map<String, Object> rs = new HashMap<String, Object>();
+    	rs.put("info", info);
+		return rs;
+	}
+	
+	/**
+	 * 查询自定义菜单
+	 * @author mxy 
+	 */
+	@ResponseBody
+	@RequestMapping("/queryMenu")
+    public Map queryMenu(HttpServletRequest request,HttpServletResponse response) throws Exception{ 
+		Map<String, Object> rs = new HashMap<String, Object>(); 
+		String json = ""; 
+		
+		json = customMenuService.queryMenuByDB(WXConfig.APPID,WXConfig.SECRET);
+		
+		if(json ==null || json.equals("")){ 
+			String strAccToken = coreService.getAccessToken(WXConfig.APPID,WXConfig.SECRET);
+			if(strAccToken.equals("")) {
+				rs.put("obj","获取 access_token失败！");
+				return rs ;
+			}
+			json = WeixinUtil.getMenuInfo(strAccToken); 
+			String jsonMenu  = ""; 
+			
+//			Map map = CommonUtil.toMap(json);
+			JSONObject jsonObject=JSONObject.fromObject(json);
+	        if(null!=jsonObject.get("menu")){
+	        	jsonMenu = jsonObject.get("menu").toString();  
+	        	
+	    		System.out.println(jsonMenu);
+	            MenuBean menuBean = WeixinUtil.menuJsonToObject(jsonMenu);  
+	        	rs.put("obj",menuBean); 
+//	        	Map menuJson = CommonUtil.toMap(jsonMenu);
+	        }
+		}else{
+        	MenuBean menuBean = WeixinUtil.menuJsonToObject(json);  
+        	rs.put("obj",menuBean); 
+        }
+        return rs;
+     } 
+	/**
+	 * 删除自定义菜单
+	 * @author mxy
+	 */
+	@ResponseBody
+	@RequestMapping("/delMenu")
+	public Map delMenu(HttpServletRequest request,HttpServletResponse response)throws Exception{
+		Map<String, Object> rs = new HashMap<String, Object>();
+        // 第三方用户唯一凭证密钥  
+        String strAccToken = coreService.getAccessToken(WXConfig.APPID,WXConfig.SECRET);
+        String msg="";
+        String info="";
+        if(strAccToken.equals("")){
+        	rs.put("info", "获取 access_token失败！");
+        }else{
+        	 info = WeixinUtil.delMenu(strAccToken);
+        	if(info.equals("ok")){
+        		msg="自定义菜单删除成功";
+        	} else {
+        		msg= "自定义菜单删除失败！";
+        	}
+        	rs.put("info", msg);        	
+        }
+        return rs ;
+	} 
+}

@@ -1,0 +1,83 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ include file="/commons/taglibs.jsp" %>
+<%
+	String path = request.getContextPath();
+	String basePath = request.getScheme() + "://"
+			+ request.getServerName() + ":" + request.getServerPort()
+			+ path + "/";
+%>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>返回码管理</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap-responsive.css" />
+    <link rel="stylesheet" type="text/css" href="../css/style.css" />
+    <script type="text/javascript" src="../js/jquery-1.9.1.js"></script>
+    <script type="text/javascript" src="../js/bootstrap.js"></script>
+    <script type="text/javascript" src="../js/ckform.js"></script>
+    <script type="text/javascript" src="../js/common.js"></script>
+    
+    <style type="text/css">
+        body {padding-bottom: 40px;}
+        .sidebar-nav {padding: 9px 0;}
+		@media (max-width: 980px) {.navbar-text.pull-right {float: none;padding-left: 5px;padding-right: 5px;}}
+        #menuContent{margin-top: 10px;border: 1px solid #617775;background: #f0f6e4;width: 220px;height: 360px;overflow-y: scroll;overflow-x: auto;}
+    </style>
+    
+    <script type="text/javascript">
+  //分页
+	function loadpage(currpage,type){
+		var totalpage =document.getElementById("totalpage").value; 
+		if(((currpage+1)*1)<1){
+			alert('现在是第一页');
+			return;
+		}else if((currpage*1)>(totalpage*1)){
+			alert('现在是最后一页');
+			return;
+		}else if((currpage*1)==(totalpage*1)){
+			alert('现在是最后一页');
+			return;
+		}
+		location.href='<%=basePath%>/code/listCode?page='+currpage;
+	}
+</script>
+</head>
+<body>
+<form class="form-inline definewidth m20" action="<%=basePath%>/code/listCode"  method="get">  
+	返回码：<input type="text" name="codenum" id="codenum" />
+	说明：<input type="text" name="remark" id="remark" class="span3 m-wrap"/>
+	<input type="submit" value="查询" id="saveTextImage" name="sbmt" class="btn btn-primary">
+</form>
+<table class="table table-bordered table-hover definewidth m10" >
+    <thead>
+    <tr>
+        <TH>返回码</TH>
+     	<TH>说明</TH>
+    </tr>
+    </thead>
+    	<c:if test="${not empty codeMap}">
+          <c:forEach var="resultList" items="${codeMap.result }" varStatus="status">
+             <TR>  
+	             <td>${resultList.CODENUM}</td>
+	           <td>${resultList.REMARK }</td>
+			 </TR>
+          </c:forEach>
+          </c:if>
+	     </table>
+	     <div class="pagediv">
+			<div class="pageleft " style="float: left;">
+				<a href="javascript:loadpage(0)">首页</a>
+				<a href="javascript:loadpage('${codeMap.page - 1}')">上一页</a>
+				<a href="javascript:loadpage('${codeMap.page + 1}')">下一页</a>
+				<a href="javascript:loadpage('${codeMap.pageCount-1}')">尾页</a>
+			</div>
+			<div class="pageright">
+				当前显示第${codeMap.page+1 }页，共有${codeMap.pageCount }页
+			</div>
+			<input type="hidden" id="totalpage" name="totalpage" value="${codeMap.pageCount }">
+		</div>
+		<div class="clr"></div>
+	</body>
+</html>

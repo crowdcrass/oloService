@@ -1,0 +1,137 @@
+package com.amiba.app.service;
+
+import java.util.Date;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import net.sg.common.util.common.MD5Util;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.amiba.dao.BaseDao;
+import com.platform.common.servlet.RequestParameter;
+import com.platform.common.servlet.WorkException;
+
+
+/**
+ * 用户信息管理
+ * @author yl
+ *
+ */
+@Service
+public class UserService
+{
+
+    @Autowired
+    private BaseDao baseDao;
+
+    public Map<String, Object> queryUserById(HttpServletRequest request)
+    {
+        int e_id = RequestParameter.getInt(request, "e_id");
+        String sql = "SELECT * FROM W_EMPLOYEE WHERE E_ID=?";
+        return baseDao.queryForMap(sql, e_id);
+    }
+
+    /**
+     * 登录
+     * @return
+     */
+    public Map<String, Object> login(HttpServletRequest request)
+    {
+        String e_phone = RequestParameter.getString(request, "e_phone", false);
+        String e_password = RequestParameter.getString(request, "e_password",
+            null);
+        if (null != e_password)
+        {
+            e_password = MD5Util.MD5(e_password);
+        }
+        else
+        {
+            e_password = "";
+        }
+        String sql1 = "SELECT COUNT(*) AS COUNT FROM W_EMPLOYEE WHERE E_PHONE = ?";
+        Map<String, Object> map1 = baseDao.queryForMap(sql1, e_phone);
+        if (Integer.parseInt(map1.get("COUNT").toString()) < 1)
+        {
+            throw new WorkException(19, "账号不存在!");
+        }
+        String sql = "SELECT * FROM W_EMPLOYEE WHERE E_PHONE=? AND E_PASSWORD=?";
+        //boolean exist = baseDao.getUtil().exists(sql, phone,MD5Util.MD5(userPwd));
+        Map<String, Object> map = baseDao.queryForMap(sql, e_phone, e_password);
+        if (null != map && !"".equals(map))
+        {
+            if ( !map.get("E_EXAMINE_STATUS").equals(0))
+            {
+                throw new WorkException(18, "您的账号已被冻结,请与管理员联系!");
+            }
+            else
+            {
+                sql = "INSERT INTO W_EMPLOYEE_LOGIN (E_ID,EL_TIME) VALUES (?,?)";
+                baseDao.getUtil().execute(sql, map.get("E_ID"), new Date());
+                return map;
+            }
+
+        }
+        else
+        {
+            throw new WorkException(10, "账号或密码错误!");
+        }
+    }
+
+    /**
+     * 修改密码
+     * @return
+     */
+    public String updatePwd(HttpServletRequest request)
+    {
+        String flag = "1";
+        String e_phone = RequestParameter.getString(request, "e_phone", false);
+        String e_oldPassword = RequestParameter.getString(request,
+            "e_oldPassword", null);
+        String e_newPassword = RequestParameter.getString(request,
+            "e_newPassword", null);
+        String e_confirmNewPassword = RequestParameter.getString(request,
+            "e_confirmNewPassword", null);
+        String sql = "SELECT E_PASSWORD FROM W_EMPLOYEE WHERE E_PHONE = ?";
+        Map<String, Object> map = baseDao.queryForMap(sql, e_phone);
+        if ( !MD5Util.MD5(e_oldPassword).equals(map.get("E_PASSWORD")))
+        {
+            throw new WorkException(14, "旧密码输入不正确!");
+        }
+        if (null != e_newPassword && null != e_confirmNewPassword
+            && !"".equals(e_confirmNewPassword) && !"".equals(e_newPassword))
+        {
+            if ( !e_confirmNewPassword.equals(e_newPassword))
+            {
+                throw new WorkException(11, "两次密码输入不一致!");
+            }
+            else
+            {
+                e_newPassword = MD5Util.MD5(e_newPassword);
+            }
+        }
+        else
+        {
+            e_confirmNewPassword = e_newPassword = "";
+            throw new WorkException(12, "密码不能为空!");
+        }
+        sql = "UPDATE W_EMPLOYEE SET E_PASSWORD = ? WHERE E_PHONE = ?";
+        baseDao.getUtil().execute(sql, e_newPassword, e_phone);
+        flag = "2";
+        return flag;
+    }
+
+    /**
+     * 根据电话号码查询用户姓名
+     * @param request
+     * @return Map<String,Object>
+     */
+    public Map<String, Object> findEmployeeByPhone(HttpServletRequest request)
+    {
+        String e_phone = RequestParameter.getString(request, "e_phone", false);
+        String sql = " SELECT E_NAME FROM W_EMPLOYEE WHERE E_PHONE = ? ";
+        return baseDao.queryForMap(sql, e_phone);
+    }
+}

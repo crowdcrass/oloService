@@ -1,0 +1,27 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%
+	String path = request.getContextPath();
+	String basePath = request.getScheme() + "://"
+			+ request.getServerName() + ":" + request.getServerPort()
+			+ path + "/";
+%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+ <link rel="shortcut icon" href="<%=basePath%>images/logo.png" type="image/x-icon" />
+   <link rel="icon" href="<%=basePath%>images/logo.png" type="image/x-icon" />
+<title>error</title>
+<link rel="stylesheet" href="<%=basePath %>css/error.css" />
+</head>
+<body>
+<section class="center">  
+        <article>  
+            <h1 class="header">  
+                没有权限</h1>  
+            <p class="error">  
+                ERROR</p>  
+        </article>
+    </section>  
+</body>
+</html>

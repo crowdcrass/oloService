@@ -1,0 +1,180 @@
+package com.sys.web.service;
+
+import java.util.Date;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.amiba.dao.BaseDao;
+import com.platform.common.servlet.RequestParameter;
+import com.platform.common.servlet.SessionAttribute;
+import com.platform.common.sql.SqlUtil;
+
+
+/**
+ * 菜单树维护
+ * @author yl
+ *
+ */
+@Service
+public class NewsService
+{
+
+    @Autowired
+    private BaseDao baseDao;
+
+    /**
+     * 资讯列表
+     * @param request
+     * @return
+     */
+    public Map<String, Object> queryNewsList(HttpServletRequest request)
+    {
+
+        String n_title = request.getParameter("n_title");
+        int page = RequestParameter.getIntGreaterThen(request, "page", 0, 0,
+            false);
+        int count = RequestParameter.getInt(request, "count", 10, 1, 20, false);
+
+        if (null != n_title && !"".equals(n_title))
+        {
+            n_title = "%" + n_title + "%";
+        }
+        else
+        {
+            n_title = "%%";
+        }
+
+        String sql = "SELECT W.*,(SELECT NT_NAME FROM W_NEWS_TYPE WHERE NT_ID=W.N_TYPE) NT_NAME "
+                     + "FROM W_NEWS W WHERE N_TITLE LIKE ? ORDER BY N_TIME DESC";
+        Map<String, Object> map = baseDao.pagination(page, count, sql, n_title);
+        return map;
+    }
+
+    /**
+     * 保存新增
+     * @param request
+     * @return
+     */
+    public String saveNews(HttpServletRequest request)
+    {
+        String flag = "0";
+        try
+        {
+            String n_title = request.getParameter("n_title");
+            String n_type = request.getParameter("n_type");
+            String n_content = request.getParameter("n_content");
+
+            if (null == request.getSession().getAttribute("user")
+                || "".equals(request.getSession().getAttribute("user")))
+            {
+                return "3";
+            }
+            Map<String, Object> userMap = SessionAttribute.get(
+                request.getSession(), "user");
+
+            String sql = "";
+            sql = "INSERT INTO W_NEWS(N_TITLE,N_CONTENT,N_TIME,N_TYPE,N_U_ID) VALUES (?,?,?,?,?)";
+            baseDao.getUtil().execute(sql, n_title, n_content, new Date(),
+                n_type, userMap.get("S_ID"));
+            flag = "1";
+        }
+        catch (Exception e)
+        {
+            flag = "0";
+        }
+        return flag;
+    }
+
+    /**
+     * 根据id查询
+     * @param request
+     * @return
+     */
+    public Map<String, Object> queryNewsById(HttpServletRequest request)
+    {
+        String n_id = request.getParameter("n_id");
+        String sql = "";
+        sql = "SELECT * FROM W_NEWS WHERE N_ID=?";
+        Map<String, Object> map = baseDao.queryForMap(sql, n_id);
+        return map;
+    }
+
+    /**
+     * 保存编辑
+     * @param request
+     * @return
+     */
+    public String editNews(HttpServletRequest request)
+    {
+        String flag = "0";
+        try
+        {
+            String n_id = request.getParameter("n_id");
+            String n_title = request.getParameter("n_title");
+            String n_content = request.getParameter("n_content");
+            String n_type = request.getParameter("n_type");
+
+            if (null == request.getSession().getAttribute("user")
+                || "".equals(request.getSession().getAttribute("user")))
+            {
+                return "3";
+            }
+            Map<String, Object> userMap = SessionAttribute.get(
+                request.getSession(), "user");
+
+            String sql = "";
+            sql = "UPDATE W_NEWS SET N_TITLE=?,N_CONTENT=?,N_TYPE=?,XG_RY=?,XG_SJ=? WHERE N_ID=?";
+            baseDao.getUtil().execute(sql, n_title, n_content, n_type,
+                userMap.get("S_ID"), new Date(), n_id);
+            flag = "1";
+        }
+        catch (Exception e)
+        {
+            flag = "0";
+        }
+        return flag;
+    }
+
+    /**
+     * 删除
+     * @param request
+     * @return
+     */
+    public String deleteNews(HttpServletRequest request)
+    {
+        String flag = "0";
+        SqlUtil su = this.baseDao.getUtil();
+        try
+        {
+            su.beginTransaction();
+            String n_id = request.getParameter("n_id");
+            if (null == request.getSession().getAttribute("user")
+                || "".equals(request.getSession().getAttribute("user")))
+            {
+                return "3";
+            }
+            Map<String, Object> userMap = SessionAttribute.get(
+                request.getSession(), "user");
+            String sql = "";
+            sql = "DELETE FROM W_NEWS WHERE N_ID=?";
+            su.execute(sql, n_id);
+            sql = "INSERT INTO SYS_DELETE(MS,LR_RY,LR_SJ) VALUES (?,?,?)";
+            su.execute(sql, "模块:资讯管理" + n_id, userMap.get("S_ID"), new Date());
+            flag = "1";
+            su.commitTransaction();
+        }
+        catch (Exception e)
+        {
+            flag = "0";
+        }
+        finally
+        {
+            su.close();
+        }
+        return flag;
+    }
+}

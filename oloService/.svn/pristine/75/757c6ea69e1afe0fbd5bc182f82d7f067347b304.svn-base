@@ -1,0 +1,23 @@
+package com.sys.wx.core.util;
+
+/**
+ * 关键词功能模块 工具类
+ * @author mxy
+ * @date 2014-04-02
+ */
+public class ModuleUtil { 
+	public static final String  MODULE_WHD = "微活动";
+	public static final String  MODULE_ZXBM = "在线报名";
+	public static final String  MODULE_MUSIC = "歌曲";
+	public static final String  MODULE_WXT="微喜帖";
+	public static final String  MODULE_WYJR="我要加入";
+	public static final String  MODULE_GZSFH="关注时回复";
+	public static final String  MODULE_WBHF="文本回复";
+	public static final String  MODULE_TWHF="图文回复";
+	public static final String  MODULE_YQH="邀请函";
+	public static final String  MODULE_HOMESET="首页设置";
+	public static final String  MODULE_WDC="微点菜";
+	public static final String  MODULE_WFC="微房产";
+	public static final String  MODULE_WTG="微团购";
+	public static final String  MODULE_WJD="微酒店";
+}

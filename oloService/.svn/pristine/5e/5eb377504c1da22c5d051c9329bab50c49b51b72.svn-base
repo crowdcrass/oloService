@@ -1,0 +1,90 @@
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+	<title>OLO后台管理系统</title>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel="shortcut icon" href="<%=basePath%>images/logo.png" type="image/x-icon" />
+    <link rel="icon" href="<%=basePath%>images/logo.png" type="image/x-icon" />
+    
+	<link rel="stylesheet" href="<%=basePath %>css/bootstrap.min.css" />
+	<link rel="stylesheet" href="<%=basePath %>css/bootstrap-responsive.min.css" />
+	<link rel="stylesheet" href="<%=basePath %>css/matrix-login.css" />
+	<script language="javascript" src="<%=basePath%>/js/jquery-1.8.1.min.js"></script>
+	
+	<style type="text/css">
+		.flash_error,.flash_success {
+			font-weight: bold;
+			background-repeat: no-repeat;
+			padding: 7px 40px;
+			margin: 0 1px;
+			border: 1px solid black;
+			background-color: #ffffcc;
+			color: #000000;
+			top:-10px;
+		}
+		
+		.flash_error {
+			border: 2px solid red;
+			color: #f30;
+			top:10px;
+			background-image: url(<%=basePath%>images/icon_flash_error.gif);
+		}
+		
+		.flash_success {
+			background-image: url(<%=basePath%>images/icon_flash_success.gif);
+		}
+	
+	</style>
+	<script type="text/javascript">   
+		function aform() {
+			$("#loginform").submit();
+		}
+	</script>
+
+</head>
+<body>
+	<%@ include file="/commons/messages.jsp"%>
+	<div id="loginbox">            
+		<form name="loginform" id="loginform" action="<%=basePath %>login/loginSys" method="post">
+			<div class="control-group normal_text"> <h3><img src="<%=basePath %>images/logo.png" alt="Logo" style="width:150px;"/></h3></div>
+				<div class="control-group">
+					<div class="controls">
+						<div class="main_input_box">
+							<span class="add-on bg_lg"><i class="icon-user"></i></span>
+							<input type="text" id=muser maxLength=20 name="username" placeholder="用户名" value="admin"/>
+						</div>
+					</div>
+				</div>
+				<div class="control-group">
+					<div class="controls">
+						<div class="main_input_box">
+							<span class="add-on bg_ly"><i class="icon-lock"></i></span>
+							<input type="password" placeholder="password" name="password" id="mpwd" value="admin"/>
+						</div>
+					</div>
+				</div>
+				<div class="form-actions">
+					<span class="pull-right"><a type="button" href="javaScript:aform()" class="btn btn-success" /> 登陆</a></span>
+				</div>
+        </form>
+    </div>
+    
+    <script src="<%=basePath %>js/jquery-1.9.1"></script>  
+	<script src="<%=basePath %>js/matrix.login.js"></script> 
+</body>
+<script type="text/javascript">  
+	document.onkeydown=function(event){  
+		var e = event || window.event || arguments.callee.caller.arguments[0];    
+		if(e && e.keyCode==13){ 
+			aform();
+		}       
+	}
+</script>
+</html>

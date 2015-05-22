@@ -1,0 +1,145 @@
+package com.sys.wx.web;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.sys.wx.service.ImgMessageService;
+
+
+@Controller
+@RequestMapping("/imgMessage")
+public class ImgMessageController {
+
+	@Autowired
+	private ImgMessageService imgMessageService;
+	
+	@RequestMapping("/listimgMessage")
+	public String loadListImgMessage(ModelMap model,HttpServletRequest request,HttpServletResponse response){
+		Map<String,Object> imgMap = imgMessageService.queryImgMessageList(request);
+		String wtype = request.getParameter("type");
+		model.put("wtype", wtype);
+		model.put("imgMap", imgMap);
+		return "/wx/reply/textImageList";
+	}
+	
+	/**
+	 *  保存新增文本
+	 *  @author
+	 */
+	@SuppressWarnings("unchecked")
+	@ResponseBody
+	@RequestMapping(value="/saveTextandImg")
+	public Map saveTextandImg(ModelMap model,HttpServletRequest request,HttpServletResponse response) { 
+		String flag = "0";
+		flag = imgMessageService.saveTextandImg(request);
+		model.put("flag", flag);
+		Map map=new HashMap();
+		map.put("flag", flag);
+		return map;
+	}
+	
+	/**
+	 *  保存新增图文
+	 *  @author
+	 */
+	@RequestMapping(value="/saveImg")
+	public String saveImg(ModelMap model,HttpServletRequest request,HttpServletResponse response) { 
+		String flag = "0";
+		flag = imgMessageService.saveTextandImg(request);
+		model.put("flag", flag);
+		return "/wx/reply/textImageAdd";
+	}
+	
+	/**
+	 * 删除文本回复信息
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
+	@ResponseBody
+	@RequestMapping("/delTextandImg")
+	public Map delTextandImg(HttpServletRequest request,HttpServletResponse response)
+				throws Exception{
+		String flag = imgMessageService.deleteTextandImg(request);
+		Map map=new HashMap();
+		map.put("flag", flag);
+		return map;
+	}
+	
+	/**
+	 * 根据id查询出文本回复信息
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/queryWbhfById")
+	public ModelAndView queryWbhfById(HttpServletRequest request,HttpServletResponse response)
+				throws Exception{
+		String id = request.getParameter("id");
+		String type = request.getParameter("type");
+		Map<String,Object> mapData = imgMessageService.queryWbhfById(id,type);
+		if("2".equals(type)){
+			return new ModelAndView("/wx/reply/textUpdate",mapData);
+		}else if("1".equals(type)){
+			return new ModelAndView("/wx/reply/textImageUpdate",mapData);
+		}else{
+			return null;
+		}
+	}
+	
+	/**
+	 * 根据id修改信息
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/updateTextHf")
+	public String updateTextHf(ModelMap model,HttpServletRequest request,HttpServletResponse response)
+				throws Exception{
+		
+		int flag = imgMessageService.updateTextHf(request);
+		String type = request.getParameter("type");
+		Map map=new HashMap();
+		model.put("flag", flag);
+		if("1".equals(type)){
+			return "/wx/reply/textImageUpdate";
+		}else if("2".equals(type)){
+			return "/wx/reply/textUpdate";
+		}else{
+			return null;
+		}
+	}
+	
+	/**
+	 * 根据id修改信息
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
+	@ResponseBody
+	@RequestMapping("/updateText")
+	public Map updateText(ModelMap model,HttpServletRequest request,HttpServletResponse response)
+				throws Exception{
+		int flag = imgMessageService.updateTextHf(request);
+		model.put("flag", flag);
+		Map map=new HashMap();
+		map.put("flag", flag);
+		return map;
+	}
+}

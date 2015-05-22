@@ -1,0 +1,58 @@
+package java.common.springmvc.interceptor;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.log4j.Logger;
+import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.ModelAndView;
+
+/**
+ * 拦截器：拦截所有URL请求，判断是否有权限
+ * @author Administrator
+ *
+ */
+public class VerifyUrlInterceptor implements HandlerInterceptor {
+	private Logger log = Logger.getLogger(VerifyUrlInterceptor.class);
+	
+	public List<String> urlList = new ArrayList<String>();
+	
+	public VerifyUrlInterceptor(){
+		urlList.add("");
+		urlList.add("/login/main");
+		urlList.add("");
+		urlList.add("");
+	}
+	
+	@Override
+	public void afterCompletion(HttpServletRequest arg0,
+			HttpServletResponse arg1, Object arg2, Exception arg3)
+			throws Exception {
+		System.out.println("=======333333========");
+	}
+
+	@Override
+	public void postHandle(HttpServletRequest arg0, HttpServletResponse arg1,
+			Object arg2, ModelAndView arg3) throws Exception {
+		System.out.println("======22222=========");
+	}
+
+	@Override
+	public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
+			Object obj) throws Exception {  
+        log.info("==============执行顺序: 1、preHandle================");    
+        String requestUri = request.getRequestURI();  
+        String contextPath = request.getContextPath();  
+        String url = requestUri.substring(contextPath.length());  
+        
+        log.info("requestUri:"+requestUri);    
+        log.info("contextPath:"+contextPath);    
+        log.info("url:"+url);
+        request.getRequestDispatcher("/pages/404.jsp").forward(request, response);
+        return false;
+	}
+
+}

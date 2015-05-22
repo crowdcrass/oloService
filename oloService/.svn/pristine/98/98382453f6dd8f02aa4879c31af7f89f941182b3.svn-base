@@ -1,0 +1,608 @@
+package com.sys.entity;
+
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+
+
+/**
+ * 
+ * 预约单信息(33个字段)
+ * 
+ * @author xmL
+ * @version V1.00 2015-10-15
+ * @since olo V1.0R001
+ */
+public class CustMdyyBillInfo
+{
+    // 预约单据编号
+    private String aoNo;
+    // 预约单日期
+    private String aoTime;
+    // 预约单状态
+    private String aoStatus;
+    // 公司
+    private String aoCompany;
+    // 专卖店
+    private String aOSpecStore;
+    // 报备单编号
+    private String aoBbNo;
+    // 客户名称
+    private String aOCusName;
+    // 客户电话
+    private String aoCusPhone;
+    // 客户其他电话
+    private String aoOtherPhone;
+    // 经手人
+    private String aoAttnUser;
+    // 经手人电话
+    private String aoAttnPhone;
+    // 客户地址
+    private String aoCusAdd;
+    // 门店负责人
+    private String aoStoreManager;
+    // 门店电话
+    private String aoStorePhone;
+    //
+    private String aoPayment;
+    // 定金总额
+    private String aoTotalDeposit;
+    // 是否已派测
+    private String aoTest;
+    // 产品系列
+    private String aoProductType;
+    // 地柜目录价
+    private String aoCabinetPrice;
+    // 吊柜目录价
+    private String aoCupboardPrice;
+    // 台面目录价
+    private String aoTablePrice;
+    // 地柜米数
+    private String aoCabinetm;
+    // 吊柜米数
+    private String aoCupboardm;
+    // 活动编码
+    private String aNo;
+    // 活动名称
+    private String aName;
+    // 套餐价格
+    private String aoPrice;
+    // 活动内容
+    private String aDesc;
+    // 另计费项
+    private String aOtherAccItem;
+    // 客户要求
+    private String aCustomerReq;
+    // 备注
+    private String aoRemark;
+    // 订单状态
+    private String aoOrderStatus;
+    // 创建人
+    private String aoCreateer;
+    // 创建日期
+    private String aoCreateTime;
+
+    //-----------------------------------
+    private String aoCompanyNo;
+    private String aoSpecStoreNo;
+    private String aoCusNo;
+    private String aoAttnUserNo;
+    private String aoStoreManagerNo;
+    private String aoPaymentNo;
+    private String aoProductTypeNo;
+    private String aoRyxxNo;
+    private String aoCreateerNo;
+    private String aoCreateerName;
+    private String aoUpadteNo;
+    private String aoUpadteName;
+    private String aoUpadteTime;
+    private String aoAuditNo;
+    private String aoAuditName;
+    private String aoAuditTime;
+    private String erpId;
+
+    //---------------------
+    public String getAoNo()
+    {
+        return aoNo;
+    }
+
+    public String getAoCompanyNo()
+    {
+        return aoCompanyNo;
+    }
+
+    public void setAoCompanyNo(String aoCompanyNo)
+    {
+        this.aoCompanyNo = aoCompanyNo;
+    }
+
+    public String getAoSpecStoreNo()
+    {
+        return aoSpecStoreNo;
+    }
+
+    public void setAoSpecStoreNo(String aoSpecStoreNo)
+    {
+        this.aoSpecStoreNo = aoSpecStoreNo;
+    }
+
+    public String getAoCusNo()
+    {
+        return aoCusNo;
+    }
+
+    public void setAoCusNo(String aoCusNo)
+    {
+        this.aoCusNo = aoCusNo;
+    }
+
+    public String getAoAttnUserNo()
+    {
+        return aoAttnUserNo;
+    }
+
+    public void setAoAttnUserNo(String aoAttnUserNo)
+    {
+        this.aoAttnUserNo = aoAttnUserNo;
+    }
+
+    public String getAoStoreManagerNo()
+    {
+        return aoStoreManagerNo;
+    }
+
+    public void setAoStoreManagerNo(String aoStoreManagerNo)
+    {
+        this.aoStoreManagerNo = aoStoreManagerNo;
+    }
+
+    public String getAoPaymentNo()
+    {
+        return aoPaymentNo;
+    }
+
+    public void setAoPaymentNo(String aoPaymentNo)
+    {
+        this.aoPaymentNo = aoPaymentNo;
+    }
+
+    public String getAoProductTypeNo()
+    {
+        return aoProductTypeNo;
+    }
+
+    public void setAoProductTypeNo(String aoProductTypeNo)
+    {
+        this.aoProductTypeNo = aoProductTypeNo;
+    }
+
+    public String getAoRyxxNo()
+    {
+        return aoRyxxNo;
+    }
+
+    public void setAoRyxxNo(String aoRyxxNo)
+    {
+        this.aoRyxxNo = aoRyxxNo;
+    }
+
+    public String getAoCreateerNo()
+    {
+        return aoCreateerNo;
+    }
+
+    public void setAoCreateerNo(String aoCreateerNo)
+    {
+        this.aoCreateerNo = aoCreateerNo;
+    }
+
+    public String getAoCreateerName()
+    {
+        return aoCreateerName;
+    }
+
+    public void setAoCreateerName(String aoCreateerName)
+    {
+        this.aoCreateerName = aoCreateerName;
+    }
+
+    public String getAoUpadteNo()
+    {
+        return aoUpadteNo;
+    }
+
+    public void setAoUpadteNo(String aoUpadteNo)
+    {
+        this.aoUpadteNo = aoUpadteNo;
+    }
+
+    public String getAoUpadteName()
+    {
+        return aoUpadteName;
+    }
+
+    public void setAoUpadteName(String aoUpadteName)
+    {
+        this.aoUpadteName = aoUpadteName;
+    }
+
+    public String getAoUpadteTime()
+    {
+        return aoUpadteTime;
+    }
+
+    public void setAoUpadteTime(String aoUpadteTime)
+    {
+        this.aoUpadteTime = aoUpadteTime;
+    }
+
+    public String getAoAuditNo()
+    {
+        return aoAuditNo;
+    }
+
+    public void setAoAuditNo(String aoAuditNo)
+    {
+        this.aoAuditNo = aoAuditNo;
+    }
+
+    public String getAoAuditName()
+    {
+        return aoAuditName;
+    }
+
+    public void setAoAuditName(String aoAuditName)
+    {
+        this.aoAuditName = aoAuditName;
+    }
+
+    public String getAoAuditTime()
+    {
+        return aoAuditTime;
+    }
+
+    public void setAoAuditTime(String aoAuditTime)
+    {
+        this.aoAuditTime = aoAuditTime;
+    }
+
+    public String getErpId()
+    {
+        return erpId;
+    }
+
+    public void setErpId(String erpId)
+    {
+        this.erpId = erpId;
+    }
+
+    public void setAoNo(String aoNo)
+    {
+        this.aoNo = aoNo;
+    }
+
+    public String getAoTime()
+    {
+        return aoTime;
+    }
+
+    public void setAoTime(String aoTime)
+    {
+        this.aoTime = aoTime;
+    }
+
+    public String getAoStatus()
+    {
+        return aoStatus;
+    }
+
+    public void setAoStatus(String aoStatus)
+    {
+        this.aoStatus = aoStatus;
+    }
+
+    public String getAoCompany()
+    {
+        return aoCompany;
+    }
+
+    public void setAoCompany(String aoCompany)
+    {
+        this.aoCompany = aoCompany;
+    }
+
+    public String getaOSpecStore()
+    {
+        return aOSpecStore;
+    }
+
+    public void setaOSpecStore(String aOSpecStore)
+    {
+        this.aOSpecStore = aOSpecStore;
+    }
+
+    public String getAoBbNo()
+    {
+        return aoBbNo;
+    }
+
+    public void setAoBbNo(String aoBbNo)
+    {
+        this.aoBbNo = aoBbNo;
+    }
+
+    public String getaOCusName()
+    {
+        return aOCusName;
+    }
+
+    public void setaOCusName(String aOCusName)
+    {
+        this.aOCusName = aOCusName;
+    }
+
+    public String getAoCusPhone()
+    {
+        return aoCusPhone;
+    }
+
+    public void setAoCusPhone(String aoCusPhone)
+    {
+        this.aoCusPhone = aoCusPhone;
+    }
+
+    public String getAoOtherPhone()
+    {
+        return aoOtherPhone;
+    }
+
+    public void setAoOtherPhone(String aoOtherPhone)
+    {
+        this.aoOtherPhone = aoOtherPhone;
+    }
+
+    public String getAoAttnUser()
+    {
+        return aoAttnUser;
+    }
+
+    public void setAoAttnUser(String aoAttnUser)
+    {
+        this.aoAttnUser = aoAttnUser;
+    }
+
+    public String getAoAttnPhone()
+    {
+        return aoAttnPhone;
+    }
+
+    public void setAoAttnPhone(String aoAttnPhone)
+    {
+        this.aoAttnPhone = aoAttnPhone;
+    }
+
+    public String getAoCusAdd()
+    {
+        return aoCusAdd;
+    }
+
+    public void setAoCusAdd(String aoCusAdd)
+    {
+        this.aoCusAdd = aoCusAdd;
+    }
+
+    public String getAoStoreManager()
+    {
+        return aoStoreManager;
+    }
+
+    public void setAoStoreManager(String aoStoreManager)
+    {
+        this.aoStoreManager = aoStoreManager;
+    }
+
+    public String getAoStorePhone()
+    {
+        return aoStorePhone;
+    }
+
+    public void setAoStorePhone(String aoStorePhone)
+    {
+        this.aoStorePhone = aoStorePhone;
+    }
+
+    public String getAoPayment()
+    {
+        return aoPayment;
+    }
+
+    public void setAoPayment(String aoPayment)
+    {
+        this.aoPayment = aoPayment;
+    }
+
+    public String getAoTotalDeposit()
+    {
+        return aoTotalDeposit;
+    }
+
+    public void setAoTotalDeposit(String aoTotalDeposit)
+    {
+        this.aoTotalDeposit = aoTotalDeposit;
+    }
+
+    public String getAoTest()
+    {
+        return aoTest;
+    }
+
+    public void setAoTest(String aoTest)
+    {
+        this.aoTest = aoTest;
+    }
+
+    public String getAoProductType()
+    {
+        return aoProductType;
+    }
+
+    public void setAoProductType(String aoProductType)
+    {
+        this.aoProductType = aoProductType;
+    }
+
+    public String getAoCabinetPrice()
+    {
+        return aoCabinetPrice;
+    }
+
+    public void setAoCabinetPrice(String aoCabinetPrice)
+    {
+        this.aoCabinetPrice = aoCabinetPrice;
+    }
+
+    public String getAoCupboardPrice()
+    {
+        return aoCupboardPrice;
+    }
+
+    public void setAoCupboardPrice(String aoCupboardPrice)
+    {
+        this.aoCupboardPrice = aoCupboardPrice;
+    }
+
+    public String getAoTablePrice()
+    {
+        return aoTablePrice;
+    }
+
+    public void setAoTablePrice(String aoTablePrice)
+    {
+        this.aoTablePrice = aoTablePrice;
+    }
+
+    public String getAoCabinetm()
+    {
+        return aoCabinetm;
+    }
+
+    public void setAoCabinetm(String aoCabinetm)
+    {
+        this.aoCabinetm = aoCabinetm;
+    }
+
+    public String getAoCupboardm()
+    {
+        return aoCupboardm;
+    }
+
+    public void setAoCupboardm(String aoCupboardm)
+    {
+        this.aoCupboardm = aoCupboardm;
+    }
+
+    public String getaNo()
+    {
+        return aNo;
+    }
+
+    public void setaNo(String aNo)
+    {
+        this.aNo = aNo;
+    }
+
+    public String getaName()
+    {
+        return aName;
+    }
+
+    public void setaName(String aName)
+    {
+        this.aName = aName;
+    }
+
+    public String getAoPrice()
+    {
+        return aoPrice;
+    }
+
+    public void setAoPrice(String aoPrice)
+    {
+        this.aoPrice = aoPrice;
+    }
+
+    public String getaDesc()
+    {
+        return aDesc;
+    }
+
+    public void setaDesc(String aDesc)
+    {
+        this.aDesc = aDesc;
+    }
+
+    public String getaOtherAccItem()
+    {
+        return aOtherAccItem;
+    }
+
+    public void setaOtherAccItem(String aOtherAccItem)
+    {
+        this.aOtherAccItem = aOtherAccItem;
+    }
+
+    public String getaCustomerReq()
+    {
+        return aCustomerReq;
+    }
+
+    public void setaCustomerReq(String aCustomerReq)
+    {
+        this.aCustomerReq = aCustomerReq;
+    }
+
+    public String getAoRemark()
+    {
+        return aoRemark;
+    }
+
+    public void setAoRemark(String aoRemark)
+    {
+        this.aoRemark = aoRemark;
+    }
+
+    public String getAoOrderStatus()
+    {
+        return aoOrderStatus;
+    }
+
+    public void setAoOrderStatus(String aoOrderStatus)
+    {
+        this.aoOrderStatus = aoOrderStatus;
+    }
+
+    public String getAoCreateer()
+    {
+        return aoCreateer;
+    }
+
+    public void setAoCreateer(String aoCreateer)
+    {
+        this.aoCreateer = aoCreateer;
+    }
+
+    public String getAoCreateTime()
+    {
+        return aoCreateTime;
+    }
+
+    public void setAoCreateTime(String aoCreateTime)
+    {
+        this.aoCreateTime = aoCreateTime;
+    }
+
+    @Override
+    public String toString()
+    {
+        return ReflectionToStringBuilder.toString(this);
+    }
+}

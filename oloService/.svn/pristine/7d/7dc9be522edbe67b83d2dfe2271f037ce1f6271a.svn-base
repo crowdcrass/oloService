@@ -1,0 +1,412 @@
+package com.sys.wx.service;
+
+import java.io.UnsupportedEncodingException;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.amiba.dao.BaseDao;
+import com.platform.common.servlet.RequestParameter;
+
+
+/**
+ * 处理产品属性分类
+ * @author sk
+ *
+ */
+@Service
+public class ProAttrTypeService
+{
+    private static Logger log = Logger.getLogger(ProAttrTypeService.class);
+
+    @Autowired
+    private BaseDao baseDao;
+
+    /**
+     * 查询分类树形数据
+     * @return
+     */
+    public List<Map<String, Object>> findTypeMenus()
+    {
+        String sql = "";
+        sql = "SELECT DISTINCT AT.AT_ID \"id\",AT.AT_PARENT_ID \"pid\","
+              + "AT.AT_NAME \"name\",AT.AT_SORT_NUM "
+              + "FROM WX_ATTR_TYPE AT ORDER BY CONVERT(AT.AT_SORT_NUM ,SIGNED)";
+        List<Map<String, Object>> list = baseDao.queryForList(sql);
+        return list;
+    }
+
+    /**
+     * 
+     *根据id查询分类详情
+     * @param request
+     * @return Map<String,Object>
+     */
+    public Map<String, Object> queryAttrTypeById(HttpServletRequest request)
+    {
+        int at_id = RequestParameter.getInt(request, "at_id");
+        String sql = "";
+        sql = "SELECT W.*,S.MT_NAME FROM WX_ATTR_TYPE W LEFT JOIN SYS_MATTER_TYPE S ON W.MT_ID=S.MT_ID WHERE W.AT_ID=?";
+        Map<String, Object> map = this.baseDao.getUtil().read(sql, at_id);
+        return map;
+    }
+
+    /**
+     * 
+     *根据id查询分类详情
+     * @param request
+     * @return Map<String,Object>
+     */
+    public Map<String, Object> queryAttrTypeByProId(HttpServletRequest request)
+    {
+        int page = RequestParameter.getIntGreaterThen(request, "page", 0, 0,
+            false);
+        int count = RequestParameter.getInt(request, "count", 10, 1, 20, false);
+
+        int mt_id = RequestParameter.getInt(request, "mt_id");
+        String sql = "";
+        sql = "SELECT W.*,S.MT_NAME FROM WX_ATTR_TYPE W LEFT JOIN SYS_MATTER_TYPE S ON W.MT_ID=S.MT_ID WHERE S.MT_ID=? ORDER BY W.AT_SORT_NUM";
+        Map<String, Object> map = baseDao.pagination(page, count, sql, mt_id);
+        return map;
+    }
+
+    /**
+     * 
+     *根据id查询分类详情
+     * @param request
+     * @return Map<String,Object>
+     */
+    public List<Map<String, Object>> queryAttrTypeByProId(Integer mtId)
+    {
+        String sql = "";
+        sql = "SELECT W.*,S.MT_NAME FROM WX_ATTR_TYPE W LEFT JOIN SYS_MATTER_TYPE S ON W.MT_ID=S.MT_ID WHERE S.MT_ID=? ORDER BY W.AT_SORT_NUM";
+        List<Map<String, Object>> list = baseDao.getUtil().query(sql, mtId);
+        return list;
+    }
+
+    /**
+     * 查询产品分类是否最后一级 
+     * @param mtId
+     * @return String
+     */
+    private boolean getProType(Integer mtId)
+    {
+        boolean flag = false;
+        String sql = "SELECT IS_LAST FROM SYS_MATTER_TYPE WHERE MT_ID=?";
+        Map<String, Object> map = baseDao.queryForMap(sql, mtId);
+        if (null != map && map.containsKey("IS_LAST"))
+        {
+            if ("1".equals(map.get("IS_LAST").toString()))
+            {
+                flag = true;
+            }
+        }
+        return flag;
+    }
+
+    /**
+     * 增加类型
+     * @param request
+     * @return
+     */
+    public String addType(HttpServletRequest request)
+    {
+        String flag = "0";
+        //判断用户是否存在
+        if (null == request.getSession().getAttribute("user")
+            || "".equals(request.getSession().getAttribute("user")))
+        {
+            return "3";
+        }
+
+        //取值
+        String at_name = RequestParameter.getString(request, "AT_NAME");
+        int mt_id = RequestParameter.getInt(request, "MT_PARENT_ID");
+        int at_parent_id = 0;
+        int at_sort_num = RequestParameter.getInt(request, "AT_SORT_NUM");
+
+        //判断产品分类是否最后一级
+        if ( !getProType(mt_id))
+        {
+            return "5";
+        }
+        String sql = "";
+        sql = "SELECT IFNULL(MAX(AT_ID),1)+1 AS AT_ID FROM WX_ATTR_TYPE";
+        int at_id = this.baseDao.getUtil().getInt(sql);
+        sql = "INSERT INTO WX_ATTR_TYPE(AT_ID,AT_NAME,AT_PARENT_ID,AT_SORT_NUM,MT_ID) VALUES(?,?,?,?,?) ";
+        this.baseDao.getUtil().execute(sql, at_id, at_name, at_parent_id,
+            at_sort_num, mt_id);
+        flag = "1";
+        return flag;
+    }
+
+    /**
+     * 修改
+     * @param request
+     * @return
+     */
+    public String updateType(HttpServletRequest request)
+    {
+        String flag = "0";
+        if (null == request.getSession().getAttribute("user")
+            || "".equals(request.getSession().getAttribute("user")))
+        {
+            return "3";
+        }
+        //取值
+        int at_id = RequestParameter.getInt(request, "AT_ID");
+        String at_name = RequestParameter.getString(request, "AT_NAME");
+        int at_parent_id = 0;
+        int at_sort_num = RequestParameter.getInt(request, "AT_SORT_NUM");
+        int mt_id = RequestParameter.getInt(request, "MT_PARENT_ID");
+
+        //判断产品分类是否最后一级
+        if ( !getProType(mt_id))
+        {
+            return "5";
+        }
+        String sql = "";
+        sql = "UPDATE WX_ATTR_TYPE SET AT_NAME=?,AT_PARENT_ID=?,AT_SORT_NUM=?,MT_ID=? WHERE AT_ID=?";
+        this.baseDao.getUtil().execute(sql, at_name, at_parent_id, at_sort_num,
+            mt_id, at_id);
+        flag = "1";
+        return flag;
+    }
+
+    /**
+     * 
+     *删除类型
+     * @param request
+     * @return String
+     */
+    public String delType(HttpServletRequest request)
+    {
+        String flag = "0";
+        if (null == request.getSession().getAttribute("user")
+            || "".equals(request.getSession().getAttribute("user")))
+        {
+            return "3";
+        }
+        int at_id = RequestParameter.getInt(request, "at_id");
+        String sql = "";
+        sql = "DELETE FROM WX_ATTR_TYPE WHERE AT_ID=?";
+        this.baseDao.getUtil().execute(sql, at_id);
+        flag = "1";
+        return flag;
+    }
+
+    /**
+     * 根据最后一级产品分类查询
+     * @return
+     */
+    public List<Map<String, Object>> list()
+    {
+        String sql = "SELECT * from sys_matter_type WHERE IS_LAST=1";
+        List<Map<String, Object>> matterList = baseDao.queryForList(sql);
+        if (matterList != null)
+        {
+            for (Map<String, Object> map : matterList)
+            {
+                String attrsql = "SELECT AT_ID,AT_NAME,AT_TIME,AT_MTID FROM WX_ATTR_TYPE where AT_MTID=?";
+                List<Map<String, Object>> attr = baseDao.queryForList(attrsql,
+                    map.get("MT_ID"));
+                map.put("attrList", attr);
+            }
+        }
+        return matterList;
+    }
+
+    /**
+     * 查询
+     */
+    public Map<String, Object> getAttribute(HttpServletRequest request,
+                                            Integer mtId, String attrTypeName)
+    {
+        int page = RequestParameter.getIntGreaterThen(request, "page", 0, 0,
+            false);
+        int count = RequestParameter.getInt(request, "count", 10, 1, 20, false);
+
+        String sql = "SELECT AT_ID,AT_NAME,AT_TIME,AT_MTID,T2.MT_NAME "
+                     + "FROM WX_ATTR_TYPE T1 LEFT JOIN sys_matter_type T2 ON t1.AT_MTID=t2.MT_ID "
+                     + " WHERE 1=1 ";
+        if (null != mtId && !"".equals(mtId))
+        {
+            sql += " AND T1.AT_MTID = '" + mtId + "' ";
+        }
+        if (null != attrTypeName && !"".equals(attrTypeName))
+        {
+            sql += " AND T1.AT_NAME like '%" + attrTypeName + "%' ";
+        }
+        sql += " ORDER BY T1.AT_ID ASC ";
+
+        return baseDao.pagination(page, count, sql);
+    }
+
+    /**
+     * 修改或者删除
+     * @param request
+     */
+    public void addOrUpdate(HttpServletRequest request)
+    {
+        String id = request.getParameter("id");
+        String AT_NAME = request.getParameter("AT_NAME");
+        String AT_MTID = request.getParameter("AT_MTID");
+        Date AT_TIME = new Date();
+
+        String sql = "";
+        if (null != id && !"".equals(id.trim()))
+        {
+            sql = "UPDATE wx_attr_type SET AT_NAME=?,AT_MTID=? Where AT_ID=?";
+            baseDao.execute(sql, AT_NAME, AT_MTID, id);
+        }
+        else
+        {
+            sql = "insert wx_attr_type(AT_NAME,AT_MTID,AT_TIME) values(?,?,?)";
+            baseDao.execute(sql, AT_NAME, AT_MTID, AT_TIME);
+        }
+    }
+
+    /**
+     * 查询
+     * @param id
+     * @return
+     */
+    public Map<String, Object> get(String id)
+    {
+        String sql = "SELECT AT_ID,AT_NAME,AT_TIME,AT_MTID,T2.MT_NAME "
+                     + "FROM WX_ATTR_TYPE T1 LEFT JOIN sys_matter_type T2 ON t1.AT_MTID=t2.MT_ID where T1.AT_ID=?";
+        return baseDao.queryForMap(sql, id);
+    }
+
+    /**
+     * 删除
+     * @param request
+     */
+    public void deleAttribute(Integer id)
+    {
+        String sql = "delete from wx_attr_type where at_id=?";
+        baseDao.execute(sql, id);
+    }
+
+    /**
+     * @param proTypeId
+     * @param pic
+     * @throws UnsupportedEncodingException 
+     */
+    public String getAttributeByPro(Integer proTypeId, String pic)
+        throws UnsupportedEncodingException
+    {
+        String sql = "SELECT t1.AT_NAME,t2.* FROM wx_attr_type t1 "
+                     + "LEFT JOIN wx_attribute t2 ON t1.AT_ID=t2.A_TID "
+                     + "WHERE t1.AT_MTID=? " + "ORDER BY t1.AT_ID";
+        StringBuffer sb = new StringBuffer("");
+        System.out.println(proTypeId);
+        List<Map<String, Object>> list = baseDao.queryForList(sql, proTypeId);
+        String typeId = "";
+        if (list != null)
+        {
+            for (Map<String, Object> map : list)
+            {
+                if (null != map.get("A_ID"))
+                {
+                    String id = map.get("A_ID").toString();
+                    if (pic != null && !"".equals(pic))
+                    {
+                        String attr[] = pic.split(",");
+                        if ( !map.get("A_TID").toString().equals(typeId))
+                        {
+                            sb.append("<br/>").append(map.get("AT_NAME")).append(
+                                ":");
+                            if (pic.indexOf(id) > -1)
+                            {
+                                sb.append(
+                                    "&nbsp;&nbsp;&nbsp;&nbsp;<input type='checkbox' ").append(
+                                    "onclick='onchecked(this)' checked=true value='").append(
+                                    id).append("'> ").append(map.get("A_NAME"));
+                            }
+                            else
+                            {
+                                sb.append(
+                                    "&nbsp;&nbsp;<input type='checkbox' onclick='onchecked(this)' value='").append(
+                                    id).append("'> ").append(map.get("A_NAME"));
+                            }
+                            typeId = map.get("A_TID").toString();
+                        }
+                        else
+                        {
+                            if (pic.indexOf(id) > -1)
+                            {
+                                sb.append(
+                                    "&nbsp;&nbsp;&nbsp;&nbsp;<input type='checkbox' ").append(
+                                    "onclick='onchecked(this)' checked=true value='").append(
+                                    id).append("'> ").append(map.get("A_NAME"));
+                            }
+                            else
+                            {
+                                sb.append(
+                                    "&nbsp;&nbsp;<input type='checkbox' onclick='onchecked(this)' value='").append(
+                                    id).append("'> ").append(map.get("A_NAME"));
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if ( !map.get("A_TID").toString().equals(typeId))
+                        {
+                            sb.append("<br/>").append(map.get("AT_NAME")).append(
+                                ":");
+                            sb.append(
+                                "&nbsp;&nbsp;<input type='checkbox' onclick='onchecked(this)' value='").append(
+                                id).append("'> ").append(map.get("A_NAME"));
+                            typeId = map.get("A_TID").toString();
+                        }
+                        else
+                        {
+                            sb.append(
+                                "&nbsp;&nbsp;<input type='checkbox' onclick='onchecked(this)' value='").append(
+                                id).append("'> ").append(map.get("A_NAME"));
+                        }
+                    }
+                }
+            }
+        }
+        System.out.println(sb.toString());
+        return sb.toString();
+    }
+
+    /**
+     * 统计
+     * @return
+     */
+    public int count(Integer mtId)
+    {
+        String sql = "select count(*) count from wx_attr_type where AT_ID=?";
+        Map<String, Object> map = baseDao.queryForMap(sql, mtId);
+        int count = Integer.parseInt(map.get("count").toString());
+        return count;
+    }
+
+    /**
+     * 是否最后一级
+     * @param mtId
+     * @return
+     */
+    public boolean isLast(Integer mtId)
+    {
+        boolean flag = false;
+        String sql = "select IS_LAST from sys_matter_type where MT_ID =?";
+        Map<String, Object> map = baseDao.queryForMap(sql, mtId);
+        int islast = Integer.parseInt(map.get("IS_LAST").toString());
+        if (islast > 0)
+        {
+            flag = true;
+        }
+        return flag;
+    }
+}

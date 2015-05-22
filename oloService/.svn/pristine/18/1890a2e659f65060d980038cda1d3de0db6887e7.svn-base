@@ -1,0 +1,89 @@
+/*===========================按钮样式================================*/
+
+/**biao ge bian se**/
+tr.odd{background: #F8F8FF;}
+tr.highlight {
+	background: #FFF3BF;
+}
+
+tr.selected {
+	background: #FFF3BF;
+}
+
+.btn_add { /*添加*/
+	width: 57px;
+	height: 22px;
+	border: 0px scrollbar;
+	azimuth: center;
+	background: url("../images/button/btn_add.gif") no-repeat;
+
+}
+
+.btn_edit { /*修改*/
+	width: 57px;
+	height: 22px;
+	border: 0px scrollbar;
+	azimuth: center;
+
+	
+	background: url("../images/button/btn_xg.gif") no-repeat;
+}
+
+.btn_delete { /*删除*/
+	width: 57px;
+	height: 22px;
+	border: 0px scrollbar;
+	azimuth: center;
+	background: url("../images/button/btn_delete.gif") no-repeat;
+}
+
+.btn_ok { /*保存*/
+	width: 57px;
+	height: 22px;
+	border: 0px scrollbar;
+	azimuth: center;
+	background: url("../images/button/btn_smallbc.gif") no-repeat;
+}
+
+.btn_search { /*查询*/
+	width: 57px;
+	height: 22px;
+	border: 0px scrollbar;
+	azimuth: center;
+
+
+	background: url("../images/button/btn_search.gif") no-repeat;
+}
+
+.btn_qx { /*取消*/
+	width: 57px;
+	height: 22px;
+	border: 0px scrollbar;
+	azimuth: center;
+	background: url("../images/button/btn_cancel2.gif") no-repeat;
+}
+
+.btn_tj { /*提交*/
+	width: 57px;
+	height: 22px;
+	border: 0px scrollbar;
+	azimuth: center;
+	
+	background: url("../images/button/btn_tj.gif") no-repeat;
+}
+.btn_fh { /*返回*/
+	width: 57px;
+	height: 22px;
+	border: 0px scrollbar;
+	azimuth: center;
+	background: url("../images/button/btn_fh.gif") no-repeat;
+}
+
+.btn_close { /*关闭*/
+	width: 57px;
+	height: 22px;
+	border: 0px scrollbar;
+	azimuth: center;
+	background: url("../images/button/btn_close.gif") no-repeat;
+}
+

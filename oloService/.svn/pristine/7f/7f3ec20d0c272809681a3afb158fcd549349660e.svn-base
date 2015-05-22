@@ -1,0 +1,43 @@
+package com.sys.web.service;
+
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.amiba.dao.BaseDao;
+import com.platform.common.servlet.RequestParameter;
+
+/**
+ * 店员管理
+ * @author yl
+ *
+ */
+@Service
+public class StoreService {
+
+	@Autowired
+	private BaseDao baseDao;
+	
+	/**
+	 * 门店列表
+	 * @param request
+	 * @return
+	 */
+	public Map<String,Object> queryStoreList(HttpServletRequest request){
+		
+		int page = RequestParameter.getIntGreaterThen(request, "page", 0, 0,false);
+		int count = RequestParameter.getInt(request, "count", 20, 1, 20,false);
+		String s_name = RequestParameter.getString(request, "s_name");
+		String sqlWhere = "";
+		if(null != s_name && !"".equals(s_name)){
+			sqlWhere = " AND S_NAME LIKE '%"+s_name+"%'";
+		}
+		
+		String sql = "SELECT * FROM SYS_STORE WHERE 1=1"+sqlWhere;
+		Map<String,Object> map =  baseDao.pagination(page, count, sql);
+		return map;
+	}
+}

@@ -1,0 +1,148 @@
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %> 
+
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <base href="<%=basePath%>">
+    
+    <title>区县管理</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=8" />
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="expires" content="0">    
+	<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+	<meta http-equiv="description" content="This is my page">
+	<script src="<%=basePath%>/js/jquery-1.8.1.min.js"	type="text/javascript">	</script>
+	<!--
+	<link rel="stylesheet" type="text/css" href="styles.css">
+	-->
+	<link rel="stylesheet" href="<%=basePath %>css/index.css" type="text/css"></link>
+	<link rel="stylesheet" href="<%=basePath %>css/style.css" type="text/css"></link>
+<style>
+.btnGrayS{
+   height: 30px;
+   width:200px;
+   background: #f1f1f1;
+   text-decoration: none;
+   border: 1px solid #cccccc;
+}
+.ListProduct{
+ width: 100%;
+ border: 1px solid #ccc;
+ border-collapse: collapse;
+}
+.ListProduct th{
+ background: #f1f1f1;
+}
+	.pagediv {
+		margin-top: 5px;
+	}
+	
+	.pagediv a{
+	border:1px solid #ccc;
+	height: 13px;
+	width: auto;
+	}
+	.pagediv .pageright{
+	float: right;
+	border: 1px solid #ccc;
+	margin-right: 20px;
+	}
+</style>
+<script type="text/javascript">
+	//分页
+	function loadpage(currpage){
+		var totalpage =document.getElementById("totalpage").value; 
+		if(((currpage+1)*1)<1){
+			alert('现在是第一页');
+			return;
+		}else if((currpage*1)>(totalpage*1)){
+			alert('现在是最后一页');
+			return;
+		}else if((currpage*1)==(totalpage*1)){
+			alert('现在是最后一页');
+			return;
+		}
+		window.location.href="<%=basePath%>sysAddressAction/dIndex?page="+currpage+"&c_id=${c_id}&p_id=${p_id}";
+	}
+	function deleteDis(d_id){
+		if(window.confirm("删除后数据将无法恢复，您确定删除吗？")){
+			$.ajax({
+				url:"<%=basePath %>sysAddressAction/deleteDis?d_id="+d_id,
+				type:"post",
+				dataType:"json",
+				async: false,
+				error: function(request) {
+					alert("删除失败，请稍后重试！");
+				},
+				success:function(data){
+					if(data =="1"){
+						window.location.reload();
+					}else if(data =="3"){
+						alert("用户已失效，请重新登录后再删除!");
+					}else{
+						alert("删除失败，请稍后重试!");
+						return false;
+					}
+				}
+			});
+		}
+	}
+</script>
+</head>
+  
+<body onload="">
+	<div class="content">
+		<div class="cLine">
+			<div class="cLineB"><h4>区县列表</h4><a href="<%=basePath %>sysAddressAction/newDisPage?c_id=${c_id }&p_id=${p_id}" title='新增区县' class='btnGrayS vm bigbtn'>新增区县</a><a href="javascript:history.go(-1);" class="right" style="margin-right:50px;margin-top:-7px" >返回</a></div>
+			<div class="clr"></div>
+		</div>
+			<div class="clr"></div>
+		</div>
+		<div class="msgWrap">
+			<form method="post"  action="" id="info" >
+				<TABLE class="ListProduct" border="0" cellSpacing="0" cellPadding="0" width="100%">
+					<THEAD>
+						<TR>
+							<TH width="30" >编号</TH>
+							<TH width="150">名称</TH>
+							<TH width="*">操作</TH>
+						</TR>
+					</THEAD>
+					<TBODY>
+						<c:if test="${not empty districtMap}">
+	              			<c:forEach  var="resultList" items="${districtMap.result}" varStatus="status">
+	              				<TR>
+									<td>${status.index+1 }</td>
+									<td style="text-align:center;">${resultList.D_NAME}</td>
+									<td><a href="<%=basePath %>sysAddressAction/editDisPage?d_id=${resultList.D_ID }&c_id=${c_id }&p_id=${p_id}">编辑</a>&nbsp;&nbsp;<a href="javaScript:deleteDis('${resultList.D_ID }')">删除</a></td>
+								</TR>
+	              			</c:forEach>
+	              		</c:if>
+					</TBODY>
+				</TABLE>
+			</form> 
+		</div>
+		<div class="pagediv">
+			<div class="pageleft " style="float: left;">
+				<a href="javascript:loadpage(0)">首页</a>
+				<a href="javascript:loadpage('${districtMap.page - 1}')">上一页</a>
+				<a href="javascript:loadpage('${districtMap.page + 1}')">下一页</a>
+				<a href="javascript:loadpage('${districtMap.pageCount-1}')">尾页</a>
+			</div>
+			<div class="pageright">
+				当前显示第${districtMap.page+1}页，共有${districtMap.pageCount}页
+			</div>
+		</div>
+		<input type="hidden" id="totalpage" name="totalpage" value="${districtMap.pageCount}">
+		<div class="clr"></div>
+	</div>
+</body>
+</html>

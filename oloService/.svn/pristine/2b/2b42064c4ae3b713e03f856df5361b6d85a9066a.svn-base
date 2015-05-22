@@ -1,0 +1,75 @@
+<%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    
+    <title>新增资讯</title>
+   	<meta http-equiv="X-UA-Compatible" content="IE=8" />
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="expires" content="0">    
+	<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+	<meta http-equiv="description" content="This is my page">
+	<link rel="stylesheet" type="text/css" href="../css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap-responsive.css" />
+    <link rel="stylesheet" type="text/css" href="../css/style.css" />
+    <script type="text/javascript" src="../js/jquery-1.8.1.min.js"></script>
+    
+    <script type="text/javascript" src="../js/bootstrap.js"></script>
+    <script type="text/javascript" src="../js/ckform.js"></script>
+    <script type="text/javascript" src="../js/common.js"></script>
+    
+	<script src="<%=basePath%>js/jquery-1.8.1.min.js"	type="text/javascript">	</script>
+	<script>
+		function saveNewsType(){
+			var nt_name = $("#nt_name").val();
+			if(nt_name.replace(/\s/g,'') == ""){
+				alert("名称不能为空!");
+				return false;
+			}
+			document.getElementById("newsTypeForm").submit();
+		}
+		
+		function init(){
+			var flag = "${flag}";
+			if(null != flag && "" != flag){
+				if(flag == "1"){
+					alert("添加成功!");
+					window.location.href="<%=basePath %>newsTypeAction/index";
+				}else if(flag =="3"){
+					alert("用户已失效，请重新登录后再增加!");
+				}else{
+					alert("添加失败");
+				}
+			}
+		}
+	</script>
+</head>
+  
+<body onload="init()">
+	<form id="newsTypeForm" name="newsTypeForm" action="<%=basePath %>newsTypeAction/saveNewsType" method="post">
+		<table class="table table-bordered table-hover definewidth m10">
+			<tr>	
+				<td class="tdLabel" width="20%">标题：</td>	
+				<td><input type="text" id="nt_name" name="nt_name" value=""></td>
+			</tr>
+			<tr>	
+				<td class="tdLabel" width="20%">内容：</td>	
+				<td><textarea name="nt_desc" id="nt_desc" rows="5" style="width:590px;height:260px"></textarea></td>
+			</tr>
+			<tr>
+				<td  colspan="2" align="center">
+					<input type="button" value="保存"  class="btn btn-success" style="cursor: pointer;" onclick="saveNewsType()" />
+					<input type="button" value="取消"  class="btn btn-primary" style="cursor: pointer;" onclick="window.history.go(-1)" />
+				</td>
+			</tr>
+		</table>
+	</form>
+</body>
+</html>

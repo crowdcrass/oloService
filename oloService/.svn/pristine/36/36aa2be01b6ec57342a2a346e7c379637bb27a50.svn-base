@@ -1,0 +1,30 @@
+package com.sys.wx.core.base;
+
+import com.sys.wx.core.util.WeixinUtil;
+
+
+public class WXConfig {
+	
+	public static String APPID = "wx31236132a6bc4a17";   
+	public static String SECRET = "75bf9acfcae8d445ea690b5e6dea0f59";
+	public static String BASE_URL = "http://skcancer.xicp.net/olo";
+	
+	public static String WEIXIN_URL = "https://api.weixin.qq.com/cgi-bin/";
+	
+	//素材地址
+	//public static final String PROJ_IMG_URL =  "http://localhost:8090/wxpt_images/";
+	
+	// 获取 CODE Servlet
+	public static final String CODE_URL =WXConfig.BASE_URL+"/oAuthAction/getAppId" ;
+	
+	// 获取access_token的接口地址（GET） 限200（次/天）
+	public final static String ACCESS_TOKEN_URL = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=APPID&secret=APPSECRET";
+	
+	// 菜单创建（POST） 限100（次/天）  
+	public static String MENU_CREATE_URL = "https://api.weixin.qq.com/cgi-bin/menu/create?access_token=ACCESS_TOKEN";   
+	
+	// 客服回复
+	public static String KF_MESSAGE_URL = "https://api.weixin.qq.com/cgi-bin/message/custom/send?access_token=ACCESS_TOKEN";
+
+	
+}

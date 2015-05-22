@@ -1,0 +1,475 @@
+package com.sys.entity;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+
+
+public class Result
+{
+    private int FID;
+    private String FBillNo;
+    private String FDocumentStatus;
+    private Date FDate;
+    private FDept FDept;
+    private String FCuName;
+    private FCustomer FCustomer;
+    private FResalut FResalut;
+    private String FAddress;
+    private String FCuAdd;
+    private FCreatorId FCreatorId;
+    private Date FCreateDate;
+    private FModifierId FModifierId;
+    private Date FModifyDate;
+    private String FBuyInfo;
+    private String FSGTel;
+    private FCountry FCountry;
+    private FProvinces FProvinces;
+    private FCity FCity;
+    private FOrgId FOrgId;
+    private FArea FArea;
+    private FStreet FStreet;
+    private String FTel;
+    private String FCancelStatus;
+    private List<?> tj_businessrecord__FBillHead_Link;
+
+    public int getFID()
+    {
+        return FID;
+    }
+
+    public void setFID(int fID)
+    {
+        FID = fID;
+    }
+
+    public String getFBillNo()
+    {
+        return FBillNo;
+    }
+
+    public void setFBillNo(String fBillNo)
+    {
+        FBillNo = fBillNo;
+    }
+
+    public String getFDocumentStatus()
+    {
+        return FDocumentStatus;
+    }
+
+    public void setFDocumentStatus(String fDocumentStatus)
+    {
+        FDocumentStatus = fDocumentStatus;
+    }
+
+    public FDept getFDept()
+    {
+        return FDept;
+    }
+
+    public void setFDept(FDept fDept)
+    {
+        FDept = fDept;
+    }
+
+    public String getFCuName()
+    {
+        return FCuName;
+    }
+
+    public void setFCuName(String fCuName)
+    {
+        FCuName = fCuName;
+    }
+
+    public String getFAddress()
+    {
+        return FAddress;
+    }
+
+    public void setFAddress(String fAddress)
+    {
+        FAddress = fAddress;
+    }
+
+    public String getFCuAdd()
+    {
+        return FCuAdd;
+    }
+
+    public void setFCuAdd(String fCuAdd)
+    {
+        FCuAdd = fCuAdd;
+    }
+
+    public Date getFCreateDate()
+    {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss E Z");
+        String sDate = sdf.format(FCreateDate);
+        return FCreateDate;
+    }
+
+    public void setFCreateDate(Date fCreateDate)
+    {
+        FCreateDate = fCreateDate;
+    }
+
+    public String getFBuyInfo()
+    {
+        return FBuyInfo;
+    }
+
+    public void setFBuyInfo(String fBuyInfo)
+    {
+        FBuyInfo = fBuyInfo;
+    }
+
+    public String getFSGTel()
+    {
+        return FSGTel;
+    }
+
+    public void setFSGTel(String fSGTel)
+    {
+        FSGTel = fSGTel;
+    }
+
+    public String getFTel()
+    {
+        return FTel;
+    }
+
+    public void setFTel(String fTel)
+    {
+        FTel = fTel;
+    }
+
+    public String getFCancelStatus()
+    {
+        return FCancelStatus;
+    }
+
+    public void setFCancelStatus(String fCancelStatus)
+    {
+        FCancelStatus = fCancelStatus;
+    }
+
+    public List<?> getTj_businessrecord__FBillHead_Link()
+    {
+        return tj_businessrecord__FBillHead_Link;
+    }
+
+    public void setTj_businessrecord__FBillHead_Link(List<?> tj_businessrecord__FBillHead_Link)
+    {
+        this.tj_businessrecord__FBillHead_Link = tj_businessrecord__FBillHead_Link;
+    }
+
+    public Date getFDate()
+    {
+        return FDate;
+    }
+
+    public void setFDate(Date fDate)
+    {
+        FDate = fDate;
+    }
+
+    public FCustomer getFCustomer()
+    {
+        return FCustomer;
+    }
+
+    public void setFCustomer(FCustomer fCustomer)
+    {
+        FCustomer = fCustomer;
+    }
+
+    public FResalut getFResalut()
+    {
+        return FResalut;
+    }
+
+    public void setFResalut(FResalut fResalut)
+    {
+        FResalut = fResalut;
+    }
+
+    public FCreatorId getFCreatorId()
+    {
+        return FCreatorId;
+    }
+
+    public void setFCreatorId(FCreatorId fCreatorId)
+    {
+        FCreatorId = fCreatorId;
+    }
+
+    public FModifierId getFModifierId()
+    {
+        return FModifierId;
+    }
+
+    public void setFModifierId(FModifierId fModifierId)
+    {
+        FModifierId = fModifierId;
+    }
+
+    public Date getFModifyDate()
+    {
+        return FModifyDate;
+    }
+
+    public void setFModifyDate(Date fModifyDate)
+    {
+        FModifyDate = fModifyDate;
+    }
+
+    public FCountry getFCountry()
+    {
+        return FCountry;
+    }
+
+    public void setFCountry(FCountry fCountry)
+    {
+        FCountry = fCountry;
+    }
+
+    public FProvinces getFProvinces()
+    {
+        return FProvinces;
+    }
+
+    public void setFProvinces(FProvinces fProvinces)
+    {
+        FProvinces = fProvinces;
+    }
+
+    public FCity getFCity()
+    {
+        return FCity;
+    }
+
+    public void setFCity(FCity fCity)
+    {
+        FCity = fCity;
+    }
+
+    public FOrgId getFOrgId()
+    {
+        return FOrgId;
+    }
+
+    public void setFOrgId(FOrgId fOrgId)
+    {
+        FOrgId = fOrgId;
+    }
+
+    public FArea getFArea()
+    {
+        return FArea;
+    }
+
+    public void setFArea(FArea fArea)
+    {
+        FArea = fArea;
+    }
+
+    public FStreet getFStreet()
+    {
+        return FStreet;
+    }
+
+    public void setFStreet(FStreet fStreet)
+    {
+        FStreet = fStreet;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result
+                 + ( (FAddress == null) ? 0 : FAddress.hashCode());
+        result = prime * result + ( (FArea == null) ? 0 : FArea.hashCode());
+        result = prime * result + ( (FBillNo == null) ? 0 : FBillNo.hashCode());
+        result = prime * result
+                 + ( (FBuyInfo == null) ? 0 : FBuyInfo.hashCode());
+        result = prime * result
+                 + ( (FCancelStatus == null) ? 0 : FCancelStatus.hashCode());
+        result = prime * result + ( (FCity == null) ? 0 : FCity.hashCode());
+        result = prime * result
+                 + ( (FCountry == null) ? 0 : FCountry.hashCode());
+        result = prime * result
+                 + ( (FCreateDate == null) ? 0 : FCreateDate.hashCode());
+        result = prime * result
+                 + ( (FCreatorId == null) ? 0 : FCreatorId.hashCode());
+        result = prime * result + ( (FCuAdd == null) ? 0 : FCuAdd.hashCode());
+        result = prime * result + ( (FCuName == null) ? 0 : FCuName.hashCode());
+        result = prime * result
+                 + ( (FCustomer == null) ? 0 : FCustomer.hashCode());
+        result = prime * result + ( (FDate == null) ? 0 : FDate.hashCode());
+        result = prime * result + ( (FDept == null) ? 0 : FDept.hashCode());
+        result = prime
+                 * result
+                 + ( (FDocumentStatus == null) ? 0 : FDocumentStatus.hashCode());
+        result = prime * result + FID;
+        result = prime * result
+                 + ( (FModifierId == null) ? 0 : FModifierId.hashCode());
+        result = prime * result
+                 + ( (FModifyDate == null) ? 0 : FModifyDate.hashCode());
+        result = prime * result + ( (FOrgId == null) ? 0 : FOrgId.hashCode());
+        result = prime * result
+                 + ( (FProvinces == null) ? 0 : FProvinces.hashCode());
+        result = prime * result
+                 + ( (FResalut == null) ? 0 : FResalut.hashCode());
+        result = prime * result + ( (FSGTel == null) ? 0 : FSGTel.hashCode());
+        result = prime * result + ( (FStreet == null) ? 0 : FStreet.hashCode());
+        result = prime * result + ( (FTel == null) ? 0 : FTel.hashCode());
+        result = prime
+                 * result
+                 + ( (tj_businessrecord__FBillHead_Link == null) ? 0 : tj_businessrecord__FBillHead_Link.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
+        Result other = (Result)obj;
+        if (FAddress == null)
+        {
+            if (other.FAddress != null) return false;
+        }
+        else if ( !FAddress.equals(other.FAddress)) return false;
+        if (FArea == null)
+        {
+            if (other.FArea != null) return false;
+        }
+        else if ( !FArea.equals(other.FArea)) return false;
+        if (FBillNo == null)
+        {
+            if (other.FBillNo != null) return false;
+        }
+        else if ( !FBillNo.equals(other.FBillNo)) return false;
+        if (FBuyInfo == null)
+        {
+            if (other.FBuyInfo != null) return false;
+        }
+        else if ( !FBuyInfo.equals(other.FBuyInfo)) return false;
+        if (FCancelStatus == null)
+        {
+            if (other.FCancelStatus != null) return false;
+        }
+        else if ( !FCancelStatus.equals(other.FCancelStatus)) return false;
+        if (FCity == null)
+        {
+            if (other.FCity != null) return false;
+        }
+        else if ( !FCity.equals(other.FCity)) return false;
+        if (FCountry == null)
+        {
+            if (other.FCountry != null) return false;
+        }
+        else if ( !FCountry.equals(other.FCountry)) return false;
+        if (FCreateDate == null)
+        {
+            if (other.FCreateDate != null) return false;
+        }
+        else if ( !FCreateDate.equals(other.FCreateDate)) return false;
+        if (FCreatorId == null)
+        {
+            if (other.FCreatorId != null) return false;
+        }
+        else if ( !FCreatorId.equals(other.FCreatorId)) return false;
+        if (FCuAdd == null)
+        {
+            if (other.FCuAdd != null) return false;
+        }
+        else if ( !FCuAdd.equals(other.FCuAdd)) return false;
+        if (FCuName == null)
+        {
+            if (other.FCuName != null) return false;
+        }
+        else if ( !FCuName.equals(other.FCuName)) return false;
+        if (FCustomer == null)
+        {
+            if (other.FCustomer != null) return false;
+        }
+        else if ( !FCustomer.equals(other.FCustomer)) return false;
+        if (FDate == null)
+        {
+            if (other.FDate != null) return false;
+        }
+        else if ( !FDate.equals(other.FDate)) return false;
+        if (FDept == null)
+        {
+            if (other.FDept != null) return false;
+        }
+        else if ( !FDept.equals(other.FDept)) return false;
+        if (FDocumentStatus == null)
+        {
+            if (other.FDocumentStatus != null) return false;
+        }
+        else if ( !FDocumentStatus.equals(other.FDocumentStatus)) return false;
+        if (FID != other.FID) return false;
+        if (FModifierId == null)
+        {
+            if (other.FModifierId != null) return false;
+        }
+        else if ( !FModifierId.equals(other.FModifierId)) return false;
+        if (FModifyDate == null)
+        {
+            if (other.FModifyDate != null) return false;
+        }
+        else if ( !FModifyDate.equals(other.FModifyDate)) return false;
+        if (FOrgId == null)
+        {
+            if (other.FOrgId != null) return false;
+        }
+        else if ( !FOrgId.equals(other.FOrgId)) return false;
+        if (FProvinces == null)
+        {
+            if (other.FProvinces != null) return false;
+        }
+        else if ( !FProvinces.equals(other.FProvinces)) return false;
+        if (FResalut == null)
+        {
+            if (other.FResalut != null) return false;
+        }
+        else if ( !FResalut.equals(other.FResalut)) return false;
+        if (FSGTel == null)
+        {
+            if (other.FSGTel != null) return false;
+        }
+        else if ( !FSGTel.equals(other.FSGTel)) return false;
+        if (FStreet == null)
+        {
+            if (other.FStreet != null) return false;
+        }
+        else if ( !FStreet.equals(other.FStreet)) return false;
+        if (FTel == null)
+        {
+            if (other.FTel != null) return false;
+        }
+        else if ( !FTel.equals(other.FTel)) return false;
+        if (tj_businessrecord__FBillHead_Link == null)
+        {
+            if (other.tj_businessrecord__FBillHead_Link != null) return false;
+        }
+        else if ( !tj_businessrecord__FBillHead_Link.equals(other.tj_businessrecord__FBillHead_Link))
+            return false;
+        return true;
+    }
+
+    @Override
+    public String toString()
+    {
+        return ReflectionToStringBuilder.toString(this);
+    }
+}

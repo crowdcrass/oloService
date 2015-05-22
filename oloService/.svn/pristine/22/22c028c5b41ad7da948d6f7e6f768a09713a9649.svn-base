@@ -1,0 +1,263 @@
+package com.amiba.app.service;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.amiba.dao.BaseDao;
+import com.platform.common.servlet.RequestParameter;
+import com.platform.common.servlet.WorkException;
+import com.platform.common.sql.SqlUtil;
+
+
+/**
+ * 
+ * @author zfj
+ *
+ */
+@Service
+public class CaseTypeService4App
+{
+
+    private static Log log = LogFactory.getLog(CaseTypeService4App.class);
+
+    @Autowired
+    private BaseDao baseDao;
+
+    /**
+     * 保存案例
+     * @param request
+     * @return
+     */
+    public String saveCaseType(HttpServletRequest request)
+    {
+        log.info("saveCaseType");
+        String flag = "0";
+        String c_name = RequestParameter.getString(request, "c_name");
+        int ct_id = RequestParameter.getInt(request, "ct_id");
+        String c_desc = RequestParameter.getString(request, "c_desc");
+        String[] cp_url = RequestParameter.getString(request, "cp_url").split(
+            ",");
+
+        String e_phone = RequestParameter.getString(request, "e_phone");
+        String sql = " SELECT E_ID FROM W_EMPLOYEE WHERE E_PHONE=? ";
+        Map<String, Object> map = baseDao.queryForMap(sql, e_phone);
+        if (null != map && !"".equals(map))
+        {
+            SqlUtil su = this.baseDao.getUtil();
+            try
+            {
+                su.beginTransaction();
+
+                sql = " SELECT IFNULL(MAX(C_ID),0)+1 AS C_ID FROM W_CASE ";
+                int c_id = su.getInt(sql);
+                sql = "INSERT INTO W_CASE(C_ID,C_NAME,CT_ID,C_DESC,LR_RY,LR_SJ) VALUES(?,?,?,?,?,?) ";
+                su.execute(sql, c_id, c_name, ct_id, c_desc, map.get("E_ID"),
+                    new Date());
+
+                for (int i = 0; i < cp_url.length; i++ )
+                {
+                    String sql2 = " SELECT IFNULL(MAX(CP_ID),0)+1 AS CP_ID FROM W_CASE_PIC ";
+                    int cp_id = su.getInt(sql2);
+                    sql2 = " INSERT INTO W_CASE_PIC(CP_ID, CP_NAME, CP_DESC, CP_URL, CP_SORT_NUM, C_ID, LR_RY, LR_SJ) VALUES(?,?,?,?,?,?,?,?) ";
+                    su.execute(sql2, cp_id, c_name, c_desc, cp_url[i], i + 1,
+                        c_id, map.get("E_ID"), new Date());
+                }
+
+                flag = "1";
+                su.commitTransaction();
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+            finally
+            {
+                su.close();
+            }
+            return flag;
+
+        }
+        else
+        {
+            throw new WorkException(13, "请先登录!");
+        }
+    }
+
+    /**
+     * 查询案例树形数据
+     * @return
+     */
+    public List<Map<String, Object>> findCaseTypeCategory()
+    {
+        log.info("findCaseTypeCategory");
+        String sql = "";
+        /*		sql = " SELECT DISTINCT GNS.CT_ID \"id\",GNS.C_PARENT_ID \"pid\"," +
+        				"GNS.C_NAME \"name\",gns.c_sort_num " +
+        				" FROM W_CASE_TYPE GNS ORDER BY CONVERT(GNS.C_SORT_NUM ,SIGNED) ";
+        		List<Map<String,Object>> list = baseDao.queryForList(sql);*/
+
+        sql = " SELECT * FROM W_CASE_TYPE WHERE C_PARENT_ID = 0 ";
+        List<Map<String, Object>> list = this.baseDao.getUtil().query(sql);
+        if (null != list && list.size() > 0)
+        {
+            for (Map<String, Object> map : list)
+            {
+                String mtId = map.get("CT_ID").toString();
+                sql = " SELECT * FROM W_CASE_TYPE WHERE C_PARENT_ID=? ";
+                List<Map<String, Object>> list2 = this.baseDao.getUtil().query(
+                    sql, mtId);
+                if (null != list2 && list2.size() > 0)
+                {
+                    for (Map<String, Object> map1 : list2)
+                    {
+                        String mtIdChildSecId = map1.get("CT_ID").toString();
+                        sql = " SELECT * FROM W_CASE_TYPE WHERE C_PARENT_ID=? ";
+                        List<Map<String, Object>> list3 = this.baseDao.getUtil().query(
+                            sql, mtIdChildSecId);
+                        if (null != list3 && list3.size() > 0)
+                        {
+                            for (Map<String, Object> map2 : list3)
+                            {
+                                String mtIdChildThirdId = map2.get("CT_ID").toString();
+                                sql = " SELECT * FROM W_CASE_TYPE WHERE C_PARENT_ID=? ";
+                                List<Map<String, Object>> list4 = this.baseDao.getUtil().query(
+                                    sql, mtIdChildThirdId);
+                                map2.put("fourList", list4);
+                            }
+                        }
+                        map1.put("thirdList", list3);
+                    }
+
+                }
+                map.put("secList", list2);
+            }
+        }
+        return list;
+    }
+
+    /**
+     * 根据案例名称模糊查询
+     * @param request
+     * @return
+     */
+    public List<Map<String, Object>> findCaseByNameBlur(HttpServletRequest request)
+    {
+        log.info("findCaseByNameBlur");
+        String c_name = RequestParameter.getString(request, "c_name");
+        String sql = " SELECT * FROM W_CASE "
+                     + " WHERE C_NAME like ? ORDER BY C_ID DESC ";
+        List<Map<String, Object>> list = this.baseDao.getUtil().query(sql,
+            "%" + c_name + "%");
+        if (null != list && list.size() > 0)
+        {
+            for (Map<String, Object> map : list)
+            {
+                sql = " SELECT CP_ID, CP_URL, CP_SORT_NUM FROM W_CASE_PIC WHERE C_ID = ? ";
+                List<Map<String, Object>> list2 = this.baseDao.getUtil().query(
+                    sql, map.get("C_ID"));
+                map.put("pics", list2);
+            }
+        }
+        return list;
+    }
+
+    /**
+     * 根据案例id查询案例
+     * @param request
+     * @return
+     */
+    public List<Map<String, Object>> findCaseById(HttpServletRequest request)
+    {
+        log.info("findCaseById");
+        String c_id = RequestParameter.getString(request, "c_id");
+        String sql = " SELECT * FROM W_CASE WHERE C_ID = ? ";
+        List<Map<String, Object>> list = this.baseDao.getUtil().query(sql, c_id);
+        if (null != list && list.size() > 0)
+        {
+            for (Map<String, Object> map : list)
+            {
+                sql = " SELECT CP_ID, CP_URL, CP_SORT_NUM FROM W_CASE_PIC WHERE C_ID = ? ";
+                List<Map<String, Object>> list2 = this.baseDao.getUtil().query(
+                    sql, c_id);
+                map.put("pics", list2);
+            }
+        }
+        return list;
+    }
+
+    /**
+     * 模糊查询案例详情
+     * @param request
+     * @return
+     */
+    public List<Map<String, Object>> findCaseBlur(HttpServletRequest request)
+    {
+        log.info("findCaseBlur");
+        String condition = RequestParameter.getString(request, "condition");
+        //String sql = " SELECT w.*, p.CP_URL, p.CP_SORT_NUM FROM  W_CASE w LEFT JOIN W_CASE_PIC p on w.C_ID = p.C_ID  WHERE 1 = 1";
+        String sql = " SELECT * FROM W_CASE WHERE 1 = 1 ";
+        if (null != condition && !"".equals(condition))
+        {
+            sql += " AND C_NAME LIKE '%" + condition + "%'"
+                   + " OR C_DESC LIKE '%" + condition + "%'"
+                   + " ORDER BY C_ID DESC ";
+        }
+        List<Map<String, Object>> list = this.baseDao.getUtil().query(sql);
+        if (null != list && list.size() > 0)
+        {
+            for (Map<String, Object> map : list)
+            {
+                String c_id = map.get("C_ID").toString();
+                sql = " SELECT CP_ID, CP_URL, CP_SORT_NUM FROM W_CASE_PIC WHERE C_ID = ? ";
+                List<Map<String, Object>> list2 = this.baseDao.getUtil().query(
+                    sql, c_id);
+                map.put("pics", list2);
+            }
+        }
+        return list;
+    }
+
+    /**
+     * 查找所有案例
+     * @return
+     */
+    public List<Map<String, Object>> findAllCase()
+    {
+        log.info("findAllCase");
+        String sql = " SELECT * FROM W_CASE ORDER BY C_ID DESC ";
+        List<Map<String, Object>> list = this.baseDao.getUtil().query(sql);
+        if (null != list && list.size() > 0)
+        {
+            for (Map<String, Object> map : list)
+            {
+                String c_id = map.get("C_ID").toString();
+                sql = " SELECT CP_ID, CP_URL, CP_SORT_NUM FROM W_CASE_PIC WHERE C_ID = ? ";
+                List<Map<String, Object>> list2 = this.baseDao.getUtil().query(
+                    sql, c_id);
+                map.put("pics", list2);
+            }
+        }
+        return list;
+    }
+
+    /**
+     * 根据案例id查询案例图片
+     * @param request
+     * @return
+     */
+    public List<Map<String, Object>> findPicsById(HttpServletRequest request)
+    {
+        log.info("findPicsById");
+        String c_id = RequestParameter.getString(request, "c_id");
+        String sql = " SELECT * FROM W_CASE_PIC where C_ID = ? ORDER BY CP_ID DESC ";
+        return baseDao.queryForList(sql, c_id);
+    }
+}

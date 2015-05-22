@@ -1,0 +1,104 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ include file="/commons/imgurl.jsp"%>
+<%
+	String path = request.getContextPath();
+	String basePath = request.getScheme() + "://"
+			+ request.getServerName() + ":" + request.getServerPort()
+			+ path + "/";
+%>
+<html>
+
+<head>   
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=8" />
+
+	<title>随手记详情</title>
+	<link rel="stylesheet" type="text/css" href="../css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap-responsive.css" />
+    <link rel="stylesheet" type="text/css" href="../css/style.css" />
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    
+    <script type="text/javascript" src="../js/bootstrap.js"></script>
+    <script type="text/javascript" src="../js/ckform.js"></script>
+    <script type="text/javascript" src="../js/common.js"></script>
+	<script src="<%=basePath%>/js/jquery-1.8.1.min.js"	type="text/javascript">	</script>
+	
+   </script>
+	<script type="text/javascript">
+		
+	</script>
+</head>
+
+<body>
+	<input type="button" value="返回"  class="btn btn-primary" style="cursor: pointer;float: right;margin-top: 10px;margin-right:10px;margin-bottom: 10px;" onclick="window.history.go(-1)" />
+	<table class="table table-bordered table-hover definewidth m10">
+		<tr>	
+			<td class="tableleft" width="15%">客户姓名</td>	
+			<td>${customerInfo.CI_CUS_NAME }</td>
+			<td class="tableleft">电话</td>	
+			<td>${customerInfo.CI_CUS_PHONE }</td>
+		</tr>
+		<tr>	
+			<td class="tableleft">QQ</td>
+			<td>${customerInfo.CI_CUS_QQ }</td>
+			<td class="tableleft">Email</td>	
+			<td>${customerInfo.CI_CUS_EMAIL }</td>
+		</tr>
+		<tr>	
+			<td class="tableleft">身份证</td>	
+			<td>${customerInfo.CI_ID_CARD }</td>
+			<td class="tableleft">其他电话</td>
+			<td>${customerInfo.CI_OTHER_PHONE }</td>
+		</tr>
+		<tr>	
+			
+		</tr>
+		<tr>	
+			<td class="tableleft">国家</td>
+			<td>${customerInfo.CI_COUNTRY }</td>
+			<td class="tableleft">省份</td>
+			<td>${customerInfo.CI_PROVINCE }</td>
+		</tr>
+		<tr>	
+			<td class="tableleft">城市</td>
+			<td>${customerInfo.CI_CITY }</td>
+			<td class="tableleft">区域</td>
+			<td>${customerInfo.CI_DIS }</td>
+		</tr>
+		<tr>	
+			<td class="tableleft">街/镇</td>
+			<td>${customerInfo.CI_STREET }</td>
+			<td class="tableleft">具体地址</td>
+			<td>${customerInfo.CI_DETAILADD }</td>
+		</tr>
+		<tr>	
+			<td class="tableleft">长地址</td>
+			<td colspan="3">${customerInfo.CI_LONG_ADD }</td>
+		</tr>
+		<tr>	
+			<td class="tableleft">结果鉴别</td>
+			<td>${customerInfo.CI_RESULT }</td>
+			<td class="tableleft">原因</td>
+			<td>${customerInfo.CI_REASON }</td>
+		</tr>
+		<tr>	
+			<td class="tableleft">购买意向</td>
+			<td>${customerInfo.CI_BUY_INTENTION }</td>
+			<td class="tableleft">备注</td>
+			<td>${customerInfo.CI_REMARK }</td>
+		</tr>
+		<tr>	
+			<td class="tableleft">客户来源</td>
+			<td>${customerInfo.CI_CUSTOMER_SOURCE }</td>
+			<td class="tableleft">语音地址</td>
+			<td>${imgHttp }${customerInfo.CI_VOICE_URL }</td>
+		</tr>
+		<tr>	
+			<td class="tableleft">聊天记录</td>
+			<td colspan="3">${customerInfo.CI_HISTORY }</td>
+		</tr>
+		
+	</table>
+
+</body>

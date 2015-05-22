@@ -1,0 +1,184 @@
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.text.ParseException;
+
+
+public class Test
+{
+    // http://180.96.27.104/K3CloudServiceInterface/soap12?includeAllTypes=1
+    public static final String POST_URL_Login = "http://180.96.27.104/K3CloudServiceInterface/json/syncreply/Auth ";
+    public static final String POST_URL_Invoke = "http://180.96.27.104/K3CloudServiceInterface/json/syncreply/tj_businessrecord_View ";
+
+    public static void readContentFromPost()
+        throws IOException
+    {
+
+        URL postUrl = new URL(POST_URL_Login);
+        HttpURLConnection connection = (HttpURLConnection)postUrl.openConnection();
+        if ( !connection.getDoOutput())
+        {
+            connection.setDoOutput(true);
+        }
+        connection.setRequestMethod("POST");
+        connection.setUseCaches(false);
+        connection.setInstanceFollowRedirects(true);
+        connection.setRequestProperty("Content-Type", "application/json");
+        DataOutputStream out = new DataOutputStream(
+            connection.getOutputStream());
+        // 登陆验证字串
+        String content = "{\"provider\":\"credentials\",\"UserName\":\"Administrator\",\"Password\":\"jinjia123\",\"RememberMe\":false\"PasswordIsEncrypted\":false}";
+        out.writeBytes(content);
+        out.flush();
+        out.close();
+
+        // 获取Cookie
+        String key = null;
+        String cookieVal = null;
+        for (int i = 1; (key = connection.getHeaderFieldKey(i)) != null; i++ )
+        {
+            if (key.equalsIgnoreCase("Set-Cookie"))
+            {
+                cookieVal = connection.getHeaderField(i);
+                break;
+            }
+        }
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(
+            connection.getInputStream()));
+        String line;
+        System.out.println(" ============================= ");
+        System.out.println(" Contents of post request ");
+        System.out.println(" ============================= ");
+        while ( (line = reader.readLine()) != null)
+        {
+            System.out.println(line);
+        }
+        System.out.println(" ============================= ");
+        System.out.println(" Contents of post request ends ");
+        System.out.println(" ============================= ");
+        reader.close();
+
+        connection.disconnect();
+
+        URL postUrlInvoke = new URL(POST_URL_Invoke);
+        HttpURLConnection connectionInvoke = (HttpURLConnection)postUrlInvoke.openConnection();
+        connectionInvoke.setRequestProperty("Cookie", cookieVal);
+        if ( !connectionInvoke.getDoOutput())
+        {
+            connectionInvoke.setDoOutput(true);
+        }
+        connectionInvoke.setRequestMethod("POST");
+        connectionInvoke.setUseCaches(false);
+        connectionInvoke.setInstanceFollowRedirects(true);
+        connectionInvoke.setRequestProperty("Content-Type", "application/json");
+        out = new DataOutputStream(connectionInvoke.getOutputStream());
+        // 用户新增字串 启用此字串会向Cloud SEC_User用户 增加一条登陆账号为java的记录
+        content = "{\"Creator\":\"Java\",\"NeedUpDateFields\":[\"\"],\"Model\":{\"FUserID\":0,\"FUserAccount\":\"Java\",\"FName\":\"Java\"}}";
+        // 用户查询字串 Id 16394 为Cloud Administrator管理员主键Id
+        content = "{\"CreateOrgId\":0,\"Number\":\"\",\"Id\":\"100057\"}";
+        out.writeBytes(content);
+        out.flush();
+        out.close();
+
+        reader = new BufferedReader(new InputStreamReader(
+            connectionInvoke.getInputStream()));
+        System.out.println(" ============================= ");
+        System.out.println(" Contents of post request ");
+        System.out.println(" ============================= ");
+        while ( (line = reader.readLine()) != null)
+        {
+            System.out.println(line);
+        }
+        System.out.println(" ============================= ");
+        System.out.println(" Contents of post request ends ");
+        System.out.println(" ============================= ");
+        reader.close();
+
+        connectionInvoke.disconnect();
+    }
+
+    @SuppressWarnings("static-access")
+    public static void main(String[] args)
+        throws IOException, ParseException
+    {
+        readContentFromPost();
+
+        /*
+         * SimpleDateFormat format = new SimpleDateFormat("SZ"); DateFormat df5
+         * = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss EEEEEE", Locale.US); Date
+         * d = new Date(1413344187000L);
+         * System.out.println(df5.parse("1413344187000+0800"));
+         * System.out.println("---------"); Date parse =
+         * format.parse("1413344187000+0800");
+         */
+        /*
+         * Date date = new Date(); System.out.println(date); SimpleDateFormat
+         * sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss E Z"); String sDate =
+         * sdf.format(date); System.out.println(sDate);
+         */
+        /* String x = "Sat Apr 18 17:47:03 CST 2015";
+         SimpleDateFormat sdf1 = new SimpleDateFormat(
+             "EEE MMM dd HH:mm:ss Z yyyy", Locale.UK);
+         try
+         {
+             Date date = sdf1.parse(x);
+             SimpleDateFormat sdf = new SimpleDateFormat(
+                 "yyyy-MM-dd HH:mm:ss E Z");
+             String sDate = sdf.format(date);
+             System.out.println(sDate + "=====" + date.getTimezoneOffset());
+         }
+         catch (ParseException e)
+         {
+             e.printStackTrace();
+         }*/
+
+        /*
+         * String ss = "Sat Apr 18 17:47:03 CST 2015"; SimpleDateFormat format =
+         * new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss E Z"); Date parse =
+         * format.parse(ss);
+         */
+
+        /*  FileReader fr = new FileReader(
+              "G:\\myeclipse10workspace\\oloService\\src\\json.txt");
+          BufferedReader bf = new BufferedReader(fr);
+          String readLine = bf.readLine();
+          String jsonStr = readLine.substring(20, readLine.length() - 1);
+          System.out.println(jsonStr);
+
+          JsonConfig jsonConfig = new JsonConfig();
+          jsonConfig.findJavaPropertyNameProcessor(new DefaultValueProcessor()
+          {
+              @Override
+              public Object getDefaultValue(Class type)
+              {
+                  if (type == java.util.Date.class)
+                  {
+                      SimpleDateFormat sdf = new SimpleDateFormat(
+                          "yyyy-MM-dd HH:mm:ss E Z");
+                      String sDate = sdf.format(type);
+                      System.out.println(sDate + "=====");
+                  }
+                  return null;
+              }
+          }.getClass());
+          // 再使用JsonObject遍历一个个的对像
+          JSONObject obj = JSONObject.fromObject(jsonStr);
+          Result bean = (Result)obj.toBean(obj, Result.class);
+          System.out.println(bean.getFCreateDate());
+          System.out.println(bean.toString());*/
+
+        // Order oo = (Order) obj.toBean(obj, Order.class);//
+        // 指定转换的类型，但仍需要强制转化-成功
+        // System.err.println(oo.getDt() + "," + oo.getConsignee());
+
+        // TODO Auto-generated method stub
+        /*
+         * try { readContentFromPost(); } catch (IOException e) { // TODO
+         * Auto-generated catch block e.printStackTrace(); }
+         */
+    }
+}

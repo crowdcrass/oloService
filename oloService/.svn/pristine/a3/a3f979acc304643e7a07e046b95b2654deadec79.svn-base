@@ -1,0 +1,72 @@
+<%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <base href="<%=basePath%>">
+    
+    <title>新增省份</title>
+   	<meta http-equiv="X-UA-Compatible" content="IE=8" />
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="expires" content="0">    
+	<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+	<meta http-equiv="description" content="This is my page">
+	<script src="<%=basePath%>scripts/jquery-1.7.1.js"	type="text/javascript">	</script>
+	<link rel="stylesheet" href="<%=basePath %>styles/index.css" type="text/css"></link>
+	<link rel="stylesheet" href="<%=basePath %>styles/style.css" type="text/css"></link>
+	<script>
+		function saveProvince(){
+			var p_name = $("#p_name").val();
+			if(p_name.replace(/\s/g,'') == ""){
+				alert("省份名称不能为空!");
+				return false;
+			}
+			document.getElementById("provinceForm").submit();
+		}
+		function init(){
+			var flag = "${flag}";
+			if(null != flag && "" != flag){
+				if(flag == "1"){
+					alert("添加成功!");
+					window.location.href="<%=basePath %>sysAddressAction/pIndex";
+				}else if(flag =="3"){
+					alert("用户已失效，请重新登录后再增加!");
+				}else{
+					alert("添加失败");
+				}
+			}
+		}
+	</script>
+</head>
+  
+<body onload="init()">
+	<div class="content">
+		<div class="cLineB"><h4>新增省份</h4><a href="javascript:history.go(-1);" class="right btnGrayS vm" style="margin-right:50px;margin-top:-27px" >返回</a></div>
+		<form method="post" id="provinceForm" action="<%=basePath %>sysAddressAction/saveProvince">
+			<div class="msgWrap form">
+				<TABLE class="userinfoArea" border="0" cellSpacing="0" cellPadding="0" width="100%">
+					<THEAD>
+						<TR>
+							<TH style="width:120px" valign="top"><span class="red">*</span><label for="keyword">省份名称：</label></TH>
+							<TD><input type="input" class="px" id="p_name" value=""  name="p_name" style="width:580px;" onblur=""></TD>
+						</TR>
+					</THEAD>
+	    			<TBODY>
+						<TR style="height:70px;">
+							<TH></TH>
+							<TD><input type="button" value="保存" onclick="saveProvince()" id="saveProvinceBtn" name="saveProvinceBtn" class="btnGreen left"></TD>
+						</TR>
+	            	</TBODY>
+	          </TABLE>
+			</div>
+		</form>
+	</div>     
+	<div class="clr"></div>
+</body>
+</html>

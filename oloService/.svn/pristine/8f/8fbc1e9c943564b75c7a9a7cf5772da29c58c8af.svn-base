@@ -1,0 +1,90 @@
+package com.sys.common;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.log4j.Logger;
+
+
+/**
+ * 解析erp系统接口
+ * 
+ * @author xmL
+ * @version V1.00 2015-10-15 
+ * @since olo V1.0R001
+ */
+public final class ERPWebServiceUtil
+{
+    private static final Logger LOGGER = Logger.getLogger(ERPWebServiceUtil.class);
+
+    private static final String POST_URL_LOGIN = PropConfigUtil.getVal(
+        "erp.websvc.login").trim();
+    private static String ERP_LOGIN_VALID = PropConfigUtil.getVal("erp.login.valid");
+
+    private ERPWebServiceUtil()
+    {
+
+    }
+
+    private static boolean login(HttpClient httpclient)
+    {
+        if (StringUtils.isEmpty(ERP_LOGIN_VALID))
+        {
+            LOGGER.info("连接ERP系统，登陆验证字符串不能是空");
+            return false;
+        }
+        ERP_LOGIN_VALID = ERP_LOGIN_VALID.trim();
+
+        HttpAgent httpAgent = new HttpAgent(POST_URL_LOGIN);
+        httpAgent.setDefaultHeader();
+        try
+        {
+            String jsonStr = httpAgent.doPost(httpclient, ERP_LOGIN_VALID);
+            LOGGER.info("登陆验证,调用接口返回结果---\n" + jsonStr);
+            if (StringUtils.isNotEmpty(jsonStr))
+            {
+                jsonStr = jsonStr.substring(jsonStr.indexOf(':') + 1,
+                    jsonStr.length() - 1);
+                Result result = (Result)JsonUtil.jsonToBean(jsonStr,
+                    Result.class);
+                if (result != null)
+                {
+                    ResponseStatus responseStatus = result.getResponseStatus();
+                    return responseStatus.isIsSuccess();
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            LOGGER.error("发送http请求异常: " + e);
+        }
+        return false;
+    }
+
+    public static String getResultFromERP(String content, String ifUrl)
+    {
+        HttpClient httpclient = new DefaultHttpClient();
+        if ( !login(httpclient))
+        {
+            return "";
+        }
+        String jsonStr = "";
+        HttpAgent httpAgent = new HttpAgent(ifUrl);
+        httpAgent.setDefaultHeader();
+        try
+        {
+            jsonStr = httpAgent.doPost(httpclient, content);
+        }
+        catch (Exception e)
+        {
+            LOGGER.error("发送http请求异常: " + e);
+        }
+        finally
+        {
+            // 当不再需要HttpClient实例时,关闭连接管理器以确保释放所有占用的系统资源
+            httpclient.getConnectionManager().shutdown();
+        }
+        LOGGER.info("getResultFromERP方法返回结果----\n" + jsonStr);
+        return jsonStr;
+    }
+}

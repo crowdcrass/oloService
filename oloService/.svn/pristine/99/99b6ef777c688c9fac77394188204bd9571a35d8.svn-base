@@ -1,0 +1,68 @@
+package net.sg.common.util.common;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+/**
+ * 
+ * @author Administrator
+ *
+ */
+public class CompareUtil {
+
+	private static long compare(Long[] longs) {
+		long resLong = 0;
+		if (longs != null && longs.length > 0) {
+			for (int i = 0; i < longs.length - 1; i++) {
+				for (int j = 0; j < longs.length - i - 1; j++) {
+					if (longs[j] < longs[j + 1]) {
+						long temp = longs[j];
+						longs[j] = longs[j + 1];
+						longs[j + 1] = temp;
+					}
+				}
+			}
+			resLong = longs[0];
+		}
+		return resLong;
+	}
+
+	//list 转换long[](数组)
+	private static Long[] transition(List<Long> longs) {
+		Long[] longs2 = null;
+		if (longs != null && longs.size() > 0) {
+			longs2 = new Long[longs.size()];
+			for (int i = 0; i < longs.size(); i++) {
+				longs2[i] = longs.get(i);
+			}
+		}
+		return longs2;
+	}
+
+	//map 转换list(数组)
+	private static List<Long> transition(Map<Long, String> map) {
+		List<Long> longs = new ArrayList<Long>();
+		if (map != null) {
+			Set<Long> keys = map.keySet();
+			for (Iterator<Long> it = keys.iterator(); it.hasNext();) {
+				Long key = (Long) it.next();
+				longs.add(key);
+			}
+		}
+		return longs;
+	}
+
+	// 公开实用方法
+
+	public static long compare(List<Long> longs) {
+		return compare(transition(longs));
+	}
+
+	public static String compare(Map<Long, String> map) {
+		List<Long> longs = transition(map);
+		return map.get(compare(transition(longs)));
+	}
+}

@@ -1,0 +1,32 @@
+package com.amiba.util;
+
+import java.util.Map;
+import java.util.Set;
+
+public class FunctionSqlUtil {
+
+	//修改
+	public static String updateFunction(Map<String,Object> tempMap,String tableName,String parmaryKey,String parmaryValue){
+		String sqlString = "update " + tableName + " set ";
+
+		Set<String> set = tempMap.keySet();
+
+		for (String key : set) {
+			sqlString = sqlString + key + "='" + tempMap.get(key) + "',";
+		}
+		sqlString = sqlString.substring(0,sqlString.length()-1);
+
+		sqlString = sqlString + " where " + parmaryKey + " = '" + parmaryValue + "'" ;
+
+		return sqlString;
+	}
+
+
+	//删除
+	public static String deleteFunction(String tableName,String parmaryKey,String parmaryValue ){
+		String sqlString = "delete from " + tableName +" where " + parmaryKey;
+		sqlString = sqlString + " = '" + parmaryValue + "'";
+		return sqlString;
+	}
+
+}

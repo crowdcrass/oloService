@@ -1,0 +1,507 @@
+package com.sys.entity;
+
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+
+
+/**
+ * 商机单信息
+ * 
+ * @author xmL
+ * @version V1.00 2015-10-15
+ * @since olo V1.0R001
+ */
+public class BusinessBillInfo
+{
+    // 单据编号
+    private String boOno;
+    // 商机日期 
+    private String boTime;
+    // 单据状态
+    private String boStatus;
+    // 公司
+    private String boCompany;
+    //-----------------------------
+    // 公司编号
+    private String boCompanyNo;
+    //门店编码
+    private String sStoreNo;
+    //门店名称
+    private String sStoreName;
+    //客户编号
+    private String boCusNo;
+    //国家编码
+    private String boCountryNo;
+    //省份编码
+    private String boProvinceNo;
+    //城市编码
+    private String boCityNo;
+    //区域编码
+    private String boDisNo;
+    //街镇编码
+    private String boStreetNo;
+    //结果鉴别编码
+    private String boResultNo;
+    //原因编码
+    private String boReasonNo;
+
+    private String boCreateUserNo;
+    private String boCreateUserName;
+    private String boUpdateUserNo;
+    private String boUpdateUserName;
+    private String boAuditorNo;
+    private String boAuditorName;
+    private String boAuditTime;
+    private String fCustomerName;
+    private String erpId;
+    //-------------------------------------
+    // 门店
+    private String sId;
+    // 客户姓名
+    private String boCusName;
+    // 客户电话
+    private String boCusPhone;
+    // 客户其他电话
+    private String boOtherPhone;
+    // 国家
+    private String boCountry;
+    // 省份
+    private String boProvince;
+    // 城市
+    private String boCity;
+    // 地区
+    private String boDis;
+    // 街道
+    private String boStreet;
+    // 结果鉴别
+    private String boResult;
+    // 具体地址
+    private String boDetailAdd;
+    // 原因
+    private String boReason;
+    // 客户长地址
+    private String boLongAdd;
+    // 购买意向
+    private String boBuyIntention;
+    // 修改人
+    private String boUpdateUser;
+    // 创建日期
+    private String boCreateTime;
+    // 修改日期
+    private String boUpdateTime;
+
+    public String getBoReasonNo()
+    {
+        return boReasonNo;
+    }
+
+    public void setBoReasonNo(String boReasonNo)
+    {
+        this.boReasonNo = boReasonNo;
+    }
+
+    public String getErpId()
+    {
+        return erpId;
+    }
+
+    public void setErpId(String erpId)
+    {
+        this.erpId = erpId;
+    }
+
+    public String getBoCompanyNo()
+    {
+        return boCompanyNo;
+    }
+
+    public void setBoCompanyNo(String boCompanyNo)
+    {
+        this.boCompanyNo = boCompanyNo;
+    }
+
+    public String getsStoreNo()
+    {
+        return sStoreNo;
+    }
+
+    public void setsStoreNo(String sStoreNo)
+    {
+        this.sStoreNo = sStoreNo;
+    }
+
+    public String getsStoreName()
+    {
+        return sStoreName;
+    }
+
+    public void setsStoreName(String sStoreName)
+    {
+        this.sStoreName = sStoreName;
+    }
+
+    public String getBoCusNo()
+    {
+        return boCusNo;
+    }
+
+    public void setBoCusNo(String boCusNo)
+    {
+        this.boCusNo = boCusNo;
+    }
+
+    public String getBoCountryNo()
+    {
+        return boCountryNo;
+    }
+
+    public void setBoCountryNo(String boCountryNo)
+    {
+        this.boCountryNo = boCountryNo;
+    }
+
+    public String getBoProvinceNo()
+    {
+        return boProvinceNo;
+    }
+
+    public void setBoProvinceNo(String boProvinceNo)
+    {
+        this.boProvinceNo = boProvinceNo;
+    }
+
+    public String getBoCityNo()
+    {
+        return boCityNo;
+    }
+
+    public void setBoCityNo(String boCityNo)
+    {
+        this.boCityNo = boCityNo;
+    }
+
+    public String getBoDisNo()
+    {
+        return boDisNo;
+    }
+
+    public void setBoDisNo(String boDisNo)
+    {
+        this.boDisNo = boDisNo;
+    }
+
+    public String getBoStreetNo()
+    {
+        return boStreetNo;
+    }
+
+    public void setBoStreetNo(String boStreetNo)
+    {
+        this.boStreetNo = boStreetNo;
+    }
+
+    public String getBoResultNo()
+    {
+        return boResultNo;
+    }
+
+    public void setBoResultNo(String boResultNo)
+    {
+        this.boResultNo = boResultNo;
+    }
+
+    public String getBoCreateUserNo()
+    {
+        return boCreateUserNo;
+    }
+
+    public void setBoCreateUserNo(String boCreateUserNo)
+    {
+        this.boCreateUserNo = boCreateUserNo;
+    }
+
+    public String getBoCreateUserName()
+    {
+        return boCreateUserName;
+    }
+
+    public void setBoCreateUserName(String boCreateUserName)
+    {
+        this.boCreateUserName = boCreateUserName;
+    }
+
+    public String getBoUpdateUserNo()
+    {
+        return boUpdateUserNo;
+    }
+
+    public void setBoUpdateUserNo(String boUpdateUserNo)
+    {
+        this.boUpdateUserNo = boUpdateUserNo;
+    }
+
+    public String getBoUpdateUserName()
+    {
+        return boUpdateUserName;
+    }
+
+    public void setBoUpdateUserName(String boUpdateUserName)
+    {
+        this.boUpdateUserName = boUpdateUserName;
+    }
+
+    public String getBoAuditorNo()
+    {
+        return boAuditorNo;
+    }
+
+    public void setBoAuditorNo(String boAuditorNo)
+    {
+        this.boAuditorNo = boAuditorNo;
+    }
+
+    public String getBoAuditorName()
+    {
+        return boAuditorName;
+    }
+
+    public void setBoAuditorName(String boAuditorName)
+    {
+        this.boAuditorName = boAuditorName;
+    }
+
+    public String getBoAuditTime()
+    {
+        return boAuditTime;
+    }
+
+    public void setBoAuditTime(String boAuditTime)
+    {
+        this.boAuditTime = boAuditTime;
+    }
+
+    public String getfCustomerName()
+    {
+        return fCustomerName;
+    }
+
+    public void setfCustomerName(String fCustomerName)
+    {
+        this.fCustomerName = fCustomerName;
+    }
+
+    public String getBoOno()
+    {
+        return boOno;
+    }
+
+    public void setBoOno(String boOno)
+    {
+        this.boOno = boOno;
+    }
+
+    public String getBoTime()
+    {
+        return boTime;
+    }
+
+    public void setBoTime(String boTime)
+    {
+        this.boTime = boTime;
+    }
+
+    public String getBoStatus()
+    {
+        return boStatus;
+    }
+
+    public void setBoStatus(String boStatus)
+    {
+        this.boStatus = boStatus;
+    }
+
+    public String getBoCompany()
+    {
+        return boCompany;
+    }
+
+    public void setBoCompany(String boCompany)
+    {
+        this.boCompany = boCompany;
+    }
+
+    public String getsId()
+    {
+        return sId;
+    }
+
+    public void setsId(String sId)
+    {
+        this.sId = sId;
+    }
+
+    public String getBoCusName()
+    {
+        return boCusName;
+    }
+
+    public void setBoCusName(String boCusName)
+    {
+        this.boCusName = boCusName;
+    }
+
+    public String getBoCusPhone()
+    {
+        return boCusPhone;
+    }
+
+    public void setBoCusPhone(String boCusPhone)
+    {
+        this.boCusPhone = boCusPhone;
+    }
+
+    public String getBoOtherPhone()
+    {
+        return boOtherPhone;
+    }
+
+    public void setBoOtherPhone(String boOtherPhone)
+    {
+        this.boOtherPhone = boOtherPhone;
+    }
+
+    public String getBoCountry()
+    {
+        return boCountry;
+    }
+
+    public void setBoCountry(String boCountry)
+    {
+        this.boCountry = boCountry;
+    }
+
+    public String getBoProvince()
+    {
+        return boProvince;
+    }
+
+    public void setBoProvince(String boProvince)
+    {
+        this.boProvince = boProvince;
+    }
+
+    public String getBoCity()
+    {
+        return boCity;
+    }
+
+    public void setBoCity(String boCity)
+    {
+        this.boCity = boCity;
+    }
+
+    public String getBoDis()
+    {
+        return boDis;
+    }
+
+    public void setBoDis(String boDis)
+    {
+        this.boDis = boDis;
+    }
+
+    public String getBoStreet()
+    {
+        return boStreet;
+    }
+
+    public void setBoStreet(String boStreet)
+    {
+        this.boStreet = boStreet;
+    }
+
+    public String getBoResult()
+    {
+        return boResult;
+    }
+
+    public void setBoResult(String boResult)
+    {
+        this.boResult = boResult;
+    }
+
+    public String getBoDetailAdd()
+    {
+        return boDetailAdd;
+    }
+
+    public void setBoDetailAdd(String boDetailAdd)
+    {
+        this.boDetailAdd = boDetailAdd;
+    }
+
+    public String getBoReason()
+    {
+        return boReason;
+    }
+
+    public void setBoReason(String boReason)
+    {
+        this.boReason = boReason;
+    }
+
+    public String getBoLongAdd()
+    {
+        return boLongAdd;
+    }
+
+    public void setBoLongAdd(String boLongAdd)
+    {
+        this.boLongAdd = boLongAdd;
+    }
+
+    public String getBoBuyIntention()
+    {
+        return boBuyIntention;
+    }
+
+    public void setBoBuyIntention(String boBuyIntention)
+    {
+        this.boBuyIntention = boBuyIntention;
+    }
+
+    public String getBoUpdateUser()
+    {
+        return boUpdateUser;
+    }
+
+    public void setBoUpdateUser(String boUpdateUser)
+    {
+        this.boUpdateUser = boUpdateUser;
+    }
+
+    public String getBoCreateTime()
+    {
+        return boCreateTime;
+    }
+
+    public void setBoCreateTime(String boCreateTime)
+    {
+        this.boCreateTime = boCreateTime;
+    }
+
+    public String getBoUpdateTime()
+    {
+        return boUpdateTime;
+    }
+
+    public void setBoUpdateTime(String boUpdateTime)
+    {
+        this.boUpdateTime = boUpdateTime;
+    }
+
+    @Override
+    public String toString()
+    {
+        return ReflectionToStringBuilder.toString(this);
+    }
+}

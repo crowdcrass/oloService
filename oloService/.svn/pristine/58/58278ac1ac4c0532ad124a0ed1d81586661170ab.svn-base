@@ -1,0 +1,221 @@
+package com.amiba.util.time;
+
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.TimeZone;
+
+import com.amiba.util.log.Log4jUtil;
+/**
+ * 时间工具类
+ * @author lz
+ *
+ */
+public class TimeUtil {
+	
+	public static int Hour(Date time) {
+		SimpleDateFormat st = new SimpleDateFormat("yyyyMMddHH");
+		return Integer.parseInt(st.format(time));
+	}
+
+	public static Date StringToDate(String s) throws java.text.ParseException {
+		Date time = new Date();
+		SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+		try {
+			time = sd.parse(s);
+		} catch (ParseException e) {
+			System.out.println("输入的日期格式有误！");
+		}
+		return time;
+	}
+	/**
+	 * 将字符串时间格式
+	 * @param str
+	 * @return
+	 */
+	public static String getTimeByString(String str){
+		try {
+			return str.substring(0,str.indexOf("."));
+		} catch (RuntimeException e) {
+			Log4jUtil.logPrint("TimeUtil============>getTimeByString()", e);
+			return null;
+		}
+	}
+
+	/**
+	 * 获得时间   格式为  yyyy-MM-dd
+	 * 
+	 * @return String
+	 */
+	public static String getTimeDate(){
+		String time = "";
+		try {
+			SimpleDateFormat sj = new SimpleDateFormat("yyyy-MM-dd");
+			time = sj.format(new Date());
+		} catch (Exception e) {
+			Log4jUtil.logPrint("TimeUtil===>getTimeDate()", e);
+		}
+		return time;
+	}
+	
+	/**
+	 * 获得时间   格式为  yyyyMMdd
+	 * 
+	 * @return String
+	 */
+	public static String getTimeDate2(){
+		String time = "";
+		try {
+			SimpleDateFormat sj = new SimpleDateFormat("yyyyMMdd");
+			time = sj.format(new Date());
+		} catch (Exception e) {
+			Log4jUtil.logPrint("TimeUtil===>getTimeDate()", e);
+		}
+		return time;
+	}
+	
+	
+
+	/**
+	 * 获得时间   格式为  yyyyMM
+	 * 
+	 * @return String
+	 */
+	public static String getTimeYearAndMonth(){
+		String time = "";
+		try {
+			SimpleDateFormat sj = new SimpleDateFormat("yyyyMM");
+			time = sj.format(new Date());
+		} catch (Exception e) {
+			Log4jUtil.logPrint("TimeUtil===>getTimeYearAndMonth()", e);
+		}
+		return time;
+	}
+
+	/**
+	 * 得到时间 格式为yyyy-MM-dd HH:mm:ss
+	 * 
+	 * @return String
+	 */
+	public static String getTimeDHMS(){
+		String time = "";
+		try {
+			SimpleDateFormat sj = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			sj.setTimeZone(TimeZone.getTimeZone("Asia/Shanghai"));
+			time = sj.format(new Date());
+		} catch (Exception e) {
+			Log4jUtil.logPrint("TimeUtil===>getTimeDHMS()", e);
+		}
+		return time;
+	}
+
+	/**
+	 * 传入时间(String类型)得到Timestamp类型
+	 * @param time
+	 * @return  Timestamp
+	 */
+	public static Timestamp getTimestamp(String time){
+		Timestamp timestamp = null;
+		try {
+			timestamp = Timestamp.valueOf(time+" 00:00:00");
+		} catch (Exception e) {
+			Log4jUtil.logPrint("TimeUtil===>getTimestamp()", e);
+		}
+		return timestamp;
+	}
+
+	/**
+	 * Timestamp时间格式转换 yyyy-dd-mm
+	 * 
+	 * @param strDate
+	 * @return
+	 */
+	public static String strDateDHMS(String strDate){
+		SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd ");
+		try {
+			Timestamp now = Timestamp.valueOf(strDate);
+			return sf.format(now);
+		} catch (Exception e) {
+			Log4jUtil.logPrint("TimeUtil===>strDateDHMS()", e);
+		}
+		return null;
+	}
+
+	/**
+	 * 当前时间格式 yyyy-MM-dd 加上最开始的时分秒
+	 * @param time
+	 * @return
+	 */
+	public static String getQssj(String time){
+		return time+" 00:00:00";
+	}
+	/**
+	 * 当前时间格式 yyyy-MM-dd 加上最后的时分秒
+	 * @param time
+	 * @return
+	 */
+	public static String getJssj(String time){
+		return time+" 23:59:59";
+	}
+	
+	/**
+	 * 获得当前年份
+	 * @return
+	 */
+	public static int getNowYear(){
+		Calendar c = Calendar.getInstance();//可以对每个时间域单独修改
+		int year = c.get(Calendar.YEAR); 
+		return year;
+	}
+	/**
+	 * 获得当前月份
+	 * @return
+	 */
+	public static int getNowMonth(){
+		Calendar c = Calendar.getInstance();//可以对每个时间域单独修改
+		int month = c.get(Calendar.MONTH)+1; 
+		return month;
+	}
+	/**
+	 * 获得当前日
+	 * @return
+	 */
+	public static int getNowDay(){
+		Calendar c = Calendar.getInstance();//可以对每个时间域单独修改
+		int month = c.get(Calendar.DAY_OF_MONTH); 
+		return month;
+	}
+	
+	/**
+	 * 两日期相减
+	 * @param fDate
+	 * @param sDate
+	 * @return
+	 * @throws ParseException
+	 */
+	public static long dateSub(String fDate,String sDate) throws ParseException{
+		Date date1 = new SimpleDateFormat("yyyy-mm-dd").parse(fDate); 
+	    Date date2 = new SimpleDateFormat("yyyy-mm-dd").parse(sDate); 
+	    long l = date1.getTime()-date2.getTime()>0 ? date1.getTime()-date2.getTime(): 
+	     date2.getTime()-date1.getTime(); 
+	    
+//	    System.out.println(l/1000+"秒"); 
+	    
+	    //日期相减得到相差的日期 
+	    long day = (date1.getTime()-date2.getTime())/(24*60*60*1000)>0 ? (date1.getTime()-date2.getTime())/(24*60*60*1000): 
+	     (date2.getTime()-date1.getTime())/(24*60*60*1000); 
+	    
+//	    System.out.println("相差的日期: " +day); 
+		return day;
+	}
+	
+	public static void main(String[] args){
+		System.out.println(getNowYear());
+		System.out.println(getNowMonth());
+		System.out.println(getNowDay());
+		System.out.println();
+	}
+}

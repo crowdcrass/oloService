@@ -1,0 +1,45 @@
+package net.sg.common.util.common;
+
+/**
+ * 
+ * @author Administrator
+ *
+ */
+public class ConvertType {
+
+
+	// 判断是否为null
+	public static String isNull(Object dest) {
+		if (dest != null) {
+			String str  = dest+"" ;
+			return str.trim(); // 不为空返回原值
+		} else {
+			return ""; // 为空返回空字符串
+		}
+
+	}
+
+	public static int str2Int(String str){
+
+		if(null==str||"".equals(str)){
+			return 0;
+		}else
+		{
+			return Integer.parseInt(str);
+		}
+	}
+
+
+
+	public static double str2Double(String str){
+
+		if(null==str||"".equals(str)){
+			return 0;
+		}else
+		{
+			return Double.parseDouble(str);
+		}
+
+	}
+
+}

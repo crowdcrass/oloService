@@ -1,0 +1,109 @@
+package com.sys.web.web;
+
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.sys.web.service.NewsService;
+
+
+/**
+ * 资讯管理
+ * @author yl
+ */
+@Controller
+@RequestMapping("/newsAction")
+public class NewsAction
+{
+    @Autowired
+    private NewsService newsService;
+
+    /**
+     *  资讯列表
+     *  @author yl
+     */
+    @RequestMapping(value = "/index")
+    public String index(ModelMap model, HttpServletRequest request,
+                        HttpServletResponse response)
+    {
+        String n_title = request.getParameter("n_title");
+        Map<String, Object> newsMap = newsService.queryNewsList(request);
+        model.put("newsMap", newsMap);
+        model.put("n_title", n_title);
+        return "/basic/news/index";
+    }
+
+    /**
+     *  新增资讯页面
+     *  @author yl
+     */
+    @RequestMapping(value = "/newPage")
+    public String newPage(ModelMap model, HttpServletRequest request,
+                          HttpServletResponse response)
+    {
+        return "/basic/news/new";
+    }
+
+    /**
+     *  保存新增
+     *  @author yl
+     */
+    @RequestMapping(value = "/saveNews")
+    public String saveNews(ModelMap model, HttpServletRequest request,
+                           HttpServletResponse response)
+    {
+        String flag = "0";
+        flag = newsService.saveNews(request);
+        model.put("flag", flag);
+        return "/basic/news/new";
+    }
+
+    /**
+     *  编辑页面
+     *  @author yl
+     */
+    @RequestMapping(value = "/editPage")
+    public String editPage(ModelMap model, HttpServletRequest request,
+                           HttpServletResponse response)
+    {
+        String n_id = request.getParameter("n_id");
+        model.put("newsMap", newsService.queryNewsById(request));
+        model.put("n_id", n_id);
+        return "/basic/news/edit";
+    }
+
+    /**
+     *  编辑页面
+     *  @author yl
+     */
+    @RequestMapping(value = "/updateNews")
+    public String updateNews(ModelMap model, HttpServletRequest request,
+                             HttpServletResponse response)
+    {
+        String flag = newsService.editNews(request);
+        model.put("flag", flag);
+        return "/basic/news/edit";
+    }
+
+    /**
+     *  删除
+     *  @author yl
+     */
+    @ResponseBody
+    @RequestMapping(value = "/deleteNews")
+    public String deleteNews(ModelMap model, HttpServletRequest request,
+                             HttpServletResponse response)
+    {
+        String flag = "0";
+        flag = newsService.deleteNews(request);
+        return flag;
+    }
+
+}

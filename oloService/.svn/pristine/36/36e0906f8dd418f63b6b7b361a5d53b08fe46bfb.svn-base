@@ -1,0 +1,184 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+<%
+	String path = request.getContextPath();
+	String basePath = request.getScheme() + "://"
+			+ request.getServerName() + ":" + request.getServerPort()
+			+ path + "/";
+%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>属性分类管理</title>
+
+<link rel="stylesheet" type="text/css" href="../css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap-responsive.css" />
+    <link rel="stylesheet" type="text/css" href="../css/style.css" />
+
+<script type="text/javascript" src="<%=basePath %>js/jquery-1.8.1.min.js"></script>
+<script type=text/javascript><!--
+var LastLeftID = "";
+function menuFix() {
+ var obj = document.getElementById("nav").getElementsByTagName("li");
+ 
+ for (var i=0; i<obj.length; i++) {
+  obj[i].onmouseover=function() {
+   this.className+=(this.className.length>0? " ": "") + "sfhover";
+  }
+  obj[i].onMouseDown=function() {
+   this.className+=(this.className.length>0? " ": "") + "sfhover";
+  }
+  obj[i].onMouseUp=function() {
+   this.className+=(this.className.length>0? " ": "") + "sfhover";
+  }
+  obj[i].onmouseout=function() {
+   this.className=this.className.replace(new RegExp("( ?|^)sfhover\\b"), "");
+  }
+ }
+}
+function DoMenu(emid)
+{
+ var obj = document.getElementById(emid); 
+ obj.className = (obj.className.toLowerCase() == "expanded"?"collapsed":"expanded");
+ if((LastLeftID!="")&&(emid!=LastLeftID)) //关闭上一个Menu
+ {
+  document.getElementById(LastLeftID).className = "collapsed";
+ }
+ LastLeftID = emid;
+}
+function GetMenuID()
+{
+ var MenuID="";
+ var _paramStr = new String(window.location.href);
+ var _sharpPos = _paramStr.indexOf("#");
+ 
+ if (_sharpPos >= 0 && _sharpPos < _paramStr.length - 1)
+ {
+  _paramStr = _paramStr.substring(_sharpPos + 1, _paramStr.length);
+ }
+ else
+ {
+  _paramStr = "";
+ }
+ 
+ if (_paramStr.length > 0)
+ {
+  var _paramArr = _paramStr.split("&");
+  if (_paramArr.length>0)
+  {
+   var _paramKeyVal = _paramArr[0].split("=");
+   if (_paramKeyVal.length>0)
+   {
+    MenuID = _paramKeyVal[1];
+   }
+  }
+  /*
+  if (_paramArr.length>0)
+  {
+   var _arr = new Array(_paramArr.length);
+  }
+  
+  //取所有#后面的，菜单只需用到Menu
+  //for (var i = 0; i < _paramArr.length; i++)
+  {
+   var _paramKeyVal = _paramArr[i].split('=');
+   
+   if (_paramKeyVal.length>0)
+   {
+    _arr[_paramKeyVal[0]] = _paramKeyVal[1];
+   }  
+  }
+  */
+ }
+ 
+ if(MenuID!="")
+ {
+  DoMenu(MenuID)
+ }
+}
+GetMenuID(); //*这两个function的顺序要注意一下，不然在Firefox里GetMenuID()不起效果
+menuFix();
+--></script>
+<style type="text/css">
+<!--
+#con-left{float:left;width: 19%; margin:10px 0px 0px 10px;}
+#content{float:right;width: 80%; margin:10px 0px 0px 0px;}
+#nav { width:200px; line-height: 24px; list-style-type: none; text-align:left; /*定义整个ul菜单的行高和背景色*/
+}
+/*==================一级目录===================*/
+#nav a { width: 200px; display: block; padding-left:20px; /*Width(一定要)，否则下面的Li会变形*/
+}
+#nav li { border-bottom:#FFF 1px solid; /*下面的一条白边*/ float:left; background-color: #ddd; color:#f5f5f5; font-weight:bold;line-height: 40px;}
+#nav li a:hover { background:#f3f3f3; /*一级目录onMouseOver显示的背景色*/ }
+#nav a:link { color:#DD1336; text-decoration:none; }
+#nav a:visited { color:#000; text-decoration:none; }
+#nav a:hover { color:#000; text-decoration:none; font-weight:bold; }
+/*==================二级目录===================*/
+ul, ol {padding: 0;margin: 0 0 10px 0px;}
+#nav li ul { list-style:none; text-align:left; }
+#nav li ul li { background:#F3F3F3; /*二级目录的背景色*/ font-weight:normal; }
+#nav li ul a { padding-left:20px; width:200px;/* padding-left二级目录中文字向右移动，但Width必须重新设置=(总宽度-padding-left)*/
+}
+/*下面是二级目录的链接样式*/
+#nav li ul a:link { color:#000; text-decoration:none; }
+#nav li ul a:visited { color:#000; text-decoration:none; }
+#nav li ul a:hover { color:#000; text-decoration:none; font-weight:normal; background:#F3F3F3;/* 二级onmouseover的字体颜色、背景色*/
+}
+/*==============================*/
+#nav li:hover ul { left: auto; }
+#nav li.sfhover ul { left: auto; }
+#nav ul.collapsed { display: none; }
+-->
+#PARENT { width:220px; }
+</style>
+</head>
+<body>
+<div id="con-left">
+	<div id="PARENT">
+	  <ul id="nav">
+	  	<c:if test="${!empty attrType}">
+			<c:forEach var="proType" items="${attrType }" varStatus="n">
+			    <li>
+			    <c:choose>  
+				   <c:when test="${!empty proType.attrList }">
+					    <a href="<%=basePath %>attrType/list?mtId=${proType.MT_ID}" onClick="DoMenu('ChildMenu${n.index+1}')" target="iFrame">${proType.MT_NAME }</a>
+				   </c:when>  
+				   <c:otherwise>
+				   		<a href="<%=basePath %>attrType/list?mtId=${proType.MT_ID}" target="iFrame">${proType.MT_NAME }</a>
+				   </c:otherwise>  
+				</c:choose> 
+			      <c:if test="${!empty proType.attrList }">
+				      <ul id="ChildMenu${n.index+1}" class="collapsed">
+				      	<c:forEach items="${proType.attrList }" var="attr">
+				        <li>
+				        	<a href="<%=basePath %>attribute/list?a_tid=${attr.AT_ID }&at_name=${attr.AT_NAME }" target="iFrame">${attr.AT_NAME }</a>
+				        </li>
+				        </c:forEach>
+				      </ul>
+			      </c:if>
+			    </li>
+		    </c:forEach>
+		</c:if>
+	  </ul>
+	</div>
+</div>
+<!-- 正文 -->
+<div id="content">
+	<iframe frameborder="0" name="iFrame" id="iFrame" src="<%=basePath %>/attrType/list" frameBorder=0 scrolling=no width="100%" onLoad="iFrameHeight()">
+		您的浏览器不支持嵌入式框架，或者当前配置为不显示嵌入式框架。
+	</iframe>
+</body>
+</html>
+<script type="text/javascript" language="javascript"> 
+function iFrameHeight() { 
+	var ifm= document.getElementById("iFrame"); 
+	var subWeb = document.frames ? document.frames["iFrame"].document : ifm.contentDocument; 
+	if(ifm != null && subWeb != null) { 
+		ifm.height = subWeb.body.scrollHeight; 
+	} 
+} 
+</script> 

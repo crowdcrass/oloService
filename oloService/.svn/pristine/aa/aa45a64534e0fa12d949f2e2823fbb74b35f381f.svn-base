@@ -1,0 +1,213 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ include file="/commons/taglibs.jsp" %>
+<%
+	String path = request.getContextPath();
+	String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
+%>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>产品属性管理</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap-responsive.css" />
+    <link rel="stylesheet" type="text/css" href="../css/style.css" />
+    <script type="text/javascript" src="../js/jquery-1.8.1.min.js"></script>
+    <script type="text/javascript" src="../js/bootstrap.js"></script>
+    <script type="text/javascript" src="../js/ckform.js"></script>
+    <script type="text/javascript" src="../js/common.js"></script>
+    
+    <style type="text/css">
+        body {padding-bottom: 40px;}
+        input{width: 100px;}
+        .sidebar-nav {padding: 9px 0;}
+		@media (max-width: 980px) {.navbar-text.pull-right {float: none;padding-left: 5px;padding-right: 5px;}}
+        #menuContent{margin-top: 10px;border: 1px solid #617775;background: #f0f6e4;width: 220px;height: 360px;overflow-y: scroll;overflow-x: auto;}
+    </style>
+    
+    <script type="text/javascript">
+  	//分页
+	function loadpage(currpage,a_tid,at_name){
+		var totalpage =document.getElementById("totalpage").value; 
+		var a_name =document.getElementById("a_name").value; 
+		if(((currpage+1)*1)<1){
+			alert('现在是第一页');
+			return;
+		}else if((currpage*1)>(totalpage*1)){
+			alert('现在是最后一页');
+			return;
+		}else if((currpage*1)==(totalpage*1)){
+			alert('现在是最后一页');
+			return;
+		}
+		location.href='<%=basePath%>attribute/list?page='+currpage+"&m.a_tid"+a_tid+"&m.at_name"+at_name+"&m.a_name"+a_name;
+	}
+	//删除
+	function delhy(id){
+		$.ajax({
+			url:"<%=basePath %>/member/delMember?id="+id,
+			type:"post",
+			dataType:"json",
+			async: false,
+			error: function(request) {
+				alert("删除失败！");
+			},
+			success:function(data){
+				if(data.flag == "1"){
+					alert("删除成功！");
+					window.location.reload();
+				}else{
+					alert("删除失败！");
+				}
+			}
+		});
+	}
+	$(function () {
+		$('#addnew').click(function(){
+			location.href ="<%=basePath %>attribute/add?a_tid=${m.a_tid}&at_name=${m.at_name}";
+		 });
+		$("#selectProvice").change(function() {
+			var values = $("#selectProvice").val();
+			$.ajax({     
+			    url:'<%=basePath %>/member/queryCityById',     
+			    type:'post',     
+			    data:'provinceId='+values,     
+			    async : false, //默认为true 异步     
+			    error:function(){     
+			       alert('error');     
+			    },     
+			    success:function(data){   
+			    	$("#selectCity").html("");
+			    	for(var i=0;i<data.length;i++){
+						$("#selectCity").append("<option value='"+data[i].C_ID+"'>"+data[i].C_NAME+"</option>");  
+					}
+					$("#selectCity").val($("#tempCity")[0].value); 
+					var values = $("#selectCity").val();
+					if(values!=null && values!=""){
+						$.ajax({     
+						    url:'<%=basePath %>/member/queryDistrictById',     
+						    type:'post',     
+						    data:'cityId='+values,     
+						    async : false, //默认为true 异步     
+						    error:function(){     
+						       alert('error');     
+						    },     
+						    success:function(data){   
+						    	$("#selectDistrict").html("");
+						    	for(var i=0;i<data.length;i++){
+									$("#selectDistrict").append("<option value='"+data[i].D_ID+"'>"+data[i].D_NAME+"</option>");  
+								}
+								$("#selectDistrict").val($("#tempDistrict")[0].value);    
+						    }  
+						}); 
+					}
+			    }  
+			}); 
+		});
+		$("#selectCity").change(function(){
+			var values = $("#selectCity").val();
+			$.ajax({     
+			    url:'<%=basePath %>/member/queryDistrictById',     
+			    type:'post',     
+			    data:'cityId='+values,     
+			    async : false, //默认为true 异步     
+			    error:function(){     
+			       alert('error');     
+			    },     
+			    success:function(data){   
+			    	$("#selectDistrict").html("");
+			    	for(var i=0;i<data.length;i++){
+						$("#selectDistrict").append("<option value='"+data[i].D_ID+"'>"+data[i].D_NAME+"</option>");  
+					}
+					$("#selectDistrict").val($("#tempDistrict")[0].value);    
+			    }  
+			}); 
+		});
+    });
+</script>
+</head>
+<body>
+<form class="form-inline definewidth m20" action="<%=basePath %>/member/listMember"  method="get">  
+	昵称：<input type="text" name="m_nickname" id="m_nickname"/>
+          	真实姓名：<input type="text" name="m_act_name" id="m_act_name"/>
+          	性别：<input type="radio" name="m_sex" class="jdradio" value="1"><label class="mr10">男</label>
+                  <input type="radio" name="m_sex" class="jdradio" value="0"><label class="mr10">女</label>
+			来源：<select name="m_source" style="width: 80px;">
+					<option value="0">微信</option>
+					<option value="1">APP</option>
+					<option value="2">网站</option>
+				</select>
+                        省份： <select id="selectProvice" name="m_pid" style="width: 120px;">
+					<option value="">--请选择--</option>
+					<c:forEach var="i" items="${provinceData}">
+						<option value="${i.P_ID}">${i.P_NAME}</option>
+					</c:forEach>
+			</select>   
+			城市：<select id="selectCity" name='m_cid' style="width: 120px;">
+						<option value=''>--请选择--</option>
+					</select> <input type="text" id="tempCity" value="${M_CID}"
+					style="display: none" />	
+			区域：<select id="selectDistrict" name='m_did' style="width: 120px;">
+						<option value=''>--请选择--</option>
+					</select> <input type="text" id="tempDistrict" value="${M_DID}"
+					style="display: none" />
+       	<button type="submit" class="btn btn-primary" >查询</button> 
+    <button type="button" class="btn btn-success" id="addnew" >新增属性</button>
+</form>
+<table class="table table-bordered table-hover definewidth m10" >
+    <thead>
+    <tr>
+        <th width="40" >昵称</th>
+		<!--<th width="60">账号</th>-->
+		<th width="60">真实姓名</th>
+		<th width="60">性别</th>
+		<th width="40">手机号码</th>
+		<th width="40">地址</th>
+		<th width="40">来源</th>
+		<th width="40">积分</th>
+		<th width="40">注册时间</th>
+		<th width="30">操作</th>
+    </tr>
+    </thead>
+    	<c:if test="${not empty memMap}">
+     		<c:forEach  var="resultList" items="${memMap.result}" varStatus="status">
+     			<tr>
+	             <td>${resultList.M_NICKNAME }</td>
+	            <!--<td>${resultList.M_LOGIN_CODE }</td>-->
+	             <td>${resultList.M_ACT_NAME }</td>
+	             <td>
+	              <c:if test="${resultList.M_SEX==0}">女</c:if>
+	              <c:if test="${resultList.M_SEX==1}">男</c:if>
+	             </td>
+	             <td>${resultList.M_PHONE }</td>
+	             <td>${resultList.M_ADDRESS }</td>
+	             <td>
+	              <c:if test="${resultList.M_SOURCE==0}">微信</c:if>
+	              <c:if test="${resultList.M_SOURCE==1}">APP</c:if>
+	              <c:if test="${resultList.M_SOURCE==2}">网站</c:if>
+	             </td>
+	             <td>${resultList.M_INTEGRAL }</td>
+	             <td>${resultList.M_REG_TIME }</td>
+	             <td>
+	              <a href="<%=basePath %>/member/queryHyById?id=${resultList.M_ID}">编辑</a> | 
+	              <a href="javaScript:delhy('${resultList.M_ID}')">删除</a>
+	              </td>
+				</tr>
+          		</c:forEach>
+          	</c:if>
+	     </table>
+	     <div class="pagediv">
+			<div class="pageleft " style="float: left;">
+				<a href="javascript:loadpage(0,'${m.a_tid }','${m.at_name }')">首页</a>
+				<a href="javascript:loadpage('${attrMap.page - 1}','${m.a_tid }','${m.at_name }')">上一页</a>
+				<a href="javascript:loadpage('${attrMap.page + 1}','${m.a_tid }','${m.at_name }')">下一页</a>
+				<a href="javascript:loadpage('${attrMap.pageCount-1}','${m.a_tid }','${m.at_name }')">尾页</a>
+			</div>
+			<div class="pageright">
+				当前显示第${attrMap.page+1}页，共有${attrMap.pageCount}页
+			</div>
+		</div>
+		<input type="hidden" id="totalpage" name="totalpage" value="${attrMap.pageCount}">
+		<div class="clr"></div>
+	</body>
+</html>

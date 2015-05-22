@@ -1,0 +1,50 @@
+package com.amiba.app.web;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
+
+import com.amiba.app.service.QueryTableStructService;
+
+
+/**
+ * 
+ * 查询表结构
+ * @author yl
+ *
+ */
+@Controller
+@RequestMapping("/queryTableStructAction")
+public class QueryTableStructAction{
+	@Autowired
+	private QueryTableStructService queryTableStructService;
+	/**
+	 * 查询表结构
+	 * @param request
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/queryTable")
+	public ModelAndView queryTable(HttpServletRequest request,HttpServletResponse response)
+				throws Exception{
+		Map<String,Object> mapData = new HashMap<String,Object>();
+		mapData.put("list", queryTableStructService.queryTable());
+		return new ModelAndView("/table",mapData);
+	}
+	
+	@RequestMapping("/queryTableColumn")
+	public void queryTableColumn(HttpServletRequest request,HttpServletResponse response)
+				throws Exception{
+		Map<String,Object> mapData = new HashMap<String,Object>();
+		mapData.put("list", queryTableStructService.queryTableColumn());
+	}
+}

@@ -1,0 +1,56 @@
+log4j.rootCategory=stdout,info,warn,error
+#stdout configure
+log4j.appender.stdout=org.apache.log4j.ConsoleAppender
+log4j.appender.stdout.layout=org.apache.log4j.PatternLayout
+log4j.appender.stdout.layout.conversionPattern=%d{yyyy-MM-dd HH:mm:ss} %p %c{1}.%M(%L)|%m%n
+
+#info file appender
+#文件大小到达指定尺寸时产生一个新的文件
+log4j.appender.info=org.apache.log4j.RollingFileAppender
+#指定日志消息的输出最低层次
+log4j.appender.info.threshold=info
+#默认值是true,意谓着所有的消息都会被立即输出
+log4j.appender.info.ImmediateFlush=true
+#默认值是true,即将消息增加到指定文件中,false指将消息覆盖指定的文件内容
+log4j.appender.info.Append=true
+log4j.appender.info.layout=org.apache.log4j.PatternLayout
+log4j.appender.info.layout.ConversionPattern=%d{yyyy-MM-dd HH:mm:ss} %p %c{1}.%M(%L)|%m%n
+#后缀可以是KB,MB或者是GB.在日志文件到达该大小时,将会自动滚动,即将原来的内容移到mylog.log.1文件
+log4j.appender.info.MaxFileSize=30MB
+#指定可以产生的滚动文件的最大数
+log4j.appender.info.MaxBackupIndex=10
+log4j.appender.info.file=${webapp.root}../../logs/oloServiceInfo.log
+
+#warn file appender
+#文件大小到达指定尺寸时产生一个新的文件
+log4j.appender.warn=org.apache.log4j.RollingFileAppender
+#指定日志消息的输出最低层次
+log4j.appender.warn.threshold=warn
+#默认值是true,意谓着所有的消息都会被立即输出
+log4j.appender.warn.ImmediateFlush=true
+#默认值是true,即将消息增加到指定文件中,false指将消息覆盖指定的文件内容
+log4j.appender.warn.Append=true
+log4j.appender.warn.layout=org.apache.log4j.PatternLayout
+log4j.appender.warn.layout.ConversionPattern=%d{yyyy-MM-dd HH:mm:ss} %p %c{1}.%M(%L)|%m%n
+#后缀可以是KB,MB或者是GB.在日志文件到达该大小时,将会自动滚动,即将原来的内容移到mylog.log.1文件
+log4j.appender.warn.MaxFileSize=30MB
+#指定可以产生的滚动文件的最大数
+log4j.appender.warn.MaxBackupIndex=10
+log4j.appender.warn.file=${webapp.root}../../logs/oloServiceWarn.log
+
+#error file appender
+#文件大小到达指定尺寸时产生一个新的文件
+log4j.appender.error=org.apache.log4j.RollingFileAppender
+#指定日志消息的输出最低层次
+log4j.appender.error.threshold=error
+#默认值是true,意谓着所有的消息都会被立即输出
+log4j.appender.error.ImmediateFlush=true
+#默认值是true,即将消息增加到指定文件中,false指将消息覆盖指定的文件内容
+log4j.appender.error.Append=true
+log4j.appender.error.layout=org.apache.log4j.PatternLayout
+log4j.appender.error.layout.ConversionPattern=%d{yyyy-MM-dd HH:mm:ss} %p %c{1}.%M(%L)|%m%n
+#后缀可以是KB,MB或者是GB.在日志文件到达该大小时,将会自动滚动,即将原来的内容移到mylog.log.1文件
+log4j.appender.error.MaxFileSize=30MB
+#指定可以产生的滚动文件的最大数
+log4j.appender.error.MaxBackupIndex=10
+log4j.appender.error.file=${webapp.root}../../logs/oloServiceError.log

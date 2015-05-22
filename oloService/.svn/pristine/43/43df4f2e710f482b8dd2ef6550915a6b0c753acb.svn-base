@@ -1,0 +1,165 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ include file="/commons/taglibs.jsp" %>
+<%
+	String path = request.getContextPath();
+	String basePath = request.getScheme() + "://"
+			+ request.getServerName() + ":" + request.getServerPort()
+			+ path + "/";
+%>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>文本回复管理</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap-responsive.css" />
+    <link rel="stylesheet" type="text/css" href="../css/style.css" />
+    <script type="text/javascript" src="../js/jquery-1.8.1.min.js"></script>
+    <script type="text/javascript" src="../js/bootstrap.js"></script>
+    <script type="text/javascript" src="../js/ckform.js"></script>
+    <script type="text/javascript" src="../js/common.js"></script>
+    
+    <style type="text/css">
+        body {padding-bottom: 40px;}
+        .sidebar-nav {padding: 9px 0;}
+		@media (max-width: 980px) {.navbar-text.pull-right {float: none;padding-left: 5px;padding-right: 5px;}}
+        #menuContent{margin-top: 10px;border: 1px solid #617775;background: #f0f6e4;width: 220px;height: 360px;overflow-y: scroll;overflow-x: auto;}
+    </style>
+    
+    <script type="text/javascript">
+  //分页
+	function loadpage(currpage,type){
+		var totalpage =document.getElementById("totalpage").value; 
+		if(((currpage+1)*1)<1){
+			alert('现在是第一页');
+			return;
+		}else if((currpage*1)>(totalpage*1)){
+			alert('现在是最后一页');
+			return;
+		}else if((currpage*1)==(totalpage*1)){
+			alert('现在是最后一页');
+			return;
+		}
+		location.href='<%=basePath%>/imgMessage/listimgMessage?page='+currpage+'&type='+type;
+	}
+	//删除
+	function delWbhf(id){
+		if(confirm('确实要删除吗?')){
+			$.ajax({
+				url:"<%=basePath %>/imgMessage/delTextandImg?id="+id,
+				type:"post",
+				dataType:"json",
+				async: false,
+				error: function(request) {
+					alert("删除失败！");
+				},
+				success:function(data){
+					if(data.flag == "1"){
+						alert("删除成功！");
+						window.location.reload();
+					}else{
+						alert("删除失败！");
+					}
+				}
+			});
+		}
+	}
+
+	function selectTextImg(){
+		document.getElementById("info").submit();
+	}
+	function checkAll(form, name) {
+		for(var i = 0; i < form.elements.length; i++) {
+			var e = form.elements[i];
+			if(e.name.match(name)) {
+				e.checked = form.elements['chkall'].checked;
+			}
+		}
+	}
+	$(function () {
+		$('#addnew').click(function(){
+			location.href ="<%=basePath %>attribute/add?a_tid=${m.a_tid}&at_name=${m.at_name}";
+		 });
+    });
+</script>
+</head>
+<body>
+<form class="form-inline definewidth m20" action="<%=basePath%>/imgMessage/listimgMessage"  method="get">  
+	关键词 ：<input  type="text" name="keyword"  id="keyword" />
+	<c:if test="${wtype==1}">
+		 标题：<input type="text" name="title" id="title" />
+          	<input name="type"  type="hidden" value="1" id="type" /> 
+       <input type="button" value="查询" onclick="selectTextImg()" id="saveTextImage" name="sbmt" class="btn btn-primary">
+       <a href="<%=basePath %>pages/wx/reply/textImageAdd.jsp" title='新增图文回复' class="btn btn-success">新增图文回复</a>
+   </c:if>
+   <c:if test="${wtype==2}">
+   		 <input name="type"  type="hidden" value="2" id="type" />      
+		回答 ：<input type="text"  name="answer"  id="answer" />
+		<input type="button" value="查询" onclick="selectTextImg()" id="saveTextImage" name="sbmt" class="btn btn-primary">
+		<a href="<%=basePath %>pages/wx/reply/textAdd.jsp" title='新增文本回复' class="btn btn-success">新增文本回复</a>
+	</c:if>
+</form>
+<table class="table table-bordered table-hover definewidth m10" >
+    <thead>
+    <tr>
+        <TH>编号</TH>
+        <c:if test="${wtype==1}">
+      	  <TH>标题</TH>
+        </c:if>
+		<TH>关键词</TH>
+        <c:if test="${wtype==2}">
+      	  <TH>回答</TH>
+        </c:if>
+		<TH>时间</TH>  
+		<TH>操作</TH>
+    </tr>
+    </thead>
+    	<c:if test="${not empty imgMap}">
+          <c:forEach var="resultList" items="${imgMap.result }" varStatus="status">
+             <TR>  
+	           <td>${status.index+1 }</td>
+	           <c:if test="${wtype==1}">
+	             <td>${resultList.TITLE}</td>
+	           </c:if>
+	           <td>${resultList.KEYWORD }</td>
+	           <c:if test="${wtype==2}">
+	              <td>
+					<c:choose> 
+						<c:when test="${fn:length(resultList.ANSWER) > 12}"> 
+							<c:out value="${fn:substring(resultList.ANSWER, 0, 12)}......" /> 
+						</c:when> 
+						<c:otherwise> 
+							<c:out value="${resultList.ANSWER}" /> 
+						</c:otherwise>
+					</c:choose>
+	               </td>
+	                </c:if>
+	                <td>${resultList.CREATETIME }</td>
+		            <td> 
+		             <c:if test="${wtype==1}">
+		                 <a href="<%=basePath %>/imgMessage/queryWbhfById?id=${resultList.ID}&type=1" >修改</a> | 
+		            </c:if>
+		            <c:if test="${wtype==2}">
+		             <a href="<%=basePath %>/imgMessage/queryWbhfById?id=${resultList.ID}&type=2">修改</a> |
+					</c:if>
+					 <a href="javascript:;" onclick="javaScript:delWbhf('${resultList.ID}')">删除</a>
+	               </td>
+			 </TR>
+          </c:forEach>
+          </c:if>
+	     </table>
+	     <div class="pagediv">
+			<div class="pageleft " style="float: left;">
+				<a href="javascript:loadpage(0,${wtype})">首页</a>
+				<a href="javascript:loadpage('${imgMap.page - 1}',${wtype})">上一页</a>
+				<a href="javascript:loadpage('${imgMap.page + 1}',${wtype})">下一页</a>
+				<a href="javascript:loadpage('${imgMap.pageCount-1}',${wtype})">尾页</a>
+			</div>
+			<div class="pageright">
+				当前显示第${imgMap.page+1 }页，共有${imgMap.pageCount }页
+			</div>
+			<input type="hidden" id="totalpage" name="totalpage" value="${imgMap.pageCount }">
+		</div>
+		<div class="clr"></div>
+	</body>
+</html>

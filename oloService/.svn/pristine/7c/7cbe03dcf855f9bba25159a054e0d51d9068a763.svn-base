@@ -1,0 +1,305 @@
+/**
+ * EntryInfo.java
+ *
+ * This file was auto-generated from WSDL
+ * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
+ */
+
+package com.sys.entity.xsd;
+
+public class EntryInfo  implements java.io.Serializable {
+    private java.lang.String mtNo;
+
+    private java.lang.String mtSpecModel;
+
+    private java.lang.String mDesc;
+
+    private java.lang.String mId;
+
+    private java.lang.String mName;
+
+    private java.lang.String mPrice;
+
+    public EntryInfo() {
+    }
+
+    public EntryInfo(
+           java.lang.String mtNo,
+           java.lang.String mtSpecModel,
+           java.lang.String mDesc,
+           java.lang.String mId,
+           java.lang.String mName,
+           java.lang.String mPrice) {
+           this.mtNo = mtNo;
+           this.mtSpecModel = mtSpecModel;
+           this.mDesc = mDesc;
+           this.mId = mId;
+           this.mName = mName;
+           this.mPrice = mPrice;
+    }
+
+
+    /**
+     * Gets the mtNo value for this EntryInfo.
+     * 
+     * @return mtNo
+     */
+    public java.lang.String getMtNo() {
+        return mtNo;
+    }
+
+
+    /**
+     * Sets the mtNo value for this EntryInfo.
+     * 
+     * @param mtNo
+     */
+    public void setMtNo(java.lang.String mtNo) {
+        this.mtNo = mtNo;
+    }
+
+
+    /**
+     * Gets the mtSpecModel value for this EntryInfo.
+     * 
+     * @return mtSpecModel
+     */
+    public java.lang.String getMtSpecModel() {
+        return mtSpecModel;
+    }
+
+
+    /**
+     * Sets the mtSpecModel value for this EntryInfo.
+     * 
+     * @param mtSpecModel
+     */
+    public void setMtSpecModel(java.lang.String mtSpecModel) {
+        this.mtSpecModel = mtSpecModel;
+    }
+
+
+    /**
+     * Gets the mDesc value for this EntryInfo.
+     * 
+     * @return mDesc
+     */
+    public java.lang.String getMDesc() {
+        return mDesc;
+    }
+
+
+    /**
+     * Sets the mDesc value for this EntryInfo.
+     * 
+     * @param mDesc
+     */
+    public void setMDesc(java.lang.String mDesc) {
+        this.mDesc = mDesc;
+    }
+
+
+    /**
+     * Gets the mId value for this EntryInfo.
+     * 
+     * @return mId
+     */
+    public java.lang.String getMId() {
+        return mId;
+    }
+
+
+    /**
+     * Sets the mId value for this EntryInfo.
+     * 
+     * @param mId
+     */
+    public void setMId(java.lang.String mId) {
+        this.mId = mId;
+    }
+
+
+    /**
+     * Gets the mName value for this EntryInfo.
+     * 
+     * @return mName
+     */
+    public java.lang.String getMName() {
+        return mName;
+    }
+
+
+    /**
+     * Sets the mName value for this EntryInfo.
+     * 
+     * @param mName
+     */
+    public void setMName(java.lang.String mName) {
+        this.mName = mName;
+    }
+
+
+    /**
+     * Gets the mPrice value for this EntryInfo.
+     * 
+     * @return mPrice
+     */
+    public java.lang.String getMPrice() {
+        return mPrice;
+    }
+
+
+    /**
+     * Sets the mPrice value for this EntryInfo.
+     * 
+     * @param mPrice
+     */
+    public void setMPrice(java.lang.String mPrice) {
+        this.mPrice = mPrice;
+    }
+
+    private java.lang.Object __equalsCalc = null;
+    public synchronized boolean equals(java.lang.Object obj) {
+        if (!(obj instanceof EntryInfo)) return false;
+        EntryInfo other = (EntryInfo) obj;
+        if (obj == null) return false;
+        if (this == obj) return true;
+        if (__equalsCalc != null) {
+            return (__equalsCalc == obj);
+        }
+        __equalsCalc = obj;
+        boolean _equals;
+        _equals = true && 
+            ((this.mtNo==null && other.getMtNo()==null) || 
+             (this.mtNo!=null &&
+              this.mtNo.equals(other.getMtNo()))) &&
+            ((this.mtSpecModel==null && other.getMtSpecModel()==null) || 
+             (this.mtSpecModel!=null &&
+              this.mtSpecModel.equals(other.getMtSpecModel()))) &&
+            ((this.mDesc==null && other.getMDesc()==null) || 
+             (this.mDesc!=null &&
+              this.mDesc.equals(other.getMDesc()))) &&
+            ((this.mId==null && other.getMId()==null) || 
+             (this.mId!=null &&
+              this.mId.equals(other.getMId()))) &&
+            ((this.mName==null && other.getMName()==null) || 
+             (this.mName!=null &&
+              this.mName.equals(other.getMName()))) &&
+            ((this.mPrice==null && other.getMPrice()==null) || 
+             (this.mPrice!=null &&
+              this.mPrice.equals(other.getMPrice())));
+        __equalsCalc = null;
+        return _equals;
+    }
+
+    private boolean __hashCodeCalc = false;
+    public synchronized int hashCode() {
+        if (__hashCodeCalc) {
+            return 0;
+        }
+        __hashCodeCalc = true;
+        int _hashCode = 1;
+        if (getMtNo() != null) {
+            _hashCode += getMtNo().hashCode();
+        }
+        if (getMtSpecModel() != null) {
+            _hashCode += getMtSpecModel().hashCode();
+        }
+        if (getMDesc() != null) {
+            _hashCode += getMDesc().hashCode();
+        }
+        if (getMId() != null) {
+            _hashCode += getMId().hashCode();
+        }
+        if (getMName() != null) {
+            _hashCode += getMName().hashCode();
+        }
+        if (getMPrice() != null) {
+            _hashCode += getMPrice().hashCode();
+        }
+        __hashCodeCalc = false;
+        return _hashCode;
+    }
+
+    // Type metadata
+    private static org.apache.axis.description.TypeDesc typeDesc =
+        new org.apache.axis.description.TypeDesc(EntryInfo.class, true);
+
+    static {
+        typeDesc.setXmlType(new javax.xml.namespace.QName("http://entity.sys.com/xsd", "EntryInfo"));
+        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("mtNo");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://entity.sys.com/xsd", "mtNo"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setMinOccurs(0);
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("mtSpecModel");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://entity.sys.com/xsd", "mtSpecModel"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setMinOccurs(0);
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("MDesc");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://entity.sys.com/xsd", "mDesc"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setMinOccurs(0);
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("MId");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://entity.sys.com/xsd", "mId"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setMinOccurs(0);
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("MName");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://entity.sys.com/xsd", "mName"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setMinOccurs(0);
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("MPrice");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://entity.sys.com/xsd", "mPrice"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setMinOccurs(0);
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+    }
+
+    /**
+     * Return type metadata object
+     */
+    public static org.apache.axis.description.TypeDesc getTypeDesc() {
+        return typeDesc;
+    }
+
+    /**
+     * Get Custom Serializer
+     */
+    public static org.apache.axis.encoding.Serializer getSerializer(
+           java.lang.String mechType, 
+           java.lang.Class _javaType,  
+           javax.xml.namespace.QName _xmlType) {
+        return 
+          new  org.apache.axis.encoding.ser.BeanSerializer(
+            _javaType, _xmlType, typeDesc);
+    }
+
+    /**
+     * Get Custom Deserializer
+     */
+    public static org.apache.axis.encoding.Deserializer getDeserializer(
+           java.lang.String mechType, 
+           java.lang.Class _javaType,  
+           javax.xml.namespace.QName _xmlType) {
+        return 
+          new  org.apache.axis.encoding.ser.BeanDeserializer(
+            _javaType, _xmlType, typeDesc);
+    }
+
+}

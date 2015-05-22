@@ -1,0 +1,117 @@
+package com.sys.wx.model;
+
+import java.util.Date;
+import java.util.List;
+
+public class Product {
+    private Integer pId;
+
+    private String pName;
+
+    private Integer mtType;
+
+    private String pSn;
+
+    private Double pPrice;
+
+    private String pPic;
+
+    private List picList;
+
+    private Date pTime;
+
+    private String pRemark;
+    
+    private String pIntro;
+
+    private String pAttribute;
+
+    public Integer getpId() {
+        return pId;
+    }
+
+    public void setpId(Integer pId) {
+        this.pId = pId;
+    }
+
+    public String getpName() {
+        return pName;
+    }
+
+    public void setpName(String pName) {
+        this.pName = pName == null ? null : pName.trim();
+    }
+
+    public Integer getMtType() {
+        return mtType;
+    }
+
+    public void setMtType(Integer mtType) {
+        this.mtType = mtType;
+    }
+
+    public String getpSn() {
+        return pSn;
+    }
+
+    public void setpSn(String pSn) {
+        this.pSn = pSn == null ? null : pSn.trim();
+    }
+
+    public Double getpPrice() {
+        return pPrice;
+    }
+
+    public void setpPrice(Double pPrice) {
+        this.pPrice = pPrice;
+    }
+    
+
+    public String getpPic() {
+		return pPic;
+	}
+
+	public void setpPic(String pPic) {
+		this.pPic = pPic;
+	}
+
+	public List getPicList() {
+		return picList;
+	}
+
+	public void setPicList(List picList) {
+		this.picList = picList;
+	}
+
+	public Date getpTime() {
+        return pTime;
+    }
+
+    public void setpTime(Date pTime) {
+        this.pTime = pTime;
+    }
+
+    public String getpRemark() {
+        return pRemark;
+    }
+
+    public void setpRemark(String pRemark) {
+        this.pRemark = pRemark == null ? null : pRemark.trim();
+    }
+    
+    public String getpIntro() {
+        return pIntro;
+    }
+
+    public void setpIntro(String pIntro) {
+        this.pIntro = pIntro == null ? null : pIntro.trim();
+    }
+
+    public String getpAttribute() {
+        return pAttribute;
+    }
+
+    public void setpAttribute(String pAttribute) {
+        this.pAttribute = pAttribute == null ? null : pAttribute.trim();
+    }
+}

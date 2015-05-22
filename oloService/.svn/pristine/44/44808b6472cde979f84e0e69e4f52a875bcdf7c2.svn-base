@@ -1,0 +1,34 @@
+package com.sys.entity;
+
+public class FArea
+{
+    private String FNumber;
+    private String FDataValue;
+
+    public String getFNumber()
+    {
+        return FNumber;
+    }
+
+    public void setFNumber(String fNumber)
+    {
+        FNumber = fNumber;
+    }
+
+    public String getFDataValue()
+    {
+        return FDataValue;
+    }
+
+    public void setFDataValue(String fDataValue)
+    {
+        FDataValue = fDataValue;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "FArea [FNumber=" + FNumber + ", FDataValue=" + FDataValue + "]";
+    }
+
+}

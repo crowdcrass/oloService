@@ -1,0 +1,47 @@
+package com.sys.wx.service;
+
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.amiba.dao.BaseDao;
+import com.platform.common.servlet.RequestParameter;
+
+
+@Service
+public class FillingOrderService
+{
+    @Autowired
+    private BaseDao baseDao;
+
+    /**
+     * 查询列表
+     * @param request
+     * @return Map<String,Object>
+     */
+    public Map<String, Object> getFillingOrderList(HttpServletRequest request)
+    {
+        int page = RequestParameter.getIntGreaterThen(request, "page", 0, 0,
+            false);
+        int count = RequestParameter.getInt(request, "count", 10, 1, 20, false);
+
+        String sql = "SELECT * FROM SYS_FILING_ORDER order by FBillNo";
+
+        return baseDao.pagination(page, count, sql);
+    }
+
+    /**
+     * 根据Id查询
+     * @param id
+     * @return Map<String,Object>
+     */
+    public Map<String, Object> getFillingOrderById(String id)
+    {
+        String sql = "SELECT * FROM SYS_FILING_ORDER where id=?";
+        return baseDao.queryForMap(sql, id);
+    }
+
+}

@@ -1,0 +1,74 @@
+package com.sys.wx.service;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.amiba.dao.BaseDao;
+
+@Service
+public class HfmsgService {
+
+	
+	@Autowired
+	private BaseDao baseDao;
+
+	public BaseDao getBaseDao() {
+		return baseDao;
+	}
+
+	public void setBaseDao(BaseDao baseDao) {
+		this.baseDao = baseDao;
+	}
+	
+	
+	/**
+	 * 增加关注自动回复信息
+	 * @param 
+	 * @throws Exception 
+	 */
+	public int addGzHf(HttpServletRequest request) throws Exception{
+		int flag=0;
+		String sql = "";
+		sql="DELETE FROM WX_GZHF";
+		baseDao.execute(sql);
+		String hfContent = request.getParameter("hfContent");
+		String searchKeyFlag = request.getParameter("searchKeyFlag");
+		String keyword = request.getParameter("keyword");
+		sql="SELECT IFNULL(MAX(ID),1)+1 AS ID FROM WX_GZHF";
+		String ID = baseDao.getUtil().getString(sql);
+		sql="INSERT INTO WX_GZHF(ID,SEARCHKEYFLAG,KEYWORD,HFCONTENT) VALUES (?,?,?,?)";
+		flag = baseDao.execute(sql,ID,searchKeyFlag,keyword,hfContent);
+		return flag;
+		
+	}
+	
+	
+	/**
+	 * 根据公众微信号获得关注自回复信息
+	 * @param 
+	 * @throws Exception 
+	 */
+	public Map<String,Object> getGzhfInfo(String wxId) throws Exception{
+		String sql = "";
+		sql = "SELECT KEYWORD,HFCONTENT,SEARCHKEYFLAG FROM WX_GZHF";
+		List<Map<String,Object>> listMap = baseDao.queryForList(sql);
+		Map<String,Object> mapData = null;
+		if(null != listMap && listMap.size()>0){
+			
+			for(Map<String,Object> map:listMap){
+				mapData = new HashMap<String,Object>();
+				mapData.put("KEYWORD", map.get("KEYWORD"));
+				mapData.put("HFCONTENT", map.get("HFCONTENT"));
+				mapData.put("SEARCHKEYFLAG", map.get("SEARCHKEYFLAG"));
+			}
+		}
+		return mapData;
+		
+	}
+}

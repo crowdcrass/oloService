@@ -1,0 +1,483 @@
+package com.sys.web.service.webservice;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+
+import com.sys.common.IfResponse;
+import com.sys.common.exception.CreateException;
+import com.sys.common.exception.ReadException;
+import com.sys.common.exception.UpdateException;
+import com.sys.entity.BusinessBillInfo;
+import com.sys.entity.CustMdyyBillInfo;
+import com.sys.entity.EntryInfo;
+import com.sys.entity.PayInfo;
+
+
+/**
+ * 
+ * ERP对接web服务
+ * 
+ * @author xmL
+ * @version V1.00 2015-10-15
+ * @see
+ * @since olo V1.0R001
+ */
+public class WebServiceForERPImpl implements WebServiceForERPIf
+{
+    private static final Logger LOGGER = Logger.getLogger(WebServiceForERPImpl.class);
+
+    private final BaseServiceImpl baseServiceImpl;
+
+    public WebServiceForERPImpl(BaseServiceImpl baseServiceImpl)
+    {
+        this.baseServiceImpl = baseServiceImpl;
+    }
+
+    /**
+     * 
+     * 商机单信息插入
+     * 
+     * @param businessBillInfo
+     * @return IfResponse
+     */
+    @Override
+    public IfResponse saveCustBusinessRecord(BusinessBillInfo businessBillInfo)
+    {
+        LOGGER.info("商机单接口入参：" + businessBillInfo);
+
+        IfResponse ifResponse = new IfResponse();
+        // 字段校验--------------------------------------------开始
+        if (businessBillInfo == null)
+        {
+            ifResponse.setMessage("BusinessBillInfo对象不能为空");
+            ifResponse.setSuccess("false");
+            LOGGER.info("商机单接口输出：" + ifResponse);
+            return ifResponse;
+        }
+        String boOno = businessBillInfo.getBoOno();
+        String boTime = businessBillInfo.getBoTime();
+        if (StringUtils.isEmpty(boOno) || StringUtils.isEmpty(boTime))
+        {
+            ifResponse.setMessage("单据编号和商机单创建时间都不能为空");
+            ifResponse.setSuccess("false");
+            LOGGER.info("商机单接口输出：" + ifResponse);
+            return ifResponse;
+        }
+        // 字段校验--------------------------------------------结束
+
+        try
+        {
+            //查询单号是否存在
+            int boNo = (Integer)baseServiceImpl.queryForObject("checkBoNoExt",
+                boOno);
+            if (boNo > 0)
+            {
+                ifResponse.setMessage("此商机单已存在");
+                ifResponse.setSuccess("false");
+                LOGGER.info("查询商机单是否存在：" + ifResponse);
+                return ifResponse;
+            }
+            baseServiceImpl.saveCustBusinessRecord("saveCustBusinessRecord",
+                businessBillInfo);
+        }
+        catch (ReadException e)
+        {
+            LOGGER.error("查询商机单号异常，", e);
+        }
+        catch (CreateException e)
+        {
+            LOGGER.error("erp调用商机单接口入库异常，", e);
+
+            ifResponse.setMessage("数据库操作异常");
+            ifResponse.setSuccess("false");
+            LOGGER.info("商机单接口输出：" + ifResponse);
+            return ifResponse;
+        }
+
+        // 成功返回
+        ifResponse.setMessage("保存商机单数据成功");
+        ifResponse.setSuccess("true");
+        LOGGER.info("商机单接口输出：" + ifResponse);
+        return ifResponse;
+    }
+
+    /**
+     * 
+     * 修改商机单信息
+     * 
+     * @param businessBillInfo
+     * @return IfResponse
+     */
+    @Override
+    public IfResponse editCustBusinessRecord(BusinessBillInfo businessBillInfo)
+    {
+        LOGGER.info("商机单接口入参：" + businessBillInfo);
+
+        IfResponse ifResponse = new IfResponse();
+        // 字段校验--------------------------------------------开始
+        if (businessBillInfo == null)
+        {
+            ifResponse.setMessage("BusinessBillInfo对象不能为空");
+            ifResponse.setSuccess("false");
+            LOGGER.info("商机单接口输出：" + ifResponse);
+            return ifResponse;
+        }
+        String boOno = businessBillInfo.getBoOno();
+        String boTime = businessBillInfo.getBoTime();
+        if (StringUtils.isEmpty(boOno) || StringUtils.isEmpty(boTime))
+        {
+            ifResponse.setMessage("单据编号和商机单创建时间都不能为空");
+            ifResponse.setSuccess("false");
+            LOGGER.info("商机单接口输出：" + ifResponse);
+            return ifResponse;
+        }
+        // 字段校验--------------------------------------------结束
+
+        try
+        {
+            int editCustBusinessRecord = baseServiceImpl.editCustBusinessRecord(
+                "editCustBusinessRecord", businessBillInfo);
+            if (editCustBusinessRecord == 0)
+            {
+                LOGGER.error("erp调用商机单接口入库异常，");
+            }
+        }
+        catch (UpdateException e)
+        {
+            LOGGER.error("erp调用商机单接口入库异常，", e);
+
+            ifResponse.setMessage("数据库操作异常");
+            ifResponse.setSuccess("false");
+            LOGGER.info("商机单接口输出：" + ifResponse);
+            return ifResponse;
+        }
+
+        // 成功返回
+        ifResponse.setMessage("修改商机单数据成功");
+        ifResponse.setSuccess("true");
+        LOGGER.info("商机单接口输出：" + ifResponse);
+        return ifResponse;
+    }
+
+    /**
+     * 
+     * 预约单信息插入
+     * 
+     * @param custMdyyBillInfo
+     * @return IfResponse
+     */
+    @Override
+    public IfResponse saveCustMdyyBill(CustMdyyBillInfo custMdyyBillInfo)
+    {
+        LOGGER.info("预约单接口入参：" + custMdyyBillInfo);
+
+        IfResponse ifResponse = new IfResponse();
+        // 字段校验--------------------------------------------开始
+        if (custMdyyBillInfo == null)
+        {
+            ifResponse.setMessage("custMdyyBillInfo对象不能为空");
+            ifResponse.setSuccess("false");
+            LOGGER.info("预约单接口输出：" + ifResponse);
+            return ifResponse;
+        }
+        String aoNo = custMdyyBillInfo.getAoNo();
+        String aoTime = custMdyyBillInfo.getAoTime();
+        if (StringUtils.isEmpty(aoNo) || StringUtils.isEmpty(aoTime))
+        {
+            ifResponse.setMessage("预约单编号和预约单创建时间都不能为空");
+            ifResponse.setSuccess("false");
+            LOGGER.info("预约单接口输出：" + ifResponse);
+            return ifResponse;
+        }
+        // 字段校验--------------------------------------------结束
+
+        try
+        {
+            baseServiceImpl.saveCustMdyyBill("saveCustMdyyBill",
+                custMdyyBillInfo);
+        }
+        catch (CreateException e)
+        {
+            LOGGER.error("erp调用预约单接口入库异常，", e);
+
+            ifResponse.setMessage("数据库操作异常");
+            ifResponse.setSuccess("false");
+            LOGGER.info("预约单接口输出：" + ifResponse);
+            return ifResponse;
+        }
+
+        // 成功返回
+        ifResponse.setMessage("保存预约单数据成功");
+        ifResponse.setSuccess("true");
+        LOGGER.info("预约单接口输出：" + ifResponse);
+        return ifResponse;
+    }
+
+    /**
+     * 
+     * 修改预约单信息
+     * 
+     * @param custMdyyBillInfo
+     * @return IfResponse
+     */
+    @Override
+    public IfResponse editCustMdyyBill(CustMdyyBillInfo custMdyyBillInfo)
+    {
+        LOGGER.info("预约单接口入参：" + custMdyyBillInfo);
+
+        IfResponse ifResponse = new IfResponse();
+        // 字段校验--------------------------------------------开始
+        if (custMdyyBillInfo == null)
+        {
+            ifResponse.setMessage("custMdyyBillInfo对象不能为空");
+            ifResponse.setSuccess("false");
+            LOGGER.info("预约单接口输出：" + ifResponse);
+            return ifResponse;
+        }
+        String aoNo = custMdyyBillInfo.getAoNo();
+        String aoTime = custMdyyBillInfo.getAoTime();
+        if (StringUtils.isEmpty(aoNo) || StringUtils.isEmpty(aoTime))
+        {
+            ifResponse.setMessage("预约单编号和预约单创建时间都不能为空");
+            ifResponse.setSuccess("false");
+            LOGGER.info("预约单接口输出：" + ifResponse);
+            return ifResponse;
+        }
+        // 字段校验--------------------------------------------结束
+
+        try
+        {
+            baseServiceImpl.editCustMdyyBill("editCustMdyyBill",
+                custMdyyBillInfo);
+        }
+        catch (UpdateException e)
+        {
+            LOGGER.error("erp调用预约单接口入库异常，", e);
+
+            ifResponse.setMessage("数据库操作异常");
+            ifResponse.setSuccess("false");
+            LOGGER.info("预约单接口输出：" + ifResponse);
+            return ifResponse;
+        }
+
+        // 成功返回
+        ifResponse.setMessage("修改预约单数据成功");
+        ifResponse.setSuccess("true");
+        LOGGER.info("预约单接口输出：" + ifResponse);
+        return ifResponse;
+    }
+
+    /**
+     * 
+     * 物料信息插入
+     * 
+     * @param entryInfo
+     * @return IfResponse
+     */
+    @Override
+    public IfResponse saveEntry(EntryInfo entryInfo)
+    {
+        LOGGER.info("物料接口入参：" + entryInfo);
+
+        IfResponse ifResponse = new IfResponse();
+        // 字段校验--------------------------------------------开始
+        if (entryInfo == null)
+        {
+            ifResponse.setMessage("entryInfo对象不能为空");
+            ifResponse.setSuccess("false");
+            LOGGER.info("物料接口输出：" + ifResponse);
+            return ifResponse;
+        }
+        String mId = entryInfo.getmId();
+        String mName = entryInfo.getmName();
+        String mPrice = entryInfo.getmPrice();
+        if (StringUtils.isEmpty(mId) || StringUtils.isEmpty(mName)
+            || StringUtils.isEmpty(mPrice))
+        {
+            ifResponse.setMessage("物料编号，物料名称，物料价格都不能为空");
+            ifResponse.setSuccess("false");
+            LOGGER.info("物料接口输出：" + ifResponse);
+            return ifResponse;
+        }
+        // 字段校验--------------------------------------------结束
+
+        try
+        {
+            baseServiceImpl.saveEntry("saveEntry", entryInfo);
+        }
+        catch (CreateException e)
+        {
+            LOGGER.error("erp调用物料接口入库异常，", e);
+
+            ifResponse.setMessage("数据库操作异常");
+            ifResponse.setSuccess("false");
+            LOGGER.info("物料接口输出：" + ifResponse);
+            return ifResponse;
+        }
+
+        // 成功返回
+        ifResponse.setMessage("保存物料数据成功");
+        ifResponse.setSuccess("true");
+        LOGGER.info("物料接口输出：" + ifResponse);
+        return ifResponse;
+    }
+
+    /**
+     * 
+     * 修改物料信息
+     * 
+     * @param entryInfo
+     * @return IfResponse
+     */
+    @Override
+    public IfResponse editEntry(EntryInfo entryInfo)
+    {
+        LOGGER.info("物料接口入参：" + entryInfo);
+
+        IfResponse ifResponse = new IfResponse();
+        // 字段校验--------------------------------------------开始
+        if (entryInfo == null)
+        {
+            ifResponse.setMessage("entryInfo对象不能为空");
+            ifResponse.setSuccess("false");
+            LOGGER.info("物料接口输出：" + ifResponse);
+            return ifResponse;
+        }
+        String mId = entryInfo.getmId();
+        String mName = entryInfo.getmName();
+        String mPrice = entryInfo.getmPrice();
+        if (StringUtils.isEmpty(mId) || StringUtils.isEmpty(mName)
+            || StringUtils.isEmpty(mPrice))
+        {
+            ifResponse.setMessage("物料编号，物料名称，物料价格都不能为空");
+            ifResponse.setSuccess("false");
+            LOGGER.info("物料接口输出：" + ifResponse);
+            return ifResponse;
+        }
+        // 字段校验--------------------------------------------结束
+
+        try
+        {
+            baseServiceImpl.editEntry("editEntry", entryInfo);
+        }
+        catch (UpdateException e)
+        {
+            LOGGER.error("erp调用物料接口入库异常，", e);
+
+            ifResponse.setMessage("数据库操作异常");
+            ifResponse.setSuccess("false");
+            LOGGER.info("物料接口输出：" + ifResponse);
+            return ifResponse;
+        }
+
+        // 成功返回
+        ifResponse.setMessage("更新物料数据成功");
+        ifResponse.setSuccess("true");
+        LOGGER.info("物料接口输出：" + ifResponse);
+        return ifResponse;
+    }
+
+    /**
+     * 支付方式插入
+     * 
+     * @param payInfo
+     * @return IfResponse
+     */
+    @Override
+    public IfResponse savePay(PayInfo payInfo)
+    {
+        LOGGER.info("支付方式接口入参：" + payInfo);
+
+        IfResponse ifResponse = new IfResponse();
+        if (payInfo == null)
+        {
+            ifResponse.setMessage("payInfo对象不能为空");
+            ifResponse.setSuccess("false");
+            LOGGER.info("支付方式接口输出：" + ifResponse);
+            return ifResponse;
+        }
+
+        // 字段校验--------------------------------------------开始
+        if (StringUtils.isEmpty(payInfo.getpId())
+            || StringUtils.isEmpty(payInfo.getpName()))
+        {
+            ifResponse.setMessage("支付Id，支付方式都不能为空");
+            ifResponse.setSuccess("false");
+            LOGGER.info("支付方式接口输出：" + ifResponse);
+            return ifResponse;
+        }
+        // 字段校验--------------------------------------------结束
+
+        try
+        {
+            baseServiceImpl.savePay("saveEntry", payInfo);
+        }
+        catch (CreateException e)
+        {
+            LOGGER.error("erp调用支付方式接口入库异常，", e);
+
+            ifResponse.setMessage("数据库操作异常");
+            ifResponse.setSuccess("false");
+            LOGGER.info("支付方式接口输出：" + ifResponse);
+            return ifResponse;
+        }
+
+        // 成功返回
+        ifResponse.setMessage("保存支付方式数据成功");
+        ifResponse.setSuccess("true");
+        LOGGER.info("支付方式接口输出：" + ifResponse);
+        return ifResponse;
+    }
+
+    /**
+     * 支付方式修改
+     * 
+     * @param payInfo
+     * @return IfResponse
+     */
+    @Override
+    public IfResponse editPay(PayInfo payInfo)
+    {
+        LOGGER.info("支付方式接口入参：" + payInfo);
+
+        IfResponse ifResponse = new IfResponse();
+        if (payInfo == null)
+        {
+            ifResponse.setMessage("payInfo对象不能为空");
+            ifResponse.setSuccess("false");
+            LOGGER.info("支付方式接口输出：" + ifResponse);
+            return ifResponse;
+        }
+
+        // 字段校验--------------------------------------------开始
+        if (StringUtils.isEmpty(payInfo.getpId())
+            || StringUtils.isEmpty(payInfo.getpName()))
+        {
+            ifResponse.setMessage("支付Id，支付方式都不能为空");
+            ifResponse.setSuccess("false");
+            LOGGER.info("支付方式接口输出：" + ifResponse);
+            return ifResponse;
+        }
+        // 字段校验--------------------------------------------结束
+
+        try
+        {
+            baseServiceImpl.editPay("editPay", payInfo);
+        }
+        catch (UpdateException e)
+        {
+            LOGGER.error("erp调用支付方式接口入库异常，", e);
+
+            ifResponse.setMessage("数据库操作异常");
+            ifResponse.setSuccess("false");
+            LOGGER.info("支付方式接口输出：" + ifResponse);
+            return ifResponse;
+        }
+
+        // 成功返回
+        ifResponse.setMessage("更新支付方式数据成功");
+        ifResponse.setSuccess("true");
+        LOGGER.info("支付方式接口输出：" + ifResponse);
+        return ifResponse;
+    }
+}

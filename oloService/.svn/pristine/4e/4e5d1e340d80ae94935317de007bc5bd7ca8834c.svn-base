@@ -1,0 +1,934 @@
+/**
+ * BusinessBillInfo.java
+ *
+ * This file was auto-generated from WSDL
+ * by the Apache Axis 1.4 Apr 22, 2006 (06:55:48 PDT) WSDL2Java emitter.
+ */
+
+package com.sys.entity.xsd;
+
+public class BusinessBillInfo  implements java.io.Serializable {
+    private java.lang.String boBuyIntention;
+
+    private java.lang.String boCity;
+
+    private java.lang.String boCompany;
+
+    private java.lang.String boCountry;
+
+    private java.lang.String boCreateTime;
+
+    private java.lang.String boCreateUser;
+
+    private java.lang.String boCusName;
+
+    private java.lang.String boCusPhone;
+
+    private java.lang.String boDetailAdd;
+
+    private java.lang.String boDis;
+
+    private java.lang.String boLongAdd;
+
+    private java.lang.String boOno;
+
+    private java.lang.String boOtherPhone;
+
+    private java.lang.String boProvince;
+
+    private java.lang.String boReason;
+
+    private java.lang.String boResult;
+
+    private java.lang.String boStatus;
+
+    private java.lang.String boStreet;
+
+    private java.lang.String boSynFlag;
+
+    private java.lang.String boTime;
+
+    private java.lang.String boUpdateTime;
+
+    private java.lang.String boUpdateUser;
+
+    private java.lang.String sId;
+
+    public BusinessBillInfo() {
+    }
+
+    public BusinessBillInfo(
+           java.lang.String boBuyIntention,
+           java.lang.String boCity,
+           java.lang.String boCompany,
+           java.lang.String boCountry,
+           java.lang.String boCreateTime,
+           java.lang.String boCreateUser,
+           java.lang.String boCusName,
+           java.lang.String boCusPhone,
+           java.lang.String boDetailAdd,
+           java.lang.String boDis,
+           java.lang.String boLongAdd,
+           java.lang.String boOno,
+           java.lang.String boOtherPhone,
+           java.lang.String boProvince,
+           java.lang.String boReason,
+           java.lang.String boResult,
+           java.lang.String boStatus,
+           java.lang.String boStreet,
+           java.lang.String boSynFlag,
+           java.lang.String boTime,
+           java.lang.String boUpdateTime,
+           java.lang.String boUpdateUser,
+           java.lang.String sId) {
+           this.boBuyIntention = boBuyIntention;
+           this.boCity = boCity;
+           this.boCompany = boCompany;
+           this.boCountry = boCountry;
+           this.boCreateTime = boCreateTime;
+           this.boCreateUser = boCreateUser;
+           this.boCusName = boCusName;
+           this.boCusPhone = boCusPhone;
+           this.boDetailAdd = boDetailAdd;
+           this.boDis = boDis;
+           this.boLongAdd = boLongAdd;
+           this.boOno = boOno;
+           this.boOtherPhone = boOtherPhone;
+           this.boProvince = boProvince;
+           this.boReason = boReason;
+           this.boResult = boResult;
+           this.boStatus = boStatus;
+           this.boStreet = boStreet;
+           this.boSynFlag = boSynFlag;
+           this.boTime = boTime;
+           this.boUpdateTime = boUpdateTime;
+           this.boUpdateUser = boUpdateUser;
+           this.sId = sId;
+    }
+
+
+    /**
+     * Gets the boBuyIntention value for this BusinessBillInfo.
+     * 
+     * @return boBuyIntention
+     */
+    public java.lang.String getBoBuyIntention() {
+        return boBuyIntention;
+    }
+
+
+    /**
+     * Sets the boBuyIntention value for this BusinessBillInfo.
+     * 
+     * @param boBuyIntention
+     */
+    public void setBoBuyIntention(java.lang.String boBuyIntention) {
+        this.boBuyIntention = boBuyIntention;
+    }
+
+
+    /**
+     * Gets the boCity value for this BusinessBillInfo.
+     * 
+     * @return boCity
+     */
+    public java.lang.String getBoCity() {
+        return boCity;
+    }
+
+
+    /**
+     * Sets the boCity value for this BusinessBillInfo.
+     * 
+     * @param boCity
+     */
+    public void setBoCity(java.lang.String boCity) {
+        this.boCity = boCity;
+    }
+
+
+    /**
+     * Gets the boCompany value for this BusinessBillInfo.
+     * 
+     * @return boCompany
+     */
+    public java.lang.String getBoCompany() {
+        return boCompany;
+    }
+
+
+    /**
+     * Sets the boCompany value for this BusinessBillInfo.
+     * 
+     * @param boCompany
+     */
+    public void setBoCompany(java.lang.String boCompany) {
+        this.boCompany = boCompany;
+    }
+
+
+    /**
+     * Gets the boCountry value for this BusinessBillInfo.
+     * 
+     * @return boCountry
+     */
+    public java.lang.String getBoCountry() {
+        return boCountry;
+    }
+
+
+    /**
+     * Sets the boCountry value for this BusinessBillInfo.
+     * 
+     * @param boCountry
+     */
+    public void setBoCountry(java.lang.String boCountry) {
+        this.boCountry = boCountry;
+    }
+
+
+    /**
+     * Gets the boCreateTime value for this BusinessBillInfo.
+     * 
+     * @return boCreateTime
+     */
+    public java.lang.String getBoCreateTime() {
+        return boCreateTime;
+    }
+
+
+    /**
+     * Sets the boCreateTime value for this BusinessBillInfo.
+     * 
+     * @param boCreateTime
+     */
+    public void setBoCreateTime(java.lang.String boCreateTime) {
+        this.boCreateTime = boCreateTime;
+    }
+
+
+    /**
+     * Gets the boCreateUser value for this BusinessBillInfo.
+     * 
+     * @return boCreateUser
+     */
+    public java.lang.String getBoCreateUser() {
+        return boCreateUser;
+    }
+
+
+    /**
+     * Sets the boCreateUser value for this BusinessBillInfo.
+     * 
+     * @param boCreateUser
+     */
+    public void setBoCreateUser(java.lang.String boCreateUser) {
+        this.boCreateUser = boCreateUser;
+    }
+
+
+    /**
+     * Gets the boCusName value for this BusinessBillInfo.
+     * 
+     * @return boCusName
+     */
+    public java.lang.String getBoCusName() {
+        return boCusName;
+    }
+
+
+    /**
+     * Sets the boCusName value for this BusinessBillInfo.
+     * 
+     * @param boCusName
+     */
+    public void setBoCusName(java.lang.String boCusName) {
+        this.boCusName = boCusName;
+    }
+
+
+    /**
+     * Gets the boCusPhone value for this BusinessBillInfo.
+     * 
+     * @return boCusPhone
+     */
+    public java.lang.String getBoCusPhone() {
+        return boCusPhone;
+    }
+
+
+    /**
+     * Sets the boCusPhone value for this BusinessBillInfo.
+     * 
+     * @param boCusPhone
+     */
+    public void setBoCusPhone(java.lang.String boCusPhone) {
+        this.boCusPhone = boCusPhone;
+    }
+
+
+    /**
+     * Gets the boDetailAdd value for this BusinessBillInfo.
+     * 
+     * @return boDetailAdd
+     */
+    public java.lang.String getBoDetailAdd() {
+        return boDetailAdd;
+    }
+
+
+    /**
+     * Sets the boDetailAdd value for this BusinessBillInfo.
+     * 
+     * @param boDetailAdd
+     */
+    public void setBoDetailAdd(java.lang.String boDetailAdd) {
+        this.boDetailAdd = boDetailAdd;
+    }
+
+
+    /**
+     * Gets the boDis value for this BusinessBillInfo.
+     * 
+     * @return boDis
+     */
+    public java.lang.String getBoDis() {
+        return boDis;
+    }
+
+
+    /**
+     * Sets the boDis value for this BusinessBillInfo.
+     * 
+     * @param boDis
+     */
+    public void setBoDis(java.lang.String boDis) {
+        this.boDis = boDis;
+    }
+
+
+    /**
+     * Gets the boLongAdd value for this BusinessBillInfo.
+     * 
+     * @return boLongAdd
+     */
+    public java.lang.String getBoLongAdd() {
+        return boLongAdd;
+    }
+
+
+    /**
+     * Sets the boLongAdd value for this BusinessBillInfo.
+     * 
+     * @param boLongAdd
+     */
+    public void setBoLongAdd(java.lang.String boLongAdd) {
+        this.boLongAdd = boLongAdd;
+    }
+
+
+    /**
+     * Gets the boOno value for this BusinessBillInfo.
+     * 
+     * @return boOno
+     */
+    public java.lang.String getBoOno() {
+        return boOno;
+    }
+
+
+    /**
+     * Sets the boOno value for this BusinessBillInfo.
+     * 
+     * @param boOno
+     */
+    public void setBoOno(java.lang.String boOno) {
+        this.boOno = boOno;
+    }
+
+
+    /**
+     * Gets the boOtherPhone value for this BusinessBillInfo.
+     * 
+     * @return boOtherPhone
+     */
+    public java.lang.String getBoOtherPhone() {
+        return boOtherPhone;
+    }
+
+
+    /**
+     * Sets the boOtherPhone value for this BusinessBillInfo.
+     * 
+     * @param boOtherPhone
+     */
+    public void setBoOtherPhone(java.lang.String boOtherPhone) {
+        this.boOtherPhone = boOtherPhone;
+    }
+
+
+    /**
+     * Gets the boProvince value for this BusinessBillInfo.
+     * 
+     * @return boProvince
+     */
+    public java.lang.String getBoProvince() {
+        return boProvince;
+    }
+
+
+    /**
+     * Sets the boProvince value for this BusinessBillInfo.
+     * 
+     * @param boProvince
+     */
+    public void setBoProvince(java.lang.String boProvince) {
+        this.boProvince = boProvince;
+    }
+
+
+    /**
+     * Gets the boReason value for this BusinessBillInfo.
+     * 
+     * @return boReason
+     */
+    public java.lang.String getBoReason() {
+        return boReason;
+    }
+
+
+    /**
+     * Sets the boReason value for this BusinessBillInfo.
+     * 
+     * @param boReason
+     */
+    public void setBoReason(java.lang.String boReason) {
+        this.boReason = boReason;
+    }
+
+
+    /**
+     * Gets the boResult value for this BusinessBillInfo.
+     * 
+     * @return boResult
+     */
+    public java.lang.String getBoResult() {
+        return boResult;
+    }
+
+
+    /**
+     * Sets the boResult value for this BusinessBillInfo.
+     * 
+     * @param boResult
+     */
+    public void setBoResult(java.lang.String boResult) {
+        this.boResult = boResult;
+    }
+
+
+    /**
+     * Gets the boStatus value for this BusinessBillInfo.
+     * 
+     * @return boStatus
+     */
+    public java.lang.String getBoStatus() {
+        return boStatus;
+    }
+
+
+    /**
+     * Sets the boStatus value for this BusinessBillInfo.
+     * 
+     * @param boStatus
+     */
+    public void setBoStatus(java.lang.String boStatus) {
+        this.boStatus = boStatus;
+    }
+
+
+    /**
+     * Gets the boStreet value for this BusinessBillInfo.
+     * 
+     * @return boStreet
+     */
+    public java.lang.String getBoStreet() {
+        return boStreet;
+    }
+
+
+    /**
+     * Sets the boStreet value for this BusinessBillInfo.
+     * 
+     * @param boStreet
+     */
+    public void setBoStreet(java.lang.String boStreet) {
+        this.boStreet = boStreet;
+    }
+
+
+    /**
+     * Gets the boSynFlag value for this BusinessBillInfo.
+     * 
+     * @return boSynFlag
+     */
+    public java.lang.String getBoSynFlag() {
+        return boSynFlag;
+    }
+
+
+    /**
+     * Sets the boSynFlag value for this BusinessBillInfo.
+     * 
+     * @param boSynFlag
+     */
+    public void setBoSynFlag(java.lang.String boSynFlag) {
+        this.boSynFlag = boSynFlag;
+    }
+
+
+    /**
+     * Gets the boTime value for this BusinessBillInfo.
+     * 
+     * @return boTime
+     */
+    public java.lang.String getBoTime() {
+        return boTime;
+    }
+
+
+    /**
+     * Sets the boTime value for this BusinessBillInfo.
+     * 
+     * @param boTime
+     */
+    public void setBoTime(java.lang.String boTime) {
+        this.boTime = boTime;
+    }
+
+
+    /**
+     * Gets the boUpdateTime value for this BusinessBillInfo.
+     * 
+     * @return boUpdateTime
+     */
+    public java.lang.String getBoUpdateTime() {
+        return boUpdateTime;
+    }
+
+
+    /**
+     * Sets the boUpdateTime value for this BusinessBillInfo.
+     * 
+     * @param boUpdateTime
+     */
+    public void setBoUpdateTime(java.lang.String boUpdateTime) {
+        this.boUpdateTime = boUpdateTime;
+    }
+
+
+    /**
+     * Gets the boUpdateUser value for this BusinessBillInfo.
+     * 
+     * @return boUpdateUser
+     */
+    public java.lang.String getBoUpdateUser() {
+        return boUpdateUser;
+    }
+
+
+    /**
+     * Sets the boUpdateUser value for this BusinessBillInfo.
+     * 
+     * @param boUpdateUser
+     */
+    public void setBoUpdateUser(java.lang.String boUpdateUser) {
+        this.boUpdateUser = boUpdateUser;
+    }
+
+
+    /**
+     * Gets the sId value for this BusinessBillInfo.
+     * 
+     * @return sId
+     */
+    public java.lang.String getSId() {
+        return sId;
+    }
+
+
+    /**
+     * Sets the sId value for this BusinessBillInfo.
+     * 
+     * @param sId
+     */
+    public void setSId(java.lang.String sId) {
+        this.sId = sId;
+    }
+
+    private java.lang.Object __equalsCalc = null;
+    public synchronized boolean equals(java.lang.Object obj) {
+        if (!(obj instanceof BusinessBillInfo)) return false;
+        BusinessBillInfo other = (BusinessBillInfo) obj;
+        if (obj == null) return false;
+        if (this == obj) return true;
+        if (__equalsCalc != null) {
+            return (__equalsCalc == obj);
+        }
+        __equalsCalc = obj;
+        boolean _equals;
+        _equals = true && 
+            ((this.boBuyIntention==null && other.getBoBuyIntention()==null) || 
+             (this.boBuyIntention!=null &&
+              this.boBuyIntention.equals(other.getBoBuyIntention()))) &&
+            ((this.boCity==null && other.getBoCity()==null) || 
+             (this.boCity!=null &&
+              this.boCity.equals(other.getBoCity()))) &&
+            ((this.boCompany==null && other.getBoCompany()==null) || 
+             (this.boCompany!=null &&
+              this.boCompany.equals(other.getBoCompany()))) &&
+            ((this.boCountry==null && other.getBoCountry()==null) || 
+             (this.boCountry!=null &&
+              this.boCountry.equals(other.getBoCountry()))) &&
+            ((this.boCreateTime==null && other.getBoCreateTime()==null) || 
+             (this.boCreateTime!=null &&
+              this.boCreateTime.equals(other.getBoCreateTime()))) &&
+            ((this.boCreateUser==null && other.getBoCreateUser()==null) || 
+             (this.boCreateUser!=null &&
+              this.boCreateUser.equals(other.getBoCreateUser()))) &&
+            ((this.boCusName==null && other.getBoCusName()==null) || 
+             (this.boCusName!=null &&
+              this.boCusName.equals(other.getBoCusName()))) &&
+            ((this.boCusPhone==null && other.getBoCusPhone()==null) || 
+             (this.boCusPhone!=null &&
+              this.boCusPhone.equals(other.getBoCusPhone()))) &&
+            ((this.boDetailAdd==null && other.getBoDetailAdd()==null) || 
+             (this.boDetailAdd!=null &&
+              this.boDetailAdd.equals(other.getBoDetailAdd()))) &&
+            ((this.boDis==null && other.getBoDis()==null) || 
+             (this.boDis!=null &&
+              this.boDis.equals(other.getBoDis()))) &&
+            ((this.boLongAdd==null && other.getBoLongAdd()==null) || 
+             (this.boLongAdd!=null &&
+              this.boLongAdd.equals(other.getBoLongAdd()))) &&
+            ((this.boOno==null && other.getBoOno()==null) || 
+             (this.boOno!=null &&
+              this.boOno.equals(other.getBoOno()))) &&
+            ((this.boOtherPhone==null && other.getBoOtherPhone()==null) || 
+             (this.boOtherPhone!=null &&
+              this.boOtherPhone.equals(other.getBoOtherPhone()))) &&
+            ((this.boProvince==null && other.getBoProvince()==null) || 
+             (this.boProvince!=null &&
+              this.boProvince.equals(other.getBoProvince()))) &&
+            ((this.boReason==null && other.getBoReason()==null) || 
+             (this.boReason!=null &&
+              this.boReason.equals(other.getBoReason()))) &&
+            ((this.boResult==null && other.getBoResult()==null) || 
+             (this.boResult!=null &&
+              this.boResult.equals(other.getBoResult()))) &&
+            ((this.boStatus==null && other.getBoStatus()==null) || 
+             (this.boStatus!=null &&
+              this.boStatus.equals(other.getBoStatus()))) &&
+            ((this.boStreet==null && other.getBoStreet()==null) || 
+             (this.boStreet!=null &&
+              this.boStreet.equals(other.getBoStreet()))) &&
+            ((this.boSynFlag==null && other.getBoSynFlag()==null) || 
+             (this.boSynFlag!=null &&
+              this.boSynFlag.equals(other.getBoSynFlag()))) &&
+            ((this.boTime==null && other.getBoTime()==null) || 
+             (this.boTime!=null &&
+              this.boTime.equals(other.getBoTime()))) &&
+            ((this.boUpdateTime==null && other.getBoUpdateTime()==null) || 
+             (this.boUpdateTime!=null &&
+              this.boUpdateTime.equals(other.getBoUpdateTime()))) &&
+            ((this.boUpdateUser==null && other.getBoUpdateUser()==null) || 
+             (this.boUpdateUser!=null &&
+              this.boUpdateUser.equals(other.getBoUpdateUser()))) &&
+            ((this.sId==null && other.getSId()==null) || 
+             (this.sId!=null &&
+              this.sId.equals(other.getSId())));
+        __equalsCalc = null;
+        return _equals;
+    }
+
+    private boolean __hashCodeCalc = false;
+    public synchronized int hashCode() {
+        if (__hashCodeCalc) {
+            return 0;
+        }
+        __hashCodeCalc = true;
+        int _hashCode = 1;
+        if (getBoBuyIntention() != null) {
+            _hashCode += getBoBuyIntention().hashCode();
+        }
+        if (getBoCity() != null) {
+            _hashCode += getBoCity().hashCode();
+        }
+        if (getBoCompany() != null) {
+            _hashCode += getBoCompany().hashCode();
+        }
+        if (getBoCountry() != null) {
+            _hashCode += getBoCountry().hashCode();
+        }
+        if (getBoCreateTime() != null) {
+            _hashCode += getBoCreateTime().hashCode();
+        }
+        if (getBoCreateUser() != null) {
+            _hashCode += getBoCreateUser().hashCode();
+        }
+        if (getBoCusName() != null) {
+            _hashCode += getBoCusName().hashCode();
+        }
+        if (getBoCusPhone() != null) {
+            _hashCode += getBoCusPhone().hashCode();
+        }
+        if (getBoDetailAdd() != null) {
+            _hashCode += getBoDetailAdd().hashCode();
+        }
+        if (getBoDis() != null) {
+            _hashCode += getBoDis().hashCode();
+        }
+        if (getBoLongAdd() != null) {
+            _hashCode += getBoLongAdd().hashCode();
+        }
+        if (getBoOno() != null) {
+            _hashCode += getBoOno().hashCode();
+        }
+        if (getBoOtherPhone() != null) {
+            _hashCode += getBoOtherPhone().hashCode();
+        }
+        if (getBoProvince() != null) {
+            _hashCode += getBoProvince().hashCode();
+        }
+        if (getBoReason() != null) {
+            _hashCode += getBoReason().hashCode();
+        }
+        if (getBoResult() != null) {
+            _hashCode += getBoResult().hashCode();
+        }
+        if (getBoStatus() != null) {
+            _hashCode += getBoStatus().hashCode();
+        }
+        if (getBoStreet() != null) {
+            _hashCode += getBoStreet().hashCode();
+        }
+        if (getBoSynFlag() != null) {
+            _hashCode += getBoSynFlag().hashCode();
+        }
+        if (getBoTime() != null) {
+            _hashCode += getBoTime().hashCode();
+        }
+        if (getBoUpdateTime() != null) {
+            _hashCode += getBoUpdateTime().hashCode();
+        }
+        if (getBoUpdateUser() != null) {
+            _hashCode += getBoUpdateUser().hashCode();
+        }
+        if (getSId() != null) {
+            _hashCode += getSId().hashCode();
+        }
+        __hashCodeCalc = false;
+        return _hashCode;
+    }
+
+    // Type metadata
+    private static org.apache.axis.description.TypeDesc typeDesc =
+        new org.apache.axis.description.TypeDesc(BusinessBillInfo.class, true);
+
+    static {
+        typeDesc.setXmlType(new javax.xml.namespace.QName("http://entity.sys.com/xsd", "BusinessBillInfo"));
+        org.apache.axis.description.ElementDesc elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("boBuyIntention");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://entity.sys.com/xsd", "boBuyIntention"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setMinOccurs(0);
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("boCity");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://entity.sys.com/xsd", "boCity"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setMinOccurs(0);
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("boCompany");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://entity.sys.com/xsd", "boCompany"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setMinOccurs(0);
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("boCountry");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://entity.sys.com/xsd", "boCountry"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setMinOccurs(0);
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("boCreateTime");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://entity.sys.com/xsd", "boCreateTime"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setMinOccurs(0);
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("boCreateUser");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://entity.sys.com/xsd", "boCreateUser"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setMinOccurs(0);
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("boCusName");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://entity.sys.com/xsd", "boCusName"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setMinOccurs(0);
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("boCusPhone");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://entity.sys.com/xsd", "boCusPhone"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setMinOccurs(0);
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("boDetailAdd");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://entity.sys.com/xsd", "boDetailAdd"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setMinOccurs(0);
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("boDis");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://entity.sys.com/xsd", "boDis"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setMinOccurs(0);
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("boLongAdd");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://entity.sys.com/xsd", "boLongAdd"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setMinOccurs(0);
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("boOno");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://entity.sys.com/xsd", "boOno"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setMinOccurs(0);
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("boOtherPhone");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://entity.sys.com/xsd", "boOtherPhone"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setMinOccurs(0);
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("boProvince");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://entity.sys.com/xsd", "boProvince"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setMinOccurs(0);
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("boReason");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://entity.sys.com/xsd", "boReason"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setMinOccurs(0);
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("boResult");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://entity.sys.com/xsd", "boResult"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setMinOccurs(0);
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("boStatus");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://entity.sys.com/xsd", "boStatus"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setMinOccurs(0);
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("boStreet");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://entity.sys.com/xsd", "boStreet"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setMinOccurs(0);
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("boSynFlag");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://entity.sys.com/xsd", "boSynFlag"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setMinOccurs(0);
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("boTime");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://entity.sys.com/xsd", "boTime"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setMinOccurs(0);
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("boUpdateTime");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://entity.sys.com/xsd", "boUpdateTime"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setMinOccurs(0);
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("boUpdateUser");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://entity.sys.com/xsd", "boUpdateUser"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setMinOccurs(0);
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+        elemField = new org.apache.axis.description.ElementDesc();
+        elemField.setFieldName("SId");
+        elemField.setXmlName(new javax.xml.namespace.QName("http://entity.sys.com/xsd", "sId"));
+        elemField.setXmlType(new javax.xml.namespace.QName("http://www.w3.org/2001/XMLSchema", "string"));
+        elemField.setMinOccurs(0);
+        elemField.setNillable(true);
+        typeDesc.addFieldDesc(elemField);
+    }
+
+    /**
+     * Return type metadata object
+     */
+    public static org.apache.axis.description.TypeDesc getTypeDesc() {
+        return typeDesc;
+    }
+
+    /**
+     * Get Custom Serializer
+     */
+    public static org.apache.axis.encoding.Serializer getSerializer(
+           java.lang.String mechType, 
+           java.lang.Class _javaType,  
+           javax.xml.namespace.QName _xmlType) {
+        return 
+          new  org.apache.axis.encoding.ser.BeanSerializer(
+            _javaType, _xmlType, typeDesc);
+    }
+
+    /**
+     * Get Custom Deserializer
+     */
+    public static org.apache.axis.encoding.Deserializer getDeserializer(
+           java.lang.String mechType, 
+           java.lang.Class _javaType,  
+           javax.xml.namespace.QName _xmlType) {
+        return 
+          new  org.apache.axis.encoding.ser.BeanDeserializer(
+            _javaType, _xmlType, typeDesc);
+    }
+
+}

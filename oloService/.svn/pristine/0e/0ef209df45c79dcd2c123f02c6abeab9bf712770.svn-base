@@ -1,0 +1,101 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%
+	String path = request.getContextPath();
+	String basePath = request.getScheme() + "://"
+			+ request.getServerName() + ":" + request.getServerPort()
+			+ path + "/";
+%>
+<html>
+
+<head>   
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=8" />
+
+	<title>案例维护</title>
+	<link rel="stylesheet" type="text/css" href="../css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap-responsive.css" />
+    <link rel="stylesheet" type="text/css" href="../css/style.css" />
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    
+    <script type="text/javascript" src="../js/bootstrap.js"></script>
+    <script type="text/javascript" src="../js/ckform.js"></script>
+    <script type="text/javascript" src="../js/common.js"></script>
+	<script src="<%=basePath%>/js/jquery-1.8.1.min.js"	type="text/javascript">	</script>
+		<script src="<%=basePath %>js/jquery-1.8.1.min.js" type="text/javascript"></script>
+	
+	<script src="<%=basePath %>js/zTree-3.4/js/jquery.ztree.core-3.4.min.js" type="text/javascript"></script>
+	<script src="<%=basePath %>js/zTree-3.4/js/jquery.ztree.exedit-3.4.min.js" type="text/javascript"></script>
+	<link rel="stylesheet" href="<%=basePath %>js/zTree-3.4/css/zTreeStyle/zTreeStyle.css" type="text/css">
+	
+   </script>
+	<script type="text/javascript">
+		function saveCaseType(){
+			var C_NAME = $("#C_NAME").val();
+			if(C_NAME.replace(/\s/g,'') == ""){
+				alert("名称不能为空!");
+				return false;
+			}
+			
+			document.getElementById("addCaseForm").submit();
+		}
+		
+		function init(){
+			var flag = "${flag}";
+	
+			if(null != flag && "" != flag){
+				if(flag == "1"){
+					alert("编辑成功!");
+					window.location.href="<%=basePath%>caseAction/queryCaseByTypeId?ct_id=${ct_id}";
+				}else if(flag =="3"){
+					alert("用户已失效，请重新登录后再编辑!");
+				}else{
+					alert("数据未能成功编辑，请稍后再试！");
+				}
+			}
+		}
+	</script>
+</head>
+
+<body onload="init()">
+<form id="addCaseForm" name="addCaseForm" action="<%=basePath %>caseAction/editCase" method="post">
+	<input type="hidden" value="${ct_id }" id="ct_id" name="ct_id">
+	<input type="hidden" value="${c_id }" id="c_id" name="c_id">
+	<table class="table table-bordered table-hover definewidth m10">
+		<tr>	
+			<td class="tdLabel" width="20%">名称</td>	
+			<td><input type="text" value="${caseMap.C_NAME }" name="C_NAME" id="C_NAME"></td>
+		</tr>
+		<tr>
+			<td class="tdLabel">描述</td>	
+			<td><input type="text" name="C_DESC" id="C_DESC" value="${caseMap.C_DESC }"></td>
+		</tr>
+		<tr>
+			<td  colspan="2" align="center">
+				<input type="button" value="保存"  class="btn btn-success" style="cursor: pointer;" onclick="saveCaseType()" />
+				<input type="button" value="取消"  class="btn btn-primary" style="cursor: pointer;" onclick="window.history.go(-1)" />
+			</td>
+		</tr>
+	</table>
+	<div id="menuContent" class="menuContent" style="display:none; position: absolute;">
+		<ul id="treeDemo" class="ztree" style="margin-top:0; width:180px; height: 300px;"></ul>
+	</div>
+</form>
+<style>
+<!--
+#menuContent{
+	margin-top: 10px;
+  border: 1px solid #617775;
+  background: #f0f6e4;
+  width: 220px;
+  height: 360px;
+  overflow-y: scroll;
+  overflow-x: auto;
+}
+.line{
+	height: auto;
+}
+-->
+</style>
+<script type="text/javascript">
+</script>
+</body>

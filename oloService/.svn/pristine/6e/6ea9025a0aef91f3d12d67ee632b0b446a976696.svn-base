@@ -1,0 +1,350 @@
+package net.sg.common.util.common;
+
+
+import java.net.InetAddress;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Random;
+import java.util.TimeZone;
+import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.servlet.http.HttpServletRequest;
+
+
+ 
+
+/**
+ * 通用方法
+ * @author mxy
+ *
+ */
+public class ContextUtil { 
+
+
+	public static final int SECONDS_IN_DAY = 60 * 60 * 24;
+	public static final long MILLIS_IN_DAY = 1000L * SECONDS_IN_DAY;
+
+	static final int GB_SP_DIFF = 160;
+	// 存放国标一级汉字不同读音的起始区位码
+	static final int[] secPosvalueList = { 1601, 1637, 1833, 2078, 2274, 2302,
+		2433, 2594, 2787, 3106, 3212, 3472, 3635, 3722, 3730, 3858, 4027,
+		4086, 4390, 4558, 4684, 4925, 5249, 5600 };
+
+	// 存放国标一级汉字不同读音的起始区位码对应读音
+	static final char[] firstLetter = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
+		'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'w', 'x',
+		'y', 'z' };
+
+
+
+
+
+
+
+	/**
+	 * 获取IP
+	 * @param request
+	 * @return
+	 * @author mxy
+	 */
+	public static String getIp(HttpServletRequest request){ 
+		String ip = request.getHeader("x-forwarded-for");     
+		if(ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {     
+			ip = request.getHeader("Proxy-Client-IP");     
+		}     
+		if(ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {     
+			ip = request.getHeader("WL-Proxy-Client-IP");     
+		}     
+		if(ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {     
+			ip = request.getRemoteAddr();     
+		}   
+		return ip;
+	}
+
+
+
+	/**
+	 * 获取IP
+	 * @param request
+	 * @return
+	 * @author mxy
+	 */
+	public static String getRemortIP(HttpServletRequest request) {
+		if (request.getHeader("x-forwarded-for") == null) {
+			return request.getRemoteAddr();
+		}
+		return request.getHeader("x-forwarded-for");
+	} 
+
+
+	/**
+	 * 获取计算机名
+	 * @return
+	 * @author mxy
+	 */
+	public static String getComputerName(String ip){ 
+		/*   Map<String, String> map = System.getenv(); 
+		    String computerName = map.get("COMPUTERNAME");// 获取计算机名
+		    return computerName*/ ; 
+		    String computerName="";
+		    try {
+		    	InetAddress  remoteip = InetAddress.getByName(ip);  //自己电脑的IP  
+		    	computerName =remoteip.getHostName() ;   
+		    } catch (Exception e) {
+		    	e.printStackTrace();
+		    }
+		    return computerName ;
+
+
+	}
+
+	/**
+	 * 验证数字类型
+	 * @param str
+	 * @return
+	 */
+	public static boolean isNumber(String str)
+	{
+		java.util.regex.Pattern pattern=java.util.regex.Pattern.compile("[0-9]*");
+		java.util.regex.Matcher match=pattern.matcher(str);
+		if(match.matches()==false)
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+	/* 
+	 * 功能：判断字符串是否为数字
+	 * @param str
+	 * @return
+	 */
+	public boolean isNumeric(String str)
+	{
+		Pattern pattern=Pattern.compile("[0-9]*");
+		Matcher isNum=pattern.matcher(str);
+		if(isNum.matches())
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}  
+	}
+	/**
+	 * 验证年份是否有效
+	 * @param strYear
+	 * @return
+	 */
+	public static boolean checkYear(String strYear) {
+		GregorianCalendar gc=new GregorianCalendar();  
+		if(!ContextUtil.isNumber(strYear)){
+			return false ;
+		}else{
+			if(gc.get(Calendar.YEAR)-Integer.parseInt(strYear) >150){
+				return false;
+			}
+		}
+		return true;
+	}
+	/**
+	 * 判断字符中是否包含  < > 括号  xml 不识别
+	 * @param
+	 * @return
+	 * @author mxy
+	 */		
+	public static String replaceTsFh(String value){
+		String repAndValue = value.replace("&", "&amp;") ;
+
+		String replaceValue = (repAndValue.replace("<", "&lt;")).replace(">", "&gt;");
+
+		String zwValue =  (replaceValue.replace("〈","&lt;")).replace("〉", "&gt;") ;
+		//	System.out.println(zwValue);
+		return   zwValue ;
+	}
+
+	/**
+	 * 判断字符中是否包含"&" 
+	 * @param args
+	 */
+	public static String replaceAnd(String value){
+		String replaceValue =  value.replace("&", "&amp;");
+
+		return  replaceValue ;
+	}
+
+	/**
+	 * 得到系统当前时间 long
+	 * eg: 1393744309180
+	 * @author mxy
+	 * @return
+	 */
+	public static long sysNowTime( ){
+		java.util.Date dt = new Date();
+		long lSysTime1 = dt.getTime() ;
+		return lSysTime1 ;
+	}
+	/**
+	 * string date To long
+	 * @return
+	 * @author mxy
+	 * @throws ParseException 
+	 */
+	public static long strDateToLong(String strDate) throws ParseException{
+		String DEFAULT_PATTERN = "yyyy-MM-dd HH:mm:ss";
+		SimpleDateFormat FORMAT_YYYY = new SimpleDateFormat(DEFAULT_PATTERN);
+		Date date =FORMAT_YYYY.parse(strDate);
+		long  dateLong= date.getTime() ;
+		return  dateLong;
+	}
+
+
+	/**
+	 *   字符串格式日期转成long 再转 String
+	 * @return
+	 * @author mxy
+	 * @throws ParseException 
+	 */
+	public static String dateToString(String strDate) throws ParseException{
+		String DEFAULT_PATTERN = "yyyy-MM-dd";
+		SimpleDateFormat FORMAT_YYYY = new SimpleDateFormat(DEFAULT_PATTERN);
+		//sql 转yyyy-mm-dd 读出时少一天，所以在转换时加一天
+		String newDate =dateAfter(strDate);
+		Date date =FORMAT_YYYY.parse(newDate);
+		String  str= date.getTime()+"" ;
+		return  str;
+	}
+	/**
+	 * 日期后一天
+	 * @param startdate
+	 * @return
+	 * @throws ParseException
+	 */
+	public static String dateAfter(String startdate) throws ParseException{ 
+		Date date = (new SimpleDateFormat("yyyy-MM-dd")).parse(startdate);
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+		cal.add(Calendar.DATE, 1);
+		String str =(new SimpleDateFormat("yyyy-MM-dd")).format(cal.getTime()) ;
+		return str;
+	}
+	/**
+	 * 产生指定范围的随机整数
+	 * @param min
+	 * @param max
+	 * @return
+	 * @author mxy
+	 */
+	public static  int random(int min,int max){ 
+		Random random = new Random(); 
+		int s = random.nextInt(max)%(max-min+1) + min;
+		return s ; 
+	}
+
+
+	/**
+	 * 产生指定范围的随机整数
+	 * @param min
+	 * @param max
+	 * @return
+	 * @author mxy
+	 * @throws ParseException 
+	 */
+	public static  long day(String lastdate,String enddate) throws ParseException{ 
+		String s=DateTimeUtil.parseMilliAsString(ContextUtil.sysNowTime());
+		Date date1 = new SimpleDateFormat("yyyy-mm-dd").parse("2006-06-08 12:11:15"); 
+		Date date2 = new SimpleDateFormat("yyyy-mm-dd").parse(s); 
+		//long l = date1.getTime()-date2.getTime()>0 ? date1.getTime()-date2.getTime(): 
+		//	date2.getTime()-date1.getTime(); 
+
+		//		System.out.println(l/1000+"秒"); 
+
+		//日期相减得到相差的日期 
+		long day = (date1.getTime()-date2.getTime())/(24*60*60*1000)>0 ? (date1.getTime()-date2.getTime())/(24*60*60*1000): 
+			(date2.getTime()-date1.getTime())/(24*60*60*1000); 
+
+		System.out.println("相差的日期: " +day); 
+		return day;
+	}
+
+
+	/**
+	 * 判断两个时间不是一天
+	 * @param ms1
+	 * @param ms2
+	 * @return
+	 * 同一天为true，非则为false
+	 */
+	public static boolean isSameDayOfMillis(final long ms1, final long ms2) {
+		final long interval = ms1 - ms2;
+		return interval < MILLIS_IN_DAY
+		&& interval > -1L * MILLIS_IN_DAY
+		&& toDay(ms1) == toDay(ms2);
+	}
+	private static long toDay(long millis) {
+		return (millis + TimeZone.getDefault().getOffset(millis)) / MILLIS_IN_DAY;
+	}
+
+	/**
+	 * 开始时间
+	 * @return
+	 */
+	public static Long getStartTime(){
+		Calendar todayStart = Calendar.getInstance();
+		todayStart.set(Calendar.HOUR, 0);
+		todayStart.set(Calendar.MINUTE, 0);
+		todayStart.set(Calendar.SECOND, 0);
+		todayStart.set(Calendar.MILLISECOND, 0);
+		return todayStart.getTime().getTime();
+	}
+
+	/**
+	 * 结束时间
+	 * @return
+	 */
+	public static Long getEndTime(){
+		Calendar todayEnd = Calendar.getInstance();
+		todayEnd.set(Calendar.HOUR, 23);
+		todayEnd.set(Calendar.MINUTE, 59);
+		todayEnd.set(Calendar.SECOND, 59);
+		todayEnd.set(Calendar.MILLISECOND, 999);
+		return todayEnd.getTime().getTime();
+	}
+
+	/**
+	 * 产生一个32位的GUID
+	 * @return
+	 */
+	public static String newGUID()
+	{
+		UUID uuid = UUID.randomUUID();
+		return uuid.toString().replace("-", "");
+	}
+	public String getCurrentPath(){  
+	       //取得根目录路径  
+	       String rootPath=getClass().getResource("/").getFile().toString();  
+	       //当前目录路径  
+	      // String currentPath1=getClass().getResource(".").getFile().toString();  
+	       //String currentPath2=getClass().getResource("").getFile().toString();  
+	       //当前目录的上级目录路径  
+	       //String parentPath=getClass().getResource("../").getFile().toString();  
+	          
+	       return rootPath;         
+	   
+	   }
+	
+
+	public static void main(String[] args) throws ParseException {    
+		 
+		System.out.println(sysNowTime());
+		System.out.println(strDateToLong("2014-08-09 17:15:14"));
+	}
+}

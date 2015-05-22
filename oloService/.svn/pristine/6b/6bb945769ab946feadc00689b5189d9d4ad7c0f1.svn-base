@@ -1,0 +1,197 @@
+package com.sys.wx.web;
+
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import net.sf.json.JSONArray;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import cn.org.rapid_framework.web.scope.Flash;
+
+import com.platform.common.data.CommonUtil;
+import com.platform.common.servlet.RequestParameter;
+import com.sys.wx.service.ProAttrTypeService;
+import com.sys.wx.service.ProductTypeService;
+
+
+@Controller
+@RequestMapping("/attrType")
+public class ProAttrTypeController
+{
+    private static Logger log = Logger.getLogger(ProAttrTypeController.class);
+
+    @Autowired
+    private ProAttrTypeService proAttributeTypeService;
+
+    @Autowired
+    private ProductTypeService productTypeService;
+
+    /**
+     *跳转到分类首页
+     * @param request
+     * @return String
+     */
+    @RequestMapping("/index")
+    public String index(HttpServletRequest request)
+    {
+        //属性分类
+        Flash.current().put("menuTreeJson",
+            JSONArray.fromObject(this.loadTreeMenu(request)).toString(3));
+
+        return "/wx/attributeType/index";
+    }
+
+    /**
+     * 属性分类树
+     * @param request
+     * @return String
+     */
+    public String loadTypeTreeMenu(HttpServletRequest request)
+    {
+        List<Map<String, Object>> menuList = proAttributeTypeService.findTypeMenus();
+        return CommonUtil.toJSONString(menuList);
+    }
+
+    /**
+     * 商品分类
+     * @param request
+     * @return String
+     */
+    public String loadTreeMenu(HttpServletRequest request)
+    {
+        List<Map<String, Object>> menuList = productTypeService.findMenus();
+        return CommonUtil.toJSONString(menuList);
+    }
+
+    /**
+     * 根据分类id查询分类详情
+     *〈一句话功能简述〉
+     * @param request
+     * @return String
+     */
+    @RequestMapping("/queryAttrType")
+    public String queryAttrTypeById(ModelMap model, HttpServletRequest request)
+    {
+        model.put("attributeMap",
+            proAttributeTypeService.queryAttrTypeByProId(request));
+        int mt_id = RequestParameter.getInt(request, "mt_id");
+        String mt_name = RequestParameter.getString(request, "mt_name");
+        model.put("mt_id", mt_id);
+        model.put("mt_name", mt_name);
+        return "/wx/attributeType/show";
+    }
+
+    /**
+     *  跳转到增加页面
+     *  @author yl
+     */
+    @RequestMapping(value = "/addPage")
+    public String addPage(ModelMap model, HttpServletRequest request,
+                          int mt_id, String mt_name)
+    {
+        model.put("mt_id", mt_id);
+        model.put("mt_name", mt_name);
+        return "/wx/attributeType/add";
+    }
+
+    /**
+     *  增加
+     *  @author yl
+     */
+    @RequestMapping(value = "/addType")
+    public String addType(ModelMap model, HttpServletRequest request, String m)
+    {
+        String flag = proAttributeTypeService.addType(request);
+        String mt_name = RequestParameter.getString(request, "PARENT_MT_NAME");
+        int mt_id = RequestParameter.getInt(request, "MT_PARENT_ID");
+
+        model.put("flag", flag);
+        model.put("mt_id", mt_id);
+        model.put("mt_name", mt_name);
+        return "/wx/attributeType/add";
+    }
+
+    /**
+     * 查询物料列表
+     *〈一句话功能简述〉
+     * @param request
+     * @return String
+     */
+    @ResponseBody
+    @RequestMapping("/queryAttrList")
+    public String queryAttrList(final HttpServletRequest request)
+    {
+
+        return CommonUtil.toJSONString(proAttributeTypeService.queryAttrList(request));
+    }
+
+    /**
+     *  跳转到修改页面
+     *  @author yl
+     */
+    @RequestMapping(value = "/edit")
+    public String editNode(ModelMap model, HttpServletRequest request)
+    {
+        Map<String, Object> attrTypeMap = proAttributeTypeService.queryAttrTypeById(request);
+        model.put("attrTypeMap", attrTypeMap);
+        //属性分类
+        Flash.current().put("menuTreeJson",
+            JSONArray.fromObject(this.loadTypeTreeMenu(request)).toString(3));
+
+        //商品分类
+        Flash.current().put("productTypeMenuJson",
+            JSONArray.fromObject(this.loadTreeMenu(request)).toString(3));
+        return "/wx/attributeType/edit";
+    }
+
+    /**
+     *  修改
+     *  @author yl
+     */
+    @RequestMapping(value = "/update")
+    public String update(ModelMap model, HttpServletRequest request,
+                         HttpServletResponse response)
+    {
+        String flag = proAttributeTypeService.updateType(request);
+        model.put("flag", flag);
+
+        int mt_id = RequestParameter.getInt(request, "MT_PARENT_ID");
+        model.put("mt_id", mt_id);
+        return "/wx/attributeType/edit";
+    }
+
+    /**
+     * 删除
+     *  @author yl
+     */
+    @ResponseBody
+    @RequestMapping(value = "/delType")
+    public String delType(ModelMap model, HttpServletRequest request,
+                          HttpServletResponse response)
+    {
+        String flag = proAttributeTypeService.delType(request);
+        return flag;
+    }
+
+    /**
+     * 分配物料
+     *  @author yl
+     */
+    @ResponseBody
+    @RequestMapping(value = "/updateAttrType")
+    public String updateAttrType(ModelMap model, HttpServletRequest request,
+                                 HttpServletResponse response)
+    {
+        String flag = proAttributeTypeService.updateAttrType(request);
+        return flag;
+    }
+}

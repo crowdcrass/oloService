@@ -1,0 +1,298 @@
+<%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <base href="<%=basePath%>">
+    
+    <title>图文添加页面</title>
+    		<meta http-equiv="X-UA-Compatible" content="IE=8" />
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="expires" content="0">    
+	<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+	<meta http-equiv="description" content="This is my page">
+		
+
+		<link rel="stylesheet"
+			href="<%=basePath%>kindeditor/plugins/code/prettify.css" />
+		<script src="<%=basePath%>kindeditor/kindeditor.js"
+			type="text/javascript">
+</script>
+		<script src="<%=basePath%>kindeditor/lang/zh_CN.js"
+			type="text/javascript">
+</script>
+		<script src="<%=basePath%>kindeditor/plugins/code/prettify.js"
+			type="text/javascript">
+</script>
+	<script src="<%=basePath%>/js/jquery-1.8.1.min.js"	type="text/javascript">	</script>
+<link rel="stylesheet" href="<%=basePath %>css/index.css" type="text/css"></link>
+<link rel="stylesheet" href="<%=basePath %>css/style.css" type="text/css"></link>
+<script>
+
+var editor;
+KindEditor.ready(function(K) {
+editor = K.create('#info', {
+resizeType : 1,
+allowPreviewEmoticons : false,
+allowImageUpload : true,
+items : [
+'source','undo','clearhtml','hr','fontsize','forecolor','hilitecolor',
+'removeformat', '|', 'justifyleft', 'justifycenter', 'justifyright', 'insertorderedlist',
+'insertunorderedlist', '|', 'emoticons', 'image','link', 'unlink','baidumap','lineheight','table','anchor','preview','print','template','code','cut'],
+imageUploadJson : '<%=basePath%>/kindeditor/jsp/upload_json.jsp' //服务端上传图片处理URI
+});
+
+});
+
+function saveMember(){
+	document.getElementById("memberForm").submit();
+}
+function init(){
+	var flag = "${flag}";
+		if(null != flag && "" != flag){
+			if(flag == "1"){
+				alert("修改成功!");
+				location.href="<%=basePath%>member/listMember";
+			}else{
+				alert("修改失败");
+			}
+		}
+}
+</script>
+  </head>
+  
+  <body onload="init()">
+<div class="content">
+          <div class="cLineB"><h4>编辑会员</h4><a href="javascript:history.go(-1);"  class="right btnGrayS vm" style="margin-right:50px;margin-top:-27px" >返回</a></div>
+         
+          <form method="post" id="memberForm" action="<%=basePath %>/member/updateMember"  enctype="multipart/form-data">
+          <input type="hidden" value="${M_ID }" name="Id">
+          <input type="text" name="displayProvince" id="displayProvince" style="display: none" />
+		  <input type="text" name="displayCity" id="displayCity" style="display: none" />
+		  <input type="text" name="displayDistrict" id="displayDistrict" style="display: none" />
+          <div class="msgWrap form">
+            <TABLE class="userinfoArea" border="0" cellSpacing="0" cellPadding="0" width="100%">
+              <THEAD>
+                <TR>
+                  <TH style="width:120px" valign="top"><label for="m_act_name">会员姓名：</label></TH>
+                  <TD><input type="input" class="px" id="m_act_name" value="${M_ACT_NAME }"  name="m_act_name" style="width:580px;"><br />
+               </TD>
+                </TR>
+              </THEAD>
+              <TBODY>
+                <TR>
+                  <TH><span class="red">*</span><label for="m_nickname">昵称：</label></TH>
+                  <TD><input type="input" class="px" id="m_nickname" value="${M_NICKNAME }"    name="m_nickname" style="width:580px;"> </TD>
+                </TR>
+                <TR>
+                  <TH><span class="red">*</span><label for="m_id_card">身份证：</label></TH>
+                  <TD><input type="input" class="px" id="m_id_card" value="${M_ID_CARD }"    name="m_id_card" style="width:580px;"> </TD>
+                </TR>
+                <TR>
+                  <TH><span class="red">*</span><label for="m_sex">性别：</label></TH>
+                  <TD><input type="radio" name="m_sex" class="jdradio" value="1"><label class="mr10">男</label>
+                       <input type="radio" name="m_sex" class="jdradio" value="0"><label class="mr10">女</label> </TD>
+                </TR>
+                <TR>
+                  <TH><span class="red">*</span><label for="m_pid">省份：</label></TH>
+                  <TD><select id="selectProvice" name="m_pid">
+						<option value="">--请选择--</option>
+						<c:forEach var="i" items="${provinceData}">
+							<option value="${i.P_ID}"
+								<c:if test="${M_PID == i.P_ID}"> selected</c:if>>${i.P_NAME}</option>
+						</c:forEach>
+				</select> <font color="#FF0000">*</font></TD>
+                </TR>
+                <TR>
+                  <TH><span class="red">*</span><label for="m_cid">城市：</label></TH>
+                <TD>
+                	<select id="selectCity" name='m_cid'>
+						<option value=''>--请选择--</option>
+					</select> <input type="text" id="tempCity" value="${M_CID}"
+					style="display: none" /> <font color="#FF0000">*</font>
+				</TD>
+                </TR>
+                <TR>
+                  <TH><span class="red">*</span><label for="m_did">区域：</label></TH>
+                  <TD>
+                  	<select id="selectDistrict" name='m_did' >
+						<option value=''>--请选择--</option>
+					</select> <input type="text" id="tempDistrict" value="${M_DID}"
+					style="display: none" /> <font color="#FF0000">*</font>
+                  </TD>
+                </TR>
+                <TR>
+                  <TH><span class="red">*</span><label for="m_phone">手机号码：</label></TH>
+                  <TD><input type="input" class="px" id="m_phone" value="${M_PHONE }"    name="m_phone" style="width:580px;"> </TD>
+                </TR>
+                <TR>
+                  <TH><span class="red">*</span><label for="m_address">地址：</label></TH>
+                  <TD><input type="input" class="px" id="m_address" value="${M_ADDRESS }"    name="m_address" style="width:580px;"> </TD>
+                </TR>
+                <TR>
+                  <TH><span class="red">*</span><label for="m_email">邮箱：</label></TH>
+                  <TD><input type="input" class="px" id="m_email" value="${M_EMAIL }"    name="m_email" style="width:580px;"> </TD>
+                </TR>
+                <TR>
+                  <TH><span class="red">*</span><label for="m_integral">积分：</label></TH>
+                  <TD><input type="input" class="px" id="m_integral" value="${M_INTEGRAL }"    name="m_integral" style="width:580px;"> </TD>
+                </TR>
+                <TR>
+                  <TH><span class="red">*</span><label for="m_source">来源：</label></TH>
+                     <TD> <input type="radio" name="m_source" class="radio" value="0"><label class="mr10">微信</label>
+                  	  	  <input type="radio" name="m_source" class="radio" value="1"><label class="mr10">APP</label>
+                  	      <input type="radio" name="m_source" class="radio" value="2" ><label class="mr10">网站</label>
+                  </TD>
+                </TR>
+                <TR style="height:70px;">
+                  <TH></TH>
+                  <TD><input type="button" value="保存" onclick="saveMember()" id="saveTextImage" name="sbmt" class="btnGreen left"></TD>
+                </TR>
+              </TBODY>
+            </TABLE>
+            
+          </div>
+          </form>
+          
+        </div>     
+ 
+        <div class="clr"></div>
+      </div>
+    </div>
+  </div> 
+<!--底部-->
+  </body>
+
+<script type="text/javascript">
+$(document).ready(function(){
+	//判断显示哪个类型
+	if('${M_SEX}'=='1'){
+		$("input[name='m_sex']").eq(0).attr("checked",'checked')
+	}else{
+		$("input[name='m_sex']").eq(1).attr("checked",'checked')
+	}
+	if('${M_SOURCE}'=='1'){
+		$("input[name='m_source']").eq(1).attr("checked",'checked')
+	}else if('${M_SOURCE}'=='0'){
+		$("input[name='m_source']").eq(0).attr("checked",'checked')
+	}else{
+		$("input[name='m_source']").eq(2).attr("checked",'checked')
+	}
+	
+	$("#selectProvice").change(function(){
+		var values = $("#selectProvice").val();
+		$.ajax({     
+		    url:'<%=basePath %>/member/queryCityById',     
+		    type:'post',     
+		    data:'provinceId='+values,     
+		    async : false, //默认为true 异步     
+		    error:function(){     
+		       alert('error');     
+		    },     
+		    success:function(data){   
+		    	$("#selectCity").html("");
+		    	for(var i=0;i<data.length;i++){
+					$("#selectCity").append("<option value='"+data[i].C_ID+"'>"+data[i].C_NAME+"</option>");  
+				}
+				$("#selectCity").val($("#tempCity")[0].value); 
+				var values = $("#selectCity").val();
+				if(values!=null && values!=""){
+					$.ajax({     
+					    url:'<%=basePath %>/member/queryDistrictById',     
+					    type:'post',     
+					    data:'cityId='+values,     
+					    async : false, //默认为true 异步     
+					    error:function(){     
+					       alert('error');     
+					    },     
+					    success:function(data){   
+					    	$("#selectDistrict").html("");
+					    	for(var i=0;i<data.length;i++){
+								$("#selectDistrict").append("<option value='"+data[i].D_ID+"'>"+data[i].D_NAME+"</option>");  
+							}
+							$("#selectDistrict").val($("#tempDistrict")[0].value);    
+					    }  
+					}); 
+				}
+		    }  
+		}); 
+	});
+	$("#selectCity").change(function(){
+		var values = $("#selectCity").val();
+		$.ajax({     
+		    url:'<%=basePath %>/member/queryDistrictById',     
+		    type:'post',     
+		    data:'cityId='+values,     
+		    async : false, //默认为true 异步     
+		    error:function(){     
+		       alert('error');     
+		    },     
+		    success:function(data){   
+		    	$("#selectDistrict").html("");
+		    	for(var i=0;i<data.length;i++){
+					$("#selectDistrict").append("<option value='"+data[i].D_ID+"'>"+data[i].D_NAME+"</option>");  
+				}
+				$("#selectDistrict").val($("#tempDistrict")[0].value);    
+		    }  
+		}); 
+	});
+});
+</script>
+
+<script type="text/javascript">
+  $(window).load(function() {
+      //alert("hello");
+      $("#displayProvince")[0].value=$('#selectProvice option:selected').text();
+		$.ajax({
+					type : 'post',
+					url : '<%=basePath %>/member/queryCityById?provinceId='+$("#selectProvice")[0].value,
+					data : {},
+					cache : false,
+					dataType : 'json',
+					contentType : "application/x-www-form-urlencoded; charset=utf-8",
+					success : function(data, status) {
+						for(var i=0;i<data.length;i++){
+							$("#selectCity").append("<option value='"+data[i].C_ID+"'>"+data[i].C_NAME+"</option>");  
+						}
+						$("#selectCity").val($("#tempCity")[0].value);
+						if($("#tempCity")[0].value!=null && $("#tempCity")[0].value != ""){
+							$.ajax({
+								type : 'post',
+								url : '<%=basePath %>/member/queryDistrictById?cityId='+$("#tempCity")[0].value,
+								data : {},
+								cache : false,
+								dataType : 'json',
+								contentType : "application/x-www-form-urlencoded; charset=utf-8",
+								success : function(data, status) {
+									for(var i=0;i<data.length;i++){
+										$("#selectDistrict").append("<option value='"+data[i].D_ID+"'>"+data[i].D_NAME+"</option>");  
+									}
+									$("#selectDistrict").val($("#tempDistrict")[0].value);
+									return;
+								},
+								error : function(XMLHttpRequest,
+										textStatus, errorThrown) {
+									alert("提交失败请与管理员联系，错误信息："
+											+ XMLHttpRequest.status);
+								}
+							});
+						}
+						return;
+					},
+					error : function(XMLHttpRequest,
+							textStatus, errorThrown) {
+						alert("提交失败请与管理员联系，错误信息："
+								+ XMLHttpRequest.status);
+
+					}
+				});
+  });
+       
+    </script>
+</html>

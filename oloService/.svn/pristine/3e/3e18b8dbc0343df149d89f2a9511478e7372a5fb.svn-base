@@ -1,0 +1,161 @@
+package com.sys.web.service;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.amiba.dao.BaseDao;
+import com.platform.common.data.CommonUtil;
+import com.platform.common.servlet.RequestParameter;
+import com.sys.common.ERPWebServiceUtil;
+import com.sys.common.PropConfigUtil;
+
+
+/**
+ * 预约单管理
+ * @author yl
+ *
+ */
+@Service
+public class AppointmentOrderService
+{
+    private static final Logger LOGGER = Logger.getLogger(AppointmentOrderService.class);
+    @Autowired
+    private BaseDao baseDao;
+
+    /**
+     * 列表
+     * @param request
+     * @return
+     */
+    public Map<String, Object> queryAppointmentOrderInfoList(HttpServletRequest request)
+    {
+
+        int page = RequestParameter.getIntGreaterThen(request, "page", 0, 0,
+            false);
+        int count = RequestParameter.getInt(request, "count", 10, 1, 20, false);
+
+        String AO_NO = request.getParameter("AO_NO");//单号
+        String AO_CUS_NAME = request.getParameter("AO_CUS_NAME");//客户姓名
+        String AO_CUS_PHONE = request.getParameter("AO_CUS_PHONE");//客户电话
+
+        String sqlWhere = "";
+        if (null != AO_NO && !"".equals(AO_NO))
+        {
+            sqlWhere += " AND AO_NO LIKE '%" + AO_NO + "%'";
+        }
+
+        if (null != AO_CUS_NAME && !"".equals(AO_CUS_NAME))
+        {
+            sqlWhere += " AND AO_CUS_NAME LIKE '%" + AO_CUS_NAME + "%'";
+        }
+
+        if (null != AO_CUS_PHONE && !"".equals(AO_CUS_PHONE))
+        {
+            sqlWhere += " AND AO_CUS_PHONE LIKE '%" + AO_CUS_PHONE + "%'";
+        }
+
+        Map<String, Object> map = null;
+        String sql = "";
+
+        sql = "SELECT W.* FROM SYS_APPOINTMENT_ORDER W WHERE 1=1" + sqlWhere;
+        map = this.baseDao.pagination(page, count, sql);
+        return map;
+    }
+
+    /**
+     * 
+     *  查询预约单详情
+     * @param request
+     * @return Map<String,Object>
+     */
+    public Map<String, Object> queryAppointmentOrderInfo(HttpServletRequest request)
+    {
+        int AO_ID = RequestParameter.getInt(request, "AO_ID");
+        String sql = "";
+        sql = "SELECT W.* FROM SYS_APPOINTMENT_ORDER W WHERE AO_ID=?";
+
+        return this.baseDao.getUtil().read(sql, AO_ID);
+    }
+
+    /**
+     * 
+     * 预约单同步
+     * @return String
+     */
+    public void appointOrderSyn()
+    {
+        System.out.println("----预约单同步开始-----");
+        try
+        {
+            //String erp_busins_record = PropConfigUtil.getVal("erp.businessrecord").trim();
+            //查询所有未进入审核的商机单信息
+            String sql = "SELECT * FROM SYS_APPOINTMENT_ORDER WHERE AO_STATUS='0' OR  AO_STATUS='3'";
+            List<Map<String, Object>> list = this.baseDao.getUtil().query(sql);
+            if (null != list && list.size() > 0)
+            {
+                Map<String, Object> erpData = null;
+                String jsonStr = "";
+                for (final Map<String, Object> map : list)
+                {
+                    //拼写erp中需要的参数信息
+                    erpData = new HashMap<String, Object>();
+                    erpData.put("FBaseProperty2", map.get("AO_TABLE_PRICE"));
+                    erpData.put("FBaseProperty1", map.get("AO_CUPBOARD_PRICE"));
+                    erpData.put("FDGLong", map.get("AO_CABINET_M"));
+                    erpData.put("FPrice", map.get("AO_PRICE"));
+                    erpData.put("FDGLong1", map.get("AO_CUPBOARD_M"));
+                    erpData.put("FHuoDongInfo", map.get("A_DESC"));
+                    erpData.put("FOtherTel", map.get("AO_OTHER_PHONE"));
+                    erpData.put("FCuReq", map.get("A_CUSTOMER_REQ"));
+                    erpData.put("FBaseProperty", map.get("AO_CABINET_PRICE"));
+                    erpData.put("FRemarks", map.get("AO_REMARK"));
+                    erpData.put("FIsCL", map.get("AO_TEST"));
+                    erpData.put("FJSTel", map.get("AO_ATTN_PHONE"));
+                    erpData.put("FSKFS", map.get("AO_PAYMENT_NO"));
+                    erpData.put("FOrgId1", map.get("AO_COMPANY_NO"));
+                    erpData.put("FMDFZR1", map.get("AO_STORE_MANAGER_NO"));
+                    erpData.put("FFZRTEL", map.get("AO_STORE_PHONE"));
+                    erpData.put("FCustomer", map.get("AO_CUS_NAME"));
+                    erpData.put("FTOTALAMOUNT", map.get("AO_TOTAL_DEPOSIT"));
+                    erpData.put("FBookDate", map.get("AO_TIME"));
+                    erpData.put("FCuName", map.get("AO_CUS_NAME"));
+                    erpData.put("FProduct", map.get("AO_PRODUCT_TYPE_NO"));
+                    erpData.put("FDocumentStatus", map.get("AO_STATUS"));
+                    erpData.put("FBillNo", map.get("AO_NO"));
+                    erpData.put("FTel", map.get("AO_CUS_PHONE"));
+                    erpData.put("FDaoGou", map.get("AO_ATTN_USER_NO"));
+                    erpData.put("FMenDian", map.get("AO_SPEC_STORE_NO"));
+                    erpData.put("FModifierId", map.get("AO_UPADTE_NO"));
+                    erpData.put("FCreateDate", map.get("AO_CREATE_TIME"));
+                    erpData.put("FModifyDate", new Date());
+                    erpData.put("FDatetime", map.get("AO_AUDIT_TIME"));
+                    erpData.put("FCreatorId", map.get("AO_CREATEER_NO"));
+                    erpData.put("FCuAddress", map.get("AO_CUS_ADD"));
+                    erpData.put("FRemarks1", map.get("A_OTHER_ACC_ITEM"));
+                    erpData.put("FHuoDong", map.get("A_NO"));
+                    erpData.put("FHuoDongName", map.get("A_NAME"));
+                    erpData.put("FBaoBeiNo", map.get("AO_BB_NO"));
+
+                    jsonStr = CommonUtil.toJSONString(erpData);
+                    String jy_mdyyBill_Save = PropConfigUtil.getVal(
+                        "erp.jy_mdyyBill_Save").trim();
+                    String resultFromERP = ERPWebServiceUtil.getResultFromERP(
+                        jsonStr, jy_mdyyBill_Save);
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        System.out.println("----预约单同步结束-----");
+    }
+}

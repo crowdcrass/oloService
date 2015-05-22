@@ -1,0 +1,61 @@
+<%@ page language="java" import="java.util.*" pageEncoding="utf-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ include file="/commons/imgurl.jsp"%>
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <base href="<%=basePath%>">
+    
+    <title>新增资讯</title>
+   	<meta http-equiv="X-UA-Compatible" content="IE=8" />
+	<meta http-equiv="pragma" content="no-cache">
+	<meta http-equiv="cache-control" content="no-cache">
+	<meta http-equiv="expires" content="0">    
+	<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
+	<meta http-equiv="description" content="This is my page">
+	<script src="<%=basePath%>js/jquery-1.8.1.min.js"	type="text/javascript">	</script>
+	<link rel="stylesheet" href="<%=basePath %>css/index.css" type="text/css"></link>
+	<link rel="stylesheet" href="<%=basePath %>css/style.css" type="text/css"></link>
+	<script>
+		
+	</script>
+</head>
+  
+<body onload="">
+	<div class="content">
+		<div class="cLineB"><h4>推荐信息</h4><a href="javascript:history.go(-1);" class="right btnGrayS vm" style="margin-right:50px;margin-top:-27px" >返回</a></div>
+		<div class="msgWrap form">
+			<TABLE class="userinfoArea" border="0" cellSpacing="0" cellPadding="0" width="100%">
+				<TR>
+					<TH style="width:120px" valign="top"><span class="red">*</span><label for="R_TITLE">推荐标题：</label></TH>
+					<TD><input type="input" class="px" id="R_TITLE" value="${recMap.R_TITLE }"  name="R_TITLE" style="width:580px;" onblur=""></TD>
+				</TR>
+				<TR>
+					<TH style="width:120px" valign="top"><label for="RT_ID">推荐类别：</label></TH>
+					<TD>
+						<input type="radio" value="0" name="RT_ID" id="RT_ID" ${recMap.RT_ID eq '0'?'checked':'' } checked>资讯&nbsp;&nbsp;<input type="radio" value="1" name="RT_ID" id="RT_ID" ${recMap.RT_ID eq '1'?'checked':'' } >图片
+					</TD>
+				</TR>
+				<TR>
+					<TH style="width:120px" valign="top"><label for="R_URL">链接地址：</label></TH>
+					<TD><input type="input" class="px" id="R_URL" value="${recMap.R_URL }"  name="R_URL" style="width:580px;" onblur=""></TD>
+				</TR>
+				<TR>
+					<TH style="width:120px" valign="top"><label for="R_URL">图片：</label></TH>
+					<TD><img src="${imgHttp }${recMap.R_SOURCE}"></TD>
+				</TR>
+				<TR>
+					<TH style="width:120px" valign="top"><label for="R_SEQ_NUM">排序：</label></TH>
+					<TD><input type="input" class="px" id="R_SEQ_NUM" value="${recMap.R_SEQ_NUM }"  name="R_SEQ_NUM" style="width:580px;" onblur=""></TD>
+				</TR>
+          </TABLE>
+		</div>
+	</div>     
+	<div class="clr"></div>
+</body>
+</html>

@@ -1,0 +1,8 @@
+#登陆ERP
+erp.websvc.login=http://180.96.27.104/K3CloudServiceInterface/json/syncreply/Auth
+#登陆验证字符串
+erp.login.valid={"provider"\:"credentials"\,"UserName"\:"Administrator"\,"Password"\:"jinjia123"\,"RememberMe"\:false\,"PasswordIsEncrypted"\:false}
+#商机单查询
+erp.businessrecord=http\://180.96.27.104/K3CloudServiceInterface/json/syncreply/tj_businessrecord_View
+#数据同步任务
+data.cron.time=0 0/1 * * * ?

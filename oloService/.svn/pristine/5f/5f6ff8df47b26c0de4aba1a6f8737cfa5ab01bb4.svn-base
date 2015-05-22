@@ -1,0 +1,161 @@
+package com.sys.web.service;
+
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.amiba.dao.BaseDao;
+import com.platform.common.servlet.SessionAttribute;
+import com.platform.common.sql.SqlUtil;
+
+
+/**
+ * 资讯分类维护
+ * @author yl
+ *
+ */
+@Service
+public class NewsTypeService
+{
+
+    @Autowired
+    private BaseDao baseDao;
+
+    /**
+     * 资讯分类列表
+     * @param request
+     * @return
+     */
+    public List<Map<String, Object>> queryNewsTypeList(HttpServletRequest request)
+    {
+
+        String sql = "SELECT * FROM W_NEWS_TYPE";
+        return this.baseDao.getUtil().query(sql);
+    }
+
+    /**
+     * 保存新增
+     * @param request
+     * @return
+     */
+    public String saveNewsType(HttpServletRequest request)
+    {
+        String flag = "0";
+        try
+        {
+            String nt_name = request.getParameter("nt_name");
+            String nt_desc = request.getParameter("nt_desc");
+
+            if (null == request.getSession().getAttribute("user")
+                || "".equals(request.getSession().getAttribute("user")))
+            {
+                return "3";
+            }
+            Map<String, Object> userMap = SessionAttribute.get(
+                request.getSession(), "user");
+
+            String sql = "";
+            sql = "INSERT INTO W_NEWS_TYPE(NT_NAME,NT_DESC) VALUES (?,?)";
+            baseDao.getUtil().execute(sql, nt_name, nt_desc);
+            flag = "1";
+        }
+        catch (Exception e)
+        {
+            flag = "0";
+        }
+        return flag;
+    }
+
+    /**
+     * 根据id查询
+     * @param request
+     * @return
+     */
+    public Map<String, Object> queryNewsTypeById(HttpServletRequest request)
+    {
+        String nt_id = request.getParameter("nt_id");
+        String sql = "";
+        sql = "SELECT * FROM W_NEWS_TYPE WHERE NT_ID=?";
+        Map<String, Object> map = baseDao.queryForMap(sql, nt_id);
+        return map;
+    }
+
+    /**
+     * 保存编辑
+     * @param request
+     * @return
+     */
+    public String updateNewsType(HttpServletRequest request)
+    {
+        String flag = "0";
+        try
+        {
+            String nt_id = request.getParameter("nt_id");
+            String nt_name = request.getParameter("nt_name");
+            String nt_desc = request.getParameter("nt_desc");
+
+            if (null == request.getSession().getAttribute("user")
+                || "".equals(request.getSession().getAttribute("user")))
+            {
+                return "3";
+            }
+            Map<String, Object> userMap = SessionAttribute.get(
+                request.getSession(), "user");
+
+            String sql = "";
+            sql = "UPDATE W_NEWS_TYPE SET NT_NAME=?,NT_DESC=? WHERE NT_ID=?";
+            baseDao.getUtil().execute(sql, nt_name, nt_desc, nt_id);
+            flag = "1";
+        }
+        catch (Exception e)
+        {
+            flag = "0";
+        }
+        return flag;
+    }
+
+    /**
+     * 删除
+     * @param request
+     * @return
+     */
+    public String deleteNewsType(HttpServletRequest request)
+    {
+        String flag = "0";
+        SqlUtil su = this.baseDao.getUtil();
+        try
+        {
+            su.beginTransaction();
+            String nt_id = request.getParameter("nt_id");
+            if (null == request.getSession().getAttribute("user")
+                || "".equals(request.getSession().getAttribute("user")))
+            {
+                return "3";
+            }
+            Map<String, Object> userMap = SessionAttribute.get(
+                request.getSession(), "user");
+            String sql = "";
+            sql = "DELETE FROM W_NEWS_TYPE WHERE NT_ID=?";
+            su.execute(sql, nt_id);
+            sql = "INSERT INTO SYS_DELETE(MS,LR_RY,LR_SJ) VALUES (?,?,?)";
+            su.execute(sql, "模块:资讯类别管理" + nt_id, userMap.get("S_ID"),
+                new Date());
+            flag = "1";
+            su.commitTransaction();
+        }
+        catch (Exception e)
+        {
+            flag = "0";
+        }
+        finally
+        {
+            su.close();
+        }
+        return flag;
+    }
+}

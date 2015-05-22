@@ -1,0 +1,126 @@
+<%@ page language="java" import="java.util.*" pageEncoding="UTF-8"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %> 
+
+<%
+String path = request.getContextPath();
+String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.getServerPort()+path+"/";
+%>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>员工管理</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap-responsive.css" />
+    <link rel="stylesheet" type="text/css" href="../css/style.css" />
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    
+    <script type="text/javascript" src="../js/bootstrap.js"></script>
+    <script type="text/javascript" src="../js/ckform.js"></script>
+    <script type="text/javascript" src="../js/common.js"></script>
+
+    <style type="text/css">
+        body {
+            padding-bottom: 40px;
+        }
+        .sidebar-nav {
+            padding: 9px 0;
+        }
+
+        @media (max-width: 980px) {
+            /* Enable use of floated navbar text */
+            .navbar-text.pull-right {
+                float: none;
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+        }
+        
+    </style>
+    
+    <script type="text/javascript">
+	//分页
+	function loadpage(currpage){
+		var totalpage =document.getElementById("totalpage").value;
+		var ct_id = document.getElementById("ct_id").value;
+		if(((currpage+1)*1)<1){
+			alert('现在是第一页');
+			return;
+		}else if((currpage*1)>(totalpage*1)){
+			alert('现在是最后一页');
+			return;
+		}else if((currpage*1)==(totalpage*1)){
+			alert('现在是最后一页');
+			return;
+		}
+		location.href="<%=basePath%>caseAction/queryCaseByTypeId?page="+currpage+"&c_name=${c_name }&ct_id=${ct_id }";
+	}
+	function delCase(c_id){
+		if(window.confirm("删除后数据将无法恢复，您确定删除吗？")){
+			$.ajax({
+				url:"<%=basePath %>caseAction/delCase?c_id="+c_id,
+				type:"post",
+				dataType:"json",
+				async: false,
+				error: function(request) {
+					alert("删除失败，请稍后重试！");
+				},
+				success:function(data){
+					if(data =="1"){
+						window.location.reload();
+					}else if(data =="3"){
+						alert("用户已失效，请重新登录后再删除!");
+					}else{
+						alert("删除失败，请稍后重试!");
+						return false;
+					}
+				}
+			});
+		}
+	}
+</script>
+</head>
+<body>
+<form class="form-inline definewidth m20" action="<%=basePath%>caseAction/queryCaseByTypeId" method="get"> 
+	<input type="hidden" value="${ct_id }" id="ct_id" name="ct_id">
+    名称：<input type="text" class="ipt" name="c_name" id="c_name" value="${c_name }" style="margin-bottom: 0px;"> 
+       	<button type="submit" class="btn btn-primary" >查询</button>
+       	<button type="button" class="btn btn-success" id="addnew" onclick="window.location.href='<%=basePath %>caseAction/addPage?ct_id=${ct_id }'" >新增案例</button>
+</form>
+<table class="table table-bordered table-hover definewidth m10" cellspacing="0" >
+    <thead>
+    <tr>
+        <th width="5%" style="text-align:center;">序号</th>
+        <th width="25%" style="text-align:center;">案例名称</th>
+        <th width="*" style="text-align:center;">操作</th>
+    </tr>
+    </thead>
+    <c:if test="${not empty caseMap}">
+    	<c:forEach  var="resultList" items="${caseMap.result}" varStatus="status">
+       	<tr>
+			<td style="text-align:center;">${status.index+1 }</td>
+			<td style="text-align:center;">${resultList.C_NAME }</td>
+			<td style="text-align:center;"><a href="<%=basePath%>caseAction/queryCaseById?ct_id=${ct_id}&c_id=${resultList.C_ID}">编辑</a>&nbsp;&nbsp;<a href="<%=basePath%>caseAction/toPicPage?c_id=${resultList.C_ID}">图片管理</a>&nbsp;&nbsp;<a href="javaScript:delCase('${resultList.C_ID }')">删除</a></td>
+		</tr>
+     	</c:forEach>
+     </c:if>
+	     </table>
+	     <div class="pagediv">
+			<div class="pageleft " style="float: left;">
+				<a href="javascript:loadpage(0)">首页</a>
+				<a href="javascript:loadpage('${caseMap.page - 1}')">上一页</a>
+				<a href="javascript:loadpage('${caseMap.page + 1}')">下一页</a>
+				<a href="javascript:loadpage('${caseMap.pageCount-1}')">尾页</a>
+			</div>
+			<div class="pageright">
+				当前显示第${caseMap.page+1}页，共有${caseMap.pageCount}页
+			</div>
+		</div>
+		<input type="hidden" id="totalpage" name="totalpage" value="${caseMap.pageCount}">
+		<div class="clr"></div>
+	</body>
+</html>
+<script>
+   
+</script>

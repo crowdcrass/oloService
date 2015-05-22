@@ -1,0 +1,91 @@
+package com.sys.web.service.webservice;
+
+import com.sys.common.IfResponse;
+import com.sys.entity.BusinessBillInfo;
+import com.sys.entity.CustMdyyBillInfo;
+import com.sys.entity.EntryInfo;
+import com.sys.entity.PayInfo;
+
+
+/**
+ * 
+ * ERP对接web服务
+ * 
+ * @author xmL
+ * @version V1.00 2015-10-15
+ * @see
+ * @since olo V1.0R001
+ */
+public interface WebServiceForERPIf
+{
+    /**
+     * 
+     * 商机单信息插入
+     * 
+     * @param businessBillInfo
+     * @return IfResponse
+     */
+    IfResponse editCustBusinessRecord(BusinessBillInfo businessBillInfo);
+
+    /** 
+     * 
+     * 修改商机单信息
+     * 
+     * @param businessBillInfo
+     * @return IfResponse
+     */
+    IfResponse saveCustBusinessRecord(BusinessBillInfo businessBillInfo);
+
+    /**
+     * 
+     * 预约单信息插入
+     * 
+     * @param custMdyyBillInfo
+     * @return IfResponse
+     */
+    IfResponse editCustMdyyBill(CustMdyyBillInfo custMdyyBillInfo);
+
+    /**
+     * 
+     * 修改预约单信息
+     * 
+     * @param custMdyyBillInfo
+     * @return IfResponse
+     */
+    IfResponse saveCustMdyyBill(CustMdyyBillInfo custMdyyBillInfo);
+
+    /**
+     * 
+     * 物料信息插入
+     * 
+     * @param entryInfo
+     * @return IfResponse
+     */
+    IfResponse saveEntry(EntryInfo entryInfo);
+
+    /**
+     * 
+     * 修改物料信息
+     * 
+     * @param entryInfo
+     * @return IfResponse
+     */
+    IfResponse editEntry(EntryInfo entryInfo);
+
+    /**
+     * 支付方式插入
+     * 
+     * @param payInfo
+     * @return IfResponse
+     */
+    IfResponse savePay(PayInfo payInfo);
+
+    /**
+     * 支付方式修改
+     * 
+     * @param payInfo
+     * @return IfResponse
+     */
+    IfResponse editPay(PayInfo payInfo);
+
+}

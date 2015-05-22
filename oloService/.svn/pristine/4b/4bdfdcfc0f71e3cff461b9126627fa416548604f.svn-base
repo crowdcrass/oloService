@@ -1,0 +1,22 @@
+package com.sys.entity;
+
+public class FModifierId
+{
+    private int FUserID;
+
+    public int getFUserID()
+    {
+        return FUserID;
+    }
+
+    public void setFUserID(int fUserID)
+    {
+        FUserID = fUserID;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "FModifierId [FUserID=" + FUserID + "]";
+    }
+}

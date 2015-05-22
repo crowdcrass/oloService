@@ -1,0 +1,137 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ include file="/commons/taglibs.jsp" %>
+<%
+	String path = request.getContextPath();
+	String basePath = request.getScheme() + "://"
+			+ request.getServerName() + ":" + request.getServerPort()
+			+ path + "/";
+%>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>产品分类管理</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="../css/bootstrap-responsive.css" />
+    <link rel="stylesheet" type="text/css" href="../css/style.css" />
+    <script type="text/javascript" src="../js/jquery.js"></script>
+    
+    <script type="text/javascript" src="../js/bootstrap.js"></script>
+    <script type="text/javascript" src="../js/ckform.js"></script>
+    <script type="text/javascript" src="../js/common.js"></script>
+
+    <style type="text/css">
+        body {
+            padding-bottom: 40px;
+        }
+        .sidebar-nav {
+            padding: 9px 0;
+        }
+
+        @media (max-width: 980px) {
+            /* Enable use of floated navbar text */
+            .navbar-text.pull-right {
+                float: none;
+                padding-left: 5px;
+                padding-right: 5px;
+            }
+        }
+    </style>
+    
+    <script type="text/javascript">
+	//分页
+	function loadpage(currpage){
+		var totalpage =document.getElementById("totalpage").value;
+		if(((currpage+1)*1)<1){
+			alert('现在是第一页');
+			return;
+		}else if((currpage*1)>(totalpage*1)){
+			alert('现在是最后一页');
+			return;
+		}else if((currpage*1)==(totalpage*1)){
+			alert('现在是最后一页');
+			return;
+		}
+		location.href='<%=basePath%>roleAction/index?page='+currpage;
+	}
+	
+	function deleteMenu(id,level){
+		if(window.confirm("删除后数据将无法恢复，您确定删除吗？")){
+			$.ajax({
+				url:"<%=basePath%>productType/deleteMenu?id="+id+"&level="+level,
+				type:"post",
+				dataType:"json",
+				async: false,
+				error: function(request) {
+					alert("删除失败，请稍后重试！");
+				},
+				success:function(data){
+					if(data =="1"){
+						parent.window.location.reload();
+					}else if(data =="2"){
+						alert("改分类存在下级分类,不允许删除!");
+					}else if(data =="3"){
+						alert("用户已失效，请重新登录后再删除!");
+					}else{
+						alert("删除失败，请稍后重试!");
+						return false;
+					}
+				}
+			});
+		}
+	}
+</script>
+</head>
+<body>
+<form class="form-inline definewidth m20" action="index.html" method="get">  
+    <button type="button" class="btn btn-success" id="addnew">新增分类</button>
+</form>
+<table class="table table-bordered table-hover definewidth m10" >
+    <thead>
+    <tr>
+        <th>编号</th>
+        <th>分类编码</th>	
+        <th>分类名称</th>	
+		<th>上级分类名称</th>
+		<th>分类描述</th>	
+		<th>创建时间</th>
+		<th>操作</th>	
+    </tr>
+    </thead>
+    	<c:forEach var="treeNode" items="${treeNodeList}" varStatus="status">
+       	<tr>
+			<td>${status.index+1 }</td>
+			<td>${treeNode.MT_NUM }</td>
+			<td>${treeNode.MT_NAME }</td>
+			<td>${treeNode.pname }</td>
+			<td>${fn:substring(treeNode.MT_DESC, 0, 16)}</td>
+			<td>${treeNode.LR_SJ }</td>
+			<td>
+				<a href="<%=basePath%>productType/editPage?id=${treeNode.MT_ID}">编辑</a> | 
+				<a href="javascript:;" onclick="deleteMenu('${treeNode.MT_ID }','${treeNode.MT_LEVEL}')">删除</a>
+			</td>
+		</tr>
+     	</c:forEach>
+	     </table>
+	     <div class="pagediv">
+			<div class="pageleft " style="float: left;">
+				<a href="javascript:loadpage(0)">首页</a>
+				<a href="javascript:loadpage('${roleMap.page - 1}')">上一页</a>
+				<a href="javascript:loadpage('${roleMap.page + 1}')">下一页</a>
+				<a href="javascript:loadpage('${roleMap.pageCount-1}')">尾页</a>
+			</div>
+			<div class="pageright">
+				当前显示第${roleMap.page+1}页，共有${roleMap.pageCount}页
+			</div>
+		</div>
+		<input type="hidden" id="totalpage" name="totalpage" value="${roleMap.pageCount}">
+		<div class="clr"></div>
+	</body>
+</html>
+<script>
+    $(function () {
+		$('#addnew').click(function(){
+				window.location.href="<%=basePath %>productType/addPage";
+		 });
+    });
+</script>

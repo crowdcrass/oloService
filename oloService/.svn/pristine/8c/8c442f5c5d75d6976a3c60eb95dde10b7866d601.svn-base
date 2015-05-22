@@ -1,0 +1,80 @@
+package net.sg.common.util.common;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+/**
+ * 日期操作的工具类
+ * (在struts2中可以不使用，使用struts.xml中的统一配置)
+ * @author Administrator
+ *
+ */
+public class DateUtil {
+	private static DateFormat dateFormat=new SimpleDateFormat("yyyy-MM-dd");//默认的DateFormat，格式为"yyyy-MM-dd"
+	/**
+	 * 使用默认的日期格式转换器，格式必须为"yyyy-MM-dd"，如果想使用其他的格式，请使用toDate(String dateStr,String dateFormatPattern)
+	 * @param dateStr 日期字符串
+	 * @return 返回转换后的日期
+	 */
+	public static Date toDate(String dateStr){
+		return toDate(dateStr,dateFormat);
+	}
+	/**
+	 * 按照用户指定的日期格式（dateFormatPattern）转换字符串dateStr为日期
+	 * @param dateStr 日期字符串
+	 * @param dateFormatPattern 用户指定的日期格式
+	 * @return 返回转换后的日期
+	 */
+	public static Date toDate(String dateStr,String dateFormatPattern){
+		DateFormat dateFormat=getDateFormat(dateFormatPattern);
+		return toDate(dateStr,dateFormat);
+	}
+	/**
+	 * 按照指定的日期格式将日期转换成字符串
+	 * @param date 要进行格式化的日期
+	 * @param dateFormatPattern 
+	 * @return 返回日期格式化后的字符串
+	 */
+	public static String format(Date date,String dateFormatPattern){
+		DateFormat dateFormat=getDateFormat(dateFormatPattern);
+		return format(date,dateFormat);
+	}
+	/**
+	 * 按照默认的日期格式（yyyy-MM-dd）将日期转换成字符串
+	 * @param date date 要进行格式化的日期
+	 * @return 返回日期格式化后的字符串
+	 */
+	public static String format(Date date){
+		return format(date,dateFormat);
+	}
+
+
+
+	private static Date toDate(String dateStr,DateFormat dateFormat){
+		if(dateStr==null||dateStr.trim().length()==0) throw new RuntimeException("转换为日期的字符串不能为空！");
+		if(dateFormat==null) dateFormat=DateUtil.dateFormat;
+
+		try {
+			return dateFormat.parse(dateStr);
+		} catch (ParseException e) {
+			e.printStackTrace();
+			throw new RuntimeException("日期格式错误，转换出错！");
+		}
+	}
+	private static String format(Date date,DateFormat dateFormat){
+		if(date==null) return "";
+		if(dateFormat==null) dateFormat=DateUtil.dateFormat;
+		return dateFormat.format(date);
+	}
+	private static DateFormat getDateFormat(String dateFormatPattern){
+		DateFormat dateFormat=null;
+		if(dateFormatPattern==null||dateFormatPattern.trim().length()==0) 
+			dateFormat=DateUtil.dateFormat;
+		else 
+			dateFormat=new SimpleDateFormat(dateFormatPattern);
+		return dateFormat;
+	}
+
+}

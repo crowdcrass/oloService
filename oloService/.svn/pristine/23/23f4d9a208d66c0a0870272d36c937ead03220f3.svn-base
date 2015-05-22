@@ -1,0 +1,72 @@
+package com.amiba.app.web;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.amiba.app.service.MySSJRecordService4App;
+import com.platform.common.servlet.JSONWeb;
+
+
+/**
+ * 
+ * 随手记历史
+ * @author zfj
+ *
+ */
+@Controller
+@RequestMapping("/app/ssj")
+public class MySSJRecordAction4App
+{
+    @Autowired
+    private MySSJRecordService4App mySSJRecordService4App;
+
+    /**
+     * 我的随手记历史〉
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception String
+     */
+    @ResponseBody
+    @RequestMapping("/findMyRecords")
+    public String findAllBusinessOrders(final HttpServletRequest request,
+                                        HttpServletResponse response)
+        throws Exception
+    {
+        return new JSONWeb()
+        {
+            protected Object execute()
+            {
+                return mySSJRecordService4App.findMyRecords(request);
+            }
+        }.toString();
+    }
+
+    /**
+     * 模糊查询随手记历史
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception
+     */
+    @ResponseBody
+    @RequestMapping("/findRecordBlur")
+    public String findRecordBlur(final HttpServletRequest request,
+                                 HttpServletResponse response)
+        throws Exception
+    {
+        return new JSONWeb()
+        {
+            protected Object execute()
+            {
+                return mySSJRecordService4App.findRecordBlur(request);
+            }
+        }.toString();
+    }
+
+}

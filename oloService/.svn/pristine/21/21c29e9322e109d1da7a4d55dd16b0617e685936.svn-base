@@ -1,0 +1,128 @@
+package com.sys.wx.web;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import net.sf.json.JSONArray;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import cn.org.rapid_framework.web.scope.Flash;
+
+import com.platform.common.data.CommonUtil;
+import com.sys.wx.service.ProAttrTypeService;
+import com.sys.wx.service.ProAttributeService;
+import com.sys.wx.service.ProductTypeService;
+
+@Controller
+@RequestMapping("/attrType")
+public class ProAttrTypeController {
+	private static Logger log = Logger.getLogger(ProAttrTypeController.class);
+	
+	@Autowired
+	private ProAttrTypeService proAttributeTypeService;
+	
+	@Autowired
+	private ProAttributeService proAttributeService;
+	
+	@Autowired
+	private ProductTypeService productTypeService;
+	
+	@RequestMapping("/getType")
+	public String getType(HttpServletRequest request){
+		List<Map<String,Object>> attrType = proAttributeTypeService.list();
+		request.setAttribute("attrType", attrType);
+		return "/wx/attribute/attributeType";
+	}
+	
+	@RequestMapping("/list")
+	public String list(HttpServletRequest request,Integer mtId,String attrName ){
+		Map map = proAttributeTypeService.getAttribute(request, mtId,attrName);
+		request.setAttribute("attrMap", map);
+		request.setAttribute("mtId", mtId);
+		request.setAttribute("attrName", attrName);
+		return "/wx/attribute/attributeTypeList";
+	}
+	
+	@RequestMapping("/add")
+	public String addAttribute(HttpServletRequest request,HttpServletResponse response){
+		Integer AT_MTID = Integer.parseInt(request.getParameter("AT_MTID"));
+		if("GET".equalsIgnoreCase(request.getMethod())){
+			//加载树
+			loadTree();
+			return "/wx/attribute/attributeTypeAdd";
+		}else{
+			if(proAttributeTypeService.isLast(AT_MTID)){
+				proAttributeTypeService.addOrUpdate(request);
+				setMessage(request,"保存成功");
+				log.debug("商品属性分类保存成功，时间："+new Date());
+			}else{
+				setMessage(request,"只能在最后一级分类下保存属性");
+			}
+			return list(request,AT_MTID,null);
+		}
+	}
+	
+	@RequestMapping("/del")
+	public String delAttribute(HttpServletRequest request,HttpServletResponse response) throws IOException{
+		Integer AT_MTID = Integer.parseInt(request.getParameter("mtId"));
+		Integer id = Integer.parseInt(request.getParameter("id"));
+		if(proAttributeService.count(id)){
+			setMessage(request, "该属性分类下面有属性值，不能删除");
+		}else{
+			proAttributeTypeService.deleAttribute(id);
+			setMessage(request, "删除成功");
+		}
+		return list(request,AT_MTID,null);
+	}
+	
+	@RequestMapping("/edit")
+	public String updateAttr(HttpServletRequest request,HttpServletResponse response){
+		Integer AT_MTID = Integer.parseInt(request.getParameter("AT_MTID"));
+		if("POST".equalsIgnoreCase(request.getMethod())){
+			if(proAttributeTypeService.isLast(AT_MTID)){
+				proAttributeTypeService.addOrUpdate(request);
+				setMessage(request,"修改成功");
+			}else{
+				setMessage(request,"只能在最后一级分类下保存属性");
+			}
+			return list(request,AT_MTID,null);
+		}else{
+			String id = request.getParameter("id");
+			//加载树
+			loadTree();
+			
+			Map map = proAttributeTypeService.get(id);
+			request.setAttribute("attr", map);
+			return "/wx/attribute/attributeTypeAdd";
+		}
+	}
+	
+	@RequestMapping(value="/getAttr",produces = "text/html;charset=UTF-8")
+	@ResponseBody
+	public String getAttributeByPro(Integer proTypeId,String attr) throws UnsupportedEncodingException{
+		String attrHtml = proAttributeTypeService.getAttributeByPro(proTypeId, attr);
+		return attrHtml;
+	} 
+
+	private void loadTree() {
+		List<Map<String,Object>> menuList=productTypeService.findMenus();
+		String proType = CommonUtil.toJSONString(menuList);
+		Flash.current().put("menuTreeJson", JSONArray.fromObject(proType).toString(3));
+	}
+	
+	private void setMessage(HttpServletRequest request, String msg) {
+		String message =  "<script>alert('"+msg+"');parent.location.reload();</script>";
+		request.setAttribute("message", message);
+	}
+}

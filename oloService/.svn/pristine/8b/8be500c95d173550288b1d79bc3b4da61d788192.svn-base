@@ -1,0 +1,105 @@
+package com.sys.entity;
+
+import org.apache.commons.lang.builder.ReflectionToStringBuilder;
+
+
+/**
+ * 物料信息
+ * @author    xmL
+ * @version   V1.00 2015-10-15
+ * @since     olo V1.0R001
+ */
+public class EntryInfo
+{
+    //主键
+    private String mId;
+    //物料名称
+    private String mName;
+    //描述
+    private String mDesc;
+    //价格
+    private String mPrice;
+    //  规格型号
+    private String mtSpecModel;
+    //编码
+    private String mtNo;
+
+    public String getmId()
+    {
+        return mId;
+    }
+
+    public void setmId(String mId)
+    {
+        this.mId = mId;
+    }
+
+    public String getmName()
+    {
+        return mName;
+    }
+
+    public void setmName(String mName)
+    {
+        this.mName = mName;
+    }
+
+    public String getmDesc()
+    {
+        return mDesc;
+    }
+
+    public void setmDesc(String mDesc)
+    {
+        this.mDesc = mDesc;
+    }
+
+    public String getmPrice()
+    {
+        return mPrice;
+    }
+
+    public void setmPrice(String mPrice)
+    {
+        this.mPrice = mPrice;
+    }
+
+    public String getMtSpecModel()
+    {
+        return mtSpecModel;
+    }
+
+    public void setMtSpecModel(String mtSpecModel)
+    {
+        this.mtSpecModel = mtSpecModel;
+    }
+
+    public String getMtNo()
+    {
+        return mtNo;
+    }
+
+    public void setMtNo(String mtNo)
+    {
+        this.mtNo = mtNo;
+    }
+
+    @Override
+    public String toString()
+    {
+        return ReflectionToStringBuilder.toString(this);
+    }
+
+    public EntryInfo(String mId, String mName, String mDesc, String mPrice,
+                     String mtSpecModel, String mtNo)
+    {
+        super();
+        this.mId = mId;
+        this.mName = mName;
+        this.mDesc = mDesc;
+        this.mPrice = mPrice;
+        this.mtSpecModel = mtSpecModel;
+        this.mtNo = mtNo;
+    }
+
+}

@@ -1,0 +1,1146 @@
+package com.amiba.app.service;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+
+import javax.servlet.http.HttpServletRequest;
+
+import net.sf.json.JSONObject;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.amiba.dao.BaseDao;
+import com.amiba.util.time.TimeUtil;
+import com.platform.common.servlet.RequestParameter;
+import com.sys.common.ERPWebServiceUtil;
+import com.sys.common.PropConfigUtil;
+
+
+/**
+ * 
+ * @作者 周世龙
+ * @日期 2015-4-16
+ * @版本 1.0
+ * @作用 我的/随手记 
+ */
+@Service
+public class MyInfoService
+{
+
+    @Autowired
+    private BaseDao baseDao;
+
+    /**
+     * 随手记(查询显示顾客信息)
+     * @param request
+     * @return
+     */
+    public Map<String, Object> customerInfo(HttpServletRequest request)
+    {
+        Vector<Object> param = new Vector<Object>();
+        Vector<Object> param1 = new Vector<Object>();
+        String CI_CUS_NAME = RequestParameter.getString(request, "CI_CUS_NAME",
+            null);
+        String CI_ID_CARD = RequestParameter.getString(request, "CI_ID_CARD",
+            null);
+        String CI_CUS_PHONE = RequestParameter.getString(request,
+            "CI_CUS_PHONE", null);
+        String CI_OTHER_PHONE = RequestParameter.getString(request,
+            "CI_OTHER_PHONE", null);
+        String CI_CUS_QQ = RequestParameter.getString(request, "CI_CUS_QQ",
+            null);
+        String CI_CUS_EMAIL = RequestParameter.getString(request,
+            "CI_CUS_EMAIL", null);
+        String sql = "SELECT * FROM W_CUSTOMER_INFO WHERE 1=1 ";
+        if (null != CI_CUS_NAME && !"".equals(CI_CUS_NAME))
+        {
+            sql += "AND CI_CUS_NAME=? ";
+            param.add(CI_CUS_NAME);
+        }
+        if (null != CI_ID_CARD && !"".equals(CI_ID_CARD))
+        {
+            sql += "AND CI_ID_CARD=? ";
+            param.add(CI_ID_CARD);
+        }
+        if (null != CI_CUS_PHONE && !"".equals(CI_CUS_PHONE))
+        {
+            sql += "AND CI_CUS_PHONE=? ";
+            param.add(CI_CUS_PHONE);
+        }
+        if (null != CI_OTHER_PHONE && !"".equals(CI_OTHER_PHONE))
+        {
+            sql += "AND CI_OTHER_PHONE=? ";
+            param.add(CI_OTHER_PHONE);
+        }
+        if (null != CI_CUS_QQ && !"".equals(CI_CUS_QQ))
+        {
+            sql += "AND CI_CUS_QQ=? ";
+            param.add(CI_CUS_QQ);
+        }
+        if (null != CI_CUS_EMAIL && !"".equals(CI_CUS_EMAIL))
+        {
+            sql += "AND CI_CUS_EMAIL=?";
+            param.add(CI_CUS_EMAIL);
+        }
+
+        for (int i = 0; i < param.size(); i++ )
+        {
+            if (null != param.get(i))
+            {
+                param1.add(param.get(i));
+            }
+        }
+        Object[] arr = new Object[param1.size()];
+        for (int i = 0; i < arr.length; i++ )
+        {
+            arr[i] = param1.get(i);
+        }
+
+        Map<String, Object> map = baseDao.queryForMap(sql, arr);
+        return map;
+    }
+
+    /**
+     * 随手记(添加)
+     * @param request
+     * @return
+     */
+    public int addCustomerInfo(HttpServletRequest request)
+    {
+        //创建人
+        int CI_ID = RequestParameter.getInt(request, "CI_ID", false);
+        String CI_CUS_NAME = RequestParameter.getString(request, "CI_CUS_NAME",
+            null);
+        String CI_ID_CARD = RequestParameter.getString(request, "CI_ID_CARD",
+            null);
+        String CI_CUS_PHONE = RequestParameter.getString(request,
+            "CI_CUS_PHONE", null);
+        String CI_OTHER_PHONE = RequestParameter.getString(request,
+            "CI_OTHER_PHONE", null);
+        String CI_CUS_QQ = RequestParameter.getString(request, "CI_CUS_QQ",
+            null);
+        String CI_CUS_EMAIL = RequestParameter.getString(request,
+            "CI_CUS_EMAIL", null);
+        String CI_PROVINCE = RequestParameter.getString(request, "CI_PROVINCE",
+            null);
+        String CI_CITY = RequestParameter.getString(request, "CI_CITY", null);
+        String CI_DIS = RequestParameter.getString(request, "CI_DIS", null);
+        String CI_RESULT = RequestParameter.getString(request, "CI_RESULT",
+            null);
+        String CI_REASON = RequestParameter.getString(request, "CI_REASON",
+            null);
+        String CI_REMARK = RequestParameter.getString(request, "CI_REMARK",
+            null);
+        String CI_HISTORY = RequestParameter.getString(request, "CI_HISTORY",
+            null);
+        String CI_VOICE_URL = RequestParameter.getString(request,
+            "CI_VOICE_URL", null);
+        //查询创建人姓名,门店
+        String queryNameSql = "SELECT A.E_NAME,B.S_NAME,B.S_ID FROM W_EMPLOYEE A,SYS_STORE B WHERE E_ID = ? AND A.S_ID = B.S_ID";
+        Map<String, Object> nameMap = baseDao.queryForMap(queryNameSql, CI_ID);
+        String history = "";
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if (null != CI_HISTORY && !"".equals(CI_HISTORY))
+        {
+            history = "<font style='font-weight:bold;color:red;'>"
+                      + df.format(new Date()) + "&nbsp;&nbsp;("
+                      + nameMap.get("E_NAME") + "&nbsp;&nbsp;"
+                      + nameMap.get("S_NAME") + ")</font><br/>" + CI_HISTORY;
+        }
+
+        String sql = "INSERT INTO W_CUSTOMER_INFO (CI_ONO,S_ID,CI_CUS_NAME,CI_ID_CARD,CI_CUS_PHONE,CI_OTHER_PHONE,CI_CUS_QQ,CI_CUS_EMAIL";
+        sql += ",CI_PROVINCE,CI_CITY,CI_DIS,CI_RESULT,CI_REASON,CI_REMARK,CI_CREATE_USER,CI_CREATE_TIME,CI_HISTORY,CI_VOICE_URL)";
+        sql += " VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        System.out.println(sql);
+        return baseDao.execute(sql, customerNo(request), nameMap.get("S_ID"),
+            CI_CUS_NAME, CI_ID_CARD, CI_CUS_PHONE, CI_OTHER_PHONE, CI_CUS_QQ,
+            CI_CUS_EMAIL, CI_PROVINCE, CI_CITY, CI_DIS, CI_RESULT, CI_REASON,
+            CI_REMARK, CI_ID, new Date(), history, CI_VOICE_URL);
+
+    }
+
+    /**
+     * 随手记(修改)
+     * @param request
+     * @return
+     */
+    public int updateCustomerInfo(HttpServletRequest request)
+    {
+        String CI_ID = RequestParameter.getString(request, "CI_ID", false);
+        String CI_CUS_NAME = RequestParameter.getString(request, "CI_CUS_NAME",
+            null);
+        String CI_ID_CARD = RequestParameter.getString(request, "CI_ID_CARD",
+            null);
+        String CI_CUS_PHONE = RequestParameter.getString(request,
+            "CI_CUS_PHONE", null);
+        String CI_OTHER_PHONE = RequestParameter.getString(request,
+            "CI_OTHER_PHONE", null);
+        String CI_CUS_QQ = RequestParameter.getString(request, "CI_CUS_QQ",
+            null);
+        String CI_CUS_EMAIL = RequestParameter.getString(request,
+            "CI_CUS_EMAIL", null);
+        String CI_PROVINCE = RequestParameter.getString(request, "CI_PROVINCE",
+            null);
+        String CI_CITY = RequestParameter.getString(request, "CI_CITY", null);
+        String CI_DIS = RequestParameter.getString(request, "CI_DIS", null);
+        String CI_RESULT = RequestParameter.getString(request, "CI_RESULT",
+            null);
+        String CI_REASON = RequestParameter.getString(request, "CI_REASON",
+            null);
+        String CI_REMARK = RequestParameter.getString(request, "CI_REMARK",
+            null);
+        String CI_HISTORY = RequestParameter.getString(request, "CI_HISTORY",
+            null);
+        int CI_CREATE_USER = RequestParameter.getInt(request, "CI_CREATE_USER",
+            false);
+        //查询姓名
+        //查询创建人姓名,门店
+        String queryNameSql = "SELECT A.E_NAME,B.S_NAME,B.S_ID FROM W_EMPLOYEE A,SYS_STORE B WHERE E_ID = ? AND A.S_ID = B.S_ID";
+        Map<String, Object> nameMap = baseDao.queryForMap(queryNameSql,
+            CI_CREATE_USER);
+        String history = "";
+        String sql = "";
+        //查询历史记录
+        if (null != CI_HISTORY && !"".equals(CI_HISTORY))
+        {
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String queryHistorySql = "SELECT CI_HISTORY FROM W_CUSTOMER_INFO WHERE CI_ID = ?";
+            Map<String, Object> historyMap = baseDao.queryForMap(
+                queryHistorySql, CI_ID);
+            history = "<font style='font-weight:bold;color:red;'>"
+                      + df.format(new Date()) + "&nbsp;&nbsp;("
+                      + nameMap.get("E_NAME") + "&nbsp;&nbsp;"
+                      + nameMap.get("S_NAME") + ")</font><br/>" + CI_HISTORY
+                      + "<br/><br/>" + historyMap.get("CI_HISTORY").toString();
+            System.out.println(history);
+            sql = "UPDATE W_CUSTOMER_INFO SET CI_CUS_NAME = ?,CI_ID_CARD = ?,CI_CUS_PHONE = ?,";
+            sql += "CI_OTHER_PHONE = ?,CI_CUS_QQ = ?,CI_CUS_EMAIL = ?,CI_PROVINCE = ?,";
+            sql += "CI_CITY = ?,CI_DIS=?,CI_RESULT=?,CI_REASON=?,CI_REMARK=?,CI_HISTORY=? WHERE CI_ID =?";
+            return baseDao.execute(sql, CI_CUS_NAME, CI_ID_CARD, CI_CUS_PHONE,
+                CI_OTHER_PHONE, CI_CUS_QQ, CI_CUS_EMAIL, CI_PROVINCE, CI_CITY,
+                CI_DIS, CI_RESULT, CI_REASON, CI_REMARK, history, CI_ID);
+        }
+        else
+        {
+            sql = "UPDATE W_CUSTOMER_INFO SET CI_CUS_NAME = ?,CI_ID_CARD = ?,CI_CUS_PHONE = ?,";
+            sql += "CI_OTHER_PHONE = ?,CI_CUS_QQ = ?,CI_CUS_EMAIL = ?,CI_PROVINCE = ?,";
+            sql += "CI_CITY = ?,CI_DIS=?,CI_RESULT=?,CI_REASON=?,CI_REMARK=? WHERE CI_ID =?";
+            return baseDao.execute(sql, CI_CUS_NAME, CI_ID_CARD, CI_CUS_PHONE,
+                CI_OTHER_PHONE, CI_CUS_QQ, CI_CUS_EMAIL, CI_PROVINCE, CI_CITY,
+                CI_DIS, CI_RESULT, CI_REASON, CI_REMARK, CI_ID);
+        }
+    }
+
+    /**
+     * 随手记(生成编号)
+     * @param request
+     * @return
+     */
+    public String customerNo(HttpServletRequest request)
+    {
+        //先查询数据库里的编号，取其最大值
+        String queryNoSql = "SELECT CI_ONO FROM W_CUSTOMER_INFO ORDER BY CI_ONO DESC LIMIT 1";
+        Map<String, Object> noMap = baseDao.queryForMap(queryNoSql);
+        String no = "";
+        if (null != noMap.get("CI_ONO")
+            && !"".equals(noMap.get("CI_ONO").toString()))
+        {
+            System.out.println(noMap.get("CI_ONO").toString());
+            no = noMap.get("CI_ONO").toString().substring(11,
+                noMap.get("CI_ONO").toString().length());
+            System.out.println(no);
+            if (Integer.parseInt(no) < 9)
+            {
+                no = "YPT" + TimeUtil.getTimeDate2() + "0"
+                     + (Integer.parseInt(no) + 1);
+            }
+            else
+            {
+                no = "YPT" + TimeUtil.getTimeDate2()
+                     + (Integer.parseInt(no) + 1);
+            }
+            System.out.println(no);
+        }
+        else
+        {
+            no = "YPT" + TimeUtil.getTimeDate2() + "01";
+            System.out.println(no);
+        }
+
+        return no;
+    }
+
+    /**
+     * 商机单(提交添加)
+     * @param request
+     * @return
+     */
+    @SuppressWarnings("static-access")
+    public int addBusinessOrder(HttpServletRequest request)
+    {
+        //根据E_ID查询登录人所在的店铺、登录人姓名
+        String queryStoreSql = "SELECT A.E_NAME,A.E_ID,B.S_ADD,B.S_ID FROM W_EMPLOYEE A,SYS_STORE B WHERE E_ID = ? AND A.S_ID = B.S_ID";
+        //W_EMPLOYEE表里的id
+        String C_ID = RequestParameter.getString(request, "C_ID", false);
+        Map<String, Object> storeMap = baseDao.queryForMap(queryStoreSql, C_ID);
+        String CI_CUS_NAME = RequestParameter.getString(request, "CI_CUS_NAME",
+            null);
+        String CI_CUS_PHONE = RequestParameter.getString(request,
+            "CI_CUS_PHONE", null);
+        String CI_OTHER_PHONE = RequestParameter.getString(request,
+            "CI_OTHER_PHONE", null);
+        String CI_RESULT = RequestParameter.getString(request, "CI_RESULT",
+            null);
+        String CI_REASON = RequestParameter.getString(request, "CI_REASON",
+            null);
+        //省编码
+        String CI_PID = RequestParameter.getString(request, "CI_PID", null);
+        String CI_PROVINCE = RequestParameter.getString(request, "CI_PROVINCE",
+            null);
+        //市编码
+        String CI_CID = RequestParameter.getString(request, "CI_CID", null);
+        String CI_CITY = RequestParameter.getString(request, "CI_CITY", null);
+        //区编码 
+        String CI_DID = RequestParameter.getString(request, "CI_DID", null);
+        String CI_DIS = RequestParameter.getString(request, "CI_DIS", null);
+        //生成商机单编号
+        String BO_ONO = BusinessOrderNo();
+        String sql = "";
+        sql = "INSERT INTO SYS_BUSINESS_ORDER (BO_ONO,BO_CUS_NAME,BO_CUS_PHONE,BO_OTHER_PHONE,BO_RESULT,";
+        sql += "BO_REASON,BO_PROVINCE,BO_PROVINCE_NO,BO_CITY,BO_CITY_NO,BO_DIS,BO_DIS_NO,BO_CREATE_USER_NO,BO_CREATE_TIME,"
+               + "S_STORE_NAME,S_ID,BO_CREATE_USER_NAME,BO_STATUS) ";
+        sql += "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        int count = baseDao.execute(sql, BO_ONO, CI_CUS_NAME, CI_CUS_PHONE,
+            CI_OTHER_PHONE, CI_RESULT, CI_REASON, CI_PROVINCE, CI_PID, CI_CITY,
+            CI_CID, CI_DIS, CI_DID, Integer.parseInt(C_ID), new Date(),
+            storeMap.get("S_ADD"), storeMap.get("S_ID"),
+            storeMap.get("E_NAME"), 0);
+        //本地数据插入成功，调用ERP接口
+        if (count == 1)
+        {
+
+            //            String content = "{\"Creator\":\"user\",\"NeedUpDateFields\":[\"FDocumentStatus\",\"FCuName\",\"FResalut\",\"FSGTel\",\"FCountry\",\"FProvinces\",\"FCity\""
+            //                             + ",\"FArea\",\"FFOrgId\",\"FDept\",\"FAddress\",\"FBuyInfo\",\"FTel\"]"
+            //                             + ",\"Model\":{\"FID\":0,\"FDocumentStatus\":\"C\",\"FCuName\":\"TEST011\""
+            //                             + ",\"FResalut\":{\"FNumber\":\"01\"},\"FSGTel\":\"13813808122\","
+            //                             + "\"FCountry\":{\"FEntryID\":\"46a524cf-5797-4e46-bd0a-7203fc426d9c\"}"
+            //                             + ",\"FProvinces\":{\"FEntryID\":\"52540033904c818111e41f8058fc5473\",\"FNumber\":\"JS\"}"
+            //                             + ",\"FCity\":{\"FEntryID\":\"52540033904c818111e41f809b493314\",\"FNumber\":\"JS01\"}"
+            //                             + ",\"FArea\":{\"FEntryID\":\"52540033904cab6c11e43e4e9a9252a7\",\"FNumber\":\"NJNJ001\"}"
+            //                             + ",\"FFOrgId\":{\"FNumber\":\"100\"},\"FDept\":{\"FDEPTID\":105720,\"FNumber\":\"1\"}"
+            //                             + ",\"FAddress\":\"\",\"FBuyInfo\":\"1\",\"FTel\":\"13813808121\"}}";
+
+            String content = "{\"Creator\":\""
+                             + storeMap.get("E_NAME")
+                             + "\",\"NeedUpDateFields\":[\"FDocumentStatus\",\"FCuName\",\"FResalut\",\"FSGTel\",\"FCountry\",\"FProvinces\",\"FCity\""
+                             + ",\"FArea\",\"FFOrgId\",\"FDept\",\"FAddress\",\"FBuyInfo\",\"FTel\"]"
+                             + ",\"Model\":{\"FID\":0,\"FDocumentStatus\":\"A\",\"FCuName\":\""
+                             + CI_CUS_NAME
+                             + "\""
+                             + ",\"FResalut\":{\"FNumber\":\"01\"},\"FSGTel\":\""
+                             + CI_OTHER_PHONE
+                             + "\","
+                             + "\"FCountry\":{\"FEntryID\":\"46a524cf-5797-4e46-bd0a-7203fc426d9c\"}"
+                             + ",\"FProvinces\":{\"FEntryID\":\"52540033904c818111e41f8058fc5473\",\"FNumber\":\"JS\"}"
+                             + ",\"FCity\":{\"FEntryID\":\"52540033904c818111e41f809b493314\",\"FNumber\":\"JS01\"}"
+                             + ",\"FArea\":{\"FEntryID\":\"52540033904cab6c11e43e4e9a9252a7\",\"FNumber\":\"NJNJ001\"}"
+                             + ",\"FFOrgId\":{\"FNumber\":\"100\"},\"FDept\":{\"FDEPTID\":105720,\"FNumber\":\"1\"}"
+                             + ",\"FAddress\":\"1\",\"FBuyInfo\":\"1\",\"FTel\":\""
+                             + CI_CUS_PHONE + "\"}}";
+            String ERP_BUSINS_RECORD_SAVE = PropConfigUtil.getVal(
+                "erp.savebusiness").trim();
+            String resultFromERP = ERPWebServiceUtil.getResultFromERP(content,
+                ERP_BUSINS_RECORD_SAVE);
+            System.out.println(resultFromERP);
+            JSONObject obj = JSONObject.fromObject(resultFromERP);
+            if (resultFromERP.indexOf("ResponseStatus") < 0)
+            {
+                //ERP插入数据成功
+                JSONObject obj1 = (JSONObject)obj.get("Result");
+                String Id = obj1.getString("Id");
+                System.out.println(Id);
+                //插入到本地数据库中
+                int isSuccess = editBusinessOrderERPID(Id, BO_ONO);
+                if (isSuccess == 1)
+                    //ERP插入数据成功
+                    count = updateBusinessOrderFlag(BO_ONO, "BO_ONO", 1);
+                else
+                    //ERP插入数据失败
+                    count = updateBusinessOrderFlag(BO_ONO, "BO_ONO", 0);
+
+            }
+            else
+            {
+                //ERP插入数据失败
+                JSONObject obj1 = (JSONObject)obj.get("Result");
+                JSONObject obj2 = (JSONObject)obj1.get("ResponseStatus");
+                System.out.println(obj2.get("Errors"));
+                String message = obj2.getJSONArray("Errors").getJSONObject(0).get(
+                    "Message").toString();
+                System.out.println(message);
+            }
+            return count;
+        }
+        //本地插入数据失败
+        return 0;
+    }
+
+    /**
+     * 
+     *〈商机单(提交修改)〉
+     * @param request
+     * @return int
+     */
+    public int editBusinessOrder(HttpServletRequest request)
+    {
+        //根据E_ID查询登录人所在的店铺、登录人姓名,用于修改修改人信息
+        String queryStoreSql = "SELECT A.E_NAME,A.E_ID,B.S_ADD,B.S_ID FROM W_EMPLOYEE A,SYS_STORE B WHERE E_ID = ? AND A.S_ID = B.S_ID";
+        //W_EMPLOYEE表里的id
+        String C_ID = RequestParameter.getString(request, "C_ID", false);
+        Map<String, Object> nameMap = baseDao.queryForMap(queryStoreSql, C_ID);
+        //商机单的主键，根据主键修改
+        String BO_ID = RequestParameter.getString(request, "BO_ID", false);
+        String CI_CUS_NAME = RequestParameter.getString(request, "CI_CUS_NAME",
+            null);
+        String CI_CUS_PHONE = RequestParameter.getString(request,
+            "CI_CUS_PHONE", null);
+        String CI_OTHER_PHONE = RequestParameter.getString(request,
+            "CI_OTHER_PHONE", null);
+        String CI_RESULT = RequestParameter.getString(request, "CI_RESULT",
+            null);
+        String CI_REASON = RequestParameter.getString(request, "CI_REASON",
+            null);
+        //省编码
+        String CI_PID = RequestParameter.getString(request, "CI_PID", null);
+        String CI_PROVINCE = RequestParameter.getString(request, "CI_PROVINCE",
+            null);
+        //市编码
+        String CI_CID = RequestParameter.getString(request, "CI_CID", null);
+        String CI_CITY = RequestParameter.getString(request, "CI_CITY", null);
+        //区编码 
+        String CI_DID = RequestParameter.getString(request, "CI_DID", null);
+        String CI_DIS = RequestParameter.getString(request, "CI_DIS", null);
+        String sql = "";
+        //先查询状态，是否审核
+        String statusSql = "SELECT BO_STATUS FROM SYS_BUSINESS_ORDER WHERE BO_ID = ?";
+        Map<String, Object> statusMap = baseDao.queryForMap(statusSql, BO_ID);
+        if (null != statusMap.get("BO_STATUS")
+            && !"".equals(statusMap.get("BO_STATUS").toString()))
+        {
+            //判断是否审核？1：审核 ；0：未审核
+            if (statusMap.get("BO_STATUS").toString().equals("0"))
+            {
+                //未审核，可以修改
+                sql = "UPDATE SYS_BUSINESS_ORDER SET BO_CUS_NAME = ?,BO_CUS_PHONE = ?,BO_OTHER_PHONE = ?,"
+                      + "BO_RESULT = ?,BO_REASON = ?,"
+                      + "BO_PROVINCE = ?,BO_PROVINCE_NO = ?,BO_CITY = ?,"
+                      + "BO_CITY_NO = ?,BO_DIS = ?,BO_DIS_NO = ?,BO_UPDATE_USER_NO = ?,"
+                      + "BO_UPDATE_TIME = ?,BO_UPDATE_USER_NAME = ? WHERE BO_ID = ?";
+                int count = baseDao.execute(sql, CI_CUS_NAME, CI_CUS_PHONE,
+                    CI_OTHER_PHONE, CI_RESULT, CI_REASON, CI_PROVINCE, CI_PID,
+                    CI_CITY, CI_CID, CI_DIS, CI_DID, Integer.parseInt(C_ID),
+                    new Date(), nameMap.get("E_NAME"), BO_ID);
+                if (count == 1)
+                {
+                    //本地修改成功，开始调用ERP接口
+                    String content = "{\"Creator\":\""
+                                     + nameMap.get("E_NAME")
+                                     + "\",\"NeedUpDateFields\":[\"FDocumentStatus\",\"FCuName\",\"FResalut\",\"FSGTel\",\"FCountry\",\"FProvinces\",\"FCity\""
+                                     + ",\"FArea\",\"FFOrgId\",\"FDept\",\"FAddress\",\"FBuyInfo\",\"FTel\"]"
+                                     + ",\"Model\":{\"FID\":1,\"FDocumentStatus\":\"A\",\"FCuName\":\""
+                                     + CI_CUS_NAME
+                                     + "\""
+                                     + ",\"FResalut\":{\"FNumber\":\"01\"},\"FSGTel\":\""
+                                     + CI_OTHER_PHONE
+                                     + "\","
+                                     + "\"FCountry\":{\"FEntryID\":\"46a524cf-5797-4e46-bd0a-7203fc426d9c\"}"
+                                     + ",\"FProvinces\":{\"FEntryID\":\"52540033904c818111e41f8058fc5473\",\"FNumber\":\"JS\"}"
+                                     + ",\"FCity\":{\"FEntryID\":\"52540033904c818111e41f809b493314\",\"FNumber\":\"JS01\"}"
+                                     + ",\"FArea\":{\"FEntryID\":\"52540033904cab6c11e43e4e9a9252a7\",\"FNumber\":\"NJNJ001\"}"
+                                     + ",\"FFOrgId\":{\"FNumber\":\"100\"},\"FDept\":{\"FDEPTID\":105720,\"FNumber\":\"1\"}"
+                                     + ",\"FAddress\":\"1\",\"FBuyInfo\":\"1\",\"FTel\":\""
+                                     + CI_CUS_PHONE + "\"}}";
+                    String ERP_BUSINS_RECORD_SAVE = PropConfigUtil.getVal(
+                        "erp.savebusiness").trim();
+                    String resultFromERP = ERPWebServiceUtil.getResultFromERP(
+                        content, ERP_BUSINS_RECORD_SAVE);
+                    System.out.println(resultFromERP);
+                    JSONObject obj = JSONObject.fromObject(resultFromERP);
+                    if (resultFromERP.indexOf("ResponseStatus") < 0)
+                    {
+                        //ERP插入数据成功
+                        JSONObject obj1 = (JSONObject)obj.get("Result");
+                        String Id = obj1.getString("Id");
+                        System.out.println(Id);
+                        //插入到本地数据库中
+                        //                    int isSuccess = editBusinessOrderERPID(Id, BO_ONO);
+                        //                        if (isSuccess == 1)
+                        //                        {
+                        //ERP插入数据成功
+                        count = updateBusinessOrderFlag(BO_ID, "BO_ID", 1);
+                        //                        }
+                        //                        else
+                        //                        {
+                        //ERP插入数据失败
+                        count = updateBusinessOrderFlag(BO_ID, "BO_ID", 0);
+                        //                        }
+                    }
+                    else
+                    {
+                        //ERP插入数据失败
+                        JSONObject obj1 = (JSONObject)obj.get("Result");
+                        JSONObject obj2 = (JSONObject)obj1.get("ResponseStatus");
+                        System.out.println(obj2.get("Errors"));
+                        String message = obj2.getJSONArray("Errors").getJSONObject(
+                            0).get("Message").toString();
+                        System.out.println(message);
+                    }
+                    return 1; //修改成功！
+                }
+                else
+                {
+                    //本地修改数据失败
+                    return 2; //修改失败！
+                }
+            }
+            else
+            {
+                return 0; //已经审核通过，不可以修改
+            }
+        }
+
+        return 10; //审核状态不明确
+    }
+
+    /**
+     * 商机单(生成编号)
+     * @param request
+     * @return
+     */
+    public String BusinessOrderNo()
+    {
+        //先查询数据库里的编号，取其最大值
+        String queryNoSql = "SELECT BO_ONO FROM SYS_BUSINESS_ORDER ORDER BY BO_ONO DESC LIMIT 1";
+        Map<String, Object> noMap = baseDao.queryForMap(queryNoSql);
+        String no = "";
+        if (null != noMap.get("BO_ONO")
+            && !"".equals(noMap.get("BO_ONO").toString()))
+        {
+            no = noMap.get("BO_ONO").toString().substring(10,
+                noMap.get("BO_ONO").toString().length());
+            System.out.println(no);
+            if (Integer.parseInt(no) < 9)
+            {
+                no = "SJ" + TimeUtil.getTimeDate2() + "0"
+                     + (Integer.parseInt(no) + 1);
+            }
+            else
+            {
+                no = "SJ" + TimeUtil.getTimeDate2()
+                     + (Integer.parseInt(no) + 1);
+            }
+            System.out.println(no);
+        }
+        else
+        {
+            no = "SJ" + TimeUtil.getTimeDate2() + "01";
+            System.out.println(no);
+        }
+        return no;
+    }
+
+    /**
+     * 商机单(修改ERP_ID)
+     * @param request
+     * @return
+     */
+    public int editBusinessOrderERPID(String ERP_ID, String BO_ONO)
+    {
+        String sql = "UPDATE SYS_BUSINESS_ORDER SET ERP_ID = ? WHERE BO_ONO = ?";
+        return baseDao.execute(sql, ERP_ID, BO_ONO);
+    }
+
+    /**
+     * 查询商机单详情
+     * @param request
+     * @return
+     */
+    public Map<String, Object> queryBusinessOrderDetail(
+                                                        HttpServletRequest request)
+    {
+        int BO_ID = RequestParameter.getInt(request, "BO_ID", false);
+        String sql = "SELECT * FROM SYS_BUSINESS_ORDER WHERE BO_ID = ?";
+        Map<String, Object> map = baseDao.queryForMap(sql, BO_ID);
+        return map;
+    }
+
+    /**
+     * 商机单(修改同步标识)
+     * 同步标识 0：增加失败 1：增加成功 2：修改成功 3：修改失败
+     * @param request
+     * @return
+     */
+    public int updateBusinessOrderFlag(String BO_ONO, String property,
+                                       int BO_FLAG)
+    {
+        String sql = "";
+        if (property.equals("BO_ONO"))
+        {
+            sql = "UPDATE SYS_BUSINESS_ORDER SET BO_FLAG = ? WHERE BO_ONO = ?";
+        }
+        else
+        {
+            sql = "UPDATE SYS_BUSINESS_ORDER SET BO_FLAG = ? WHERE BO_ID = ?";
+        }
+
+        return baseDao.execute(sql, BO_FLAG, BO_ONO);
+    }
+
+    /**
+     * 预约单(添加提交)
+     * @param request
+     * @return
+     */
+    @SuppressWarnings("static-access")
+    public int addAppointmentOrder(HttpServletRequest request)
+    {
+
+        Integer E_ID = RequestParameter.getInt(request, "E_ID", false);//登录人id
+        //根据登录人id查询登录人信息
+        Map<String, Object> userLoginMap = searchUserLoginInfo(E_ID);
+        //根据登录人id查询负责人信息
+        Map<String, Object> chargePersonMap = searchChargePersonInfo(E_ID);
+
+        String AO_PAYMENT = RequestParameter.getString(request, "AO_PAYMENT", //支付方式
+            false);
+        //根据支付方式查询支付方式的编码
+        Map<String, Object> payMap = searchPay(AO_PAYMENT);
+        String AO_PAYMENT_NO = payMap.get("P_ID").toString(); //支付方式编码
+
+        String AO_ATTN_USER = userLoginMap.get("E_NAME").toString();//经手人名称
+
+        String AO_ATTN_PHONE = userLoginMap.get("E_PHONE").toString();//经手人电话
+
+        String AO_STORE_MANAGER_NO = chargePersonMap.get("E_ID").toString();//门店负责人编码
+
+        String AO_STORE_MANAGER = chargePersonMap.get("E_NAME").toString();//门店负责人
+
+        String AO_STORE_PHONE = chargePersonMap.get("S_PHONE").toString();//门店电话
+
+        String AO_CREATEER_NO = userLoginMap.get("E_LOGIN_CODE").toString();//创建人编码
+
+        String AO_CREATEER_NAME = userLoginMap.get("E_NAME").toString();//创建人名称
+
+        String AO_CREATEER = E_ID.toString();//创建人
+
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+
+        String AO_CREATE_TIME = df.format(new Date()).toString(); //创建日期
+
+        String AO_CUS_NAME = RequestParameter.getString(request, "AO_CUS_NAME",
+            null);
+        String AO_CUS_PHONE = RequestParameter.getString(request,
+            "AO_CUS_PHONE", null);
+        String AO_SPEC_STORE = RequestParameter.getString(request,
+            "AO_SPEC_STORE", null);
+        String AO_CUS_ADD = RequestParameter.getString(request, "AO_CUS_ADD",
+            null);
+        String AO_TOTAL_DEPOSIT = RequestParameter.getString(request,
+            "AO_TOTAL_DEPOSIT", null);
+        String AO_TIME = RequestParameter.getString(request, "AO_TIME", null);
+        String AO_REMARK = RequestParameter.getString(request, "AO_REMARK",
+            null);
+
+        String sql = "INSERT INTO SYS_APPOINTMENT_ORDER (AO_NO,AO_STATUS,AO_CUS_NAME, AO_CUS_PHONE, AO_SPEC_STORE,AO_CUS_ADD, "
+                     + "AO_STORE_PHONE, AO_STORE_MANAGER,AO_PAYMENT_NO,AO_PAYMENT,AO_TOTAL_DEPOSIT, AO_TIME, AO_REMARK,"
+                     + "AO_CREATEER,AO_CREATEER_NAME,AO_ATTN_USER,AO_ATTN_PHONE,AO_CREATE_TIME,"
+                     + "AO_STORE_MANAGER_NO,AO_CREATEER_NO) ";
+        sql += "VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        String AO_NO = appointmentOrderNo();
+
+        int count = baseDao.execute(sql, AO_NO, 0, AO_CUS_NAME, AO_CUS_PHONE,
+            AO_SPEC_STORE, AO_CUS_ADD, AO_STORE_PHONE, AO_STORE_MANAGER,
+            AO_PAYMENT_NO, AO_PAYMENT, AO_TOTAL_DEPOSIT, AO_TIME, AO_REMARK,
+            AO_CREATEER, AO_CREATEER_NAME, AO_ATTN_USER, AO_ATTN_PHONE,
+            AO_CREATE_TIME, AO_STORE_MANAGER_NO, AO_CREATEER_NO);
+        if (count == 1)
+        {
+            //本地数据插入成功 
+            //调用ERP接口
+            //            Map<String, Object> erpData = new HashMap<String, Object>();
+            //            String content = "";
+            //            erpData.put("FBaseProperty2", null);
+            //            erpData.put("FBaseProperty1", null);
+            //            erpData.put("FDGLong", null);
+            //            erpData.put("FPrice", null);
+            //            erpData.put("FDGLong1", null);
+            //            erpData.put("FHuoDongInfo", null);
+            //            erpData.put("FOtherTel", null);
+            //            erpData.put("FCuReq", null);
+            //            erpData.put("FBaseProperty", null);
+            //            erpData.put("FRemarks", AO_REMARK);
+            //            erpData.put("FIsCL", null);
+            //            erpData.put("FJSTel", AO_STORE_PHONE);
+            //            erpData.put("FSKFS", null);
+            //            erpData.put("FOrgId1", null);
+            //            erpData.put("FMDFZR1", null);
+            //            erpData.put("FFZRTEL", AO_STORE_PHONE);
+            //            erpData.put("FCustomer", AO_CUS_NAME);
+            //            erpData.put("FTOTALAMOUNT", null);
+            //            erpData.put("FBookDate", AO_TIME);
+            //            erpData.put("FCuName", AO_CUS_NAME);
+            //            erpData.put("FProduct", null);
+            //            erpData.put("FDocumentStatus", null);
+            //            erpData.put("FBillNo", AO_NO);
+            //            erpData.put("FTel", AO_CUS_PHONE);
+            //            erpData.put("FDaoGou", AO_ATTN_USER);
+            //            erpData.put("FMenDian", null);
+            //            erpData.put("FModifierId", null);
+            //            erpData.put("FCreateDate", new Date());
+            //            erpData.put("FModifyDate", new Date());
+            //            erpData.put("FDatetime", null);
+            //            erpData.put("FCreatorId", AO_CREATEER);
+            //            erpData.put("FCuAddress", AO_CUS_ADD);
+            //            erpData.put("FRemarks1", null);
+            //            erpData.put("FHuoDong", null);
+            //            erpData.put("FHuoDongName", null);
+            //            erpData.put("FBaoBeiNo", null);
+            //            content = CommonUtil.toJSONString(erpData);
+            //
+            //            String ERP_APPOINTMENT_RECORD_SAVE = PropConfigUtil.getVal(
+            //                "erp.appointmentrecordsave").trim();
+            //            String resultFromERP = ERPWebServiceUtil.getResultFromERP(content,
+            //                ERP_APPOINTMENT_RECORD_SAVE);
+            //            String jsonStr = resultFromERP.substring(20,
+            //                resultFromERP.length() - 1);
+            //            JSONObject obj = JSONObject.fromObject(jsonStr);
+            //            Result result = (Result)obj.toBean(obj, Result.class);
+            //            //            System.out.println(result.getRESPONSESTATUS().isIsSuccess());
+            //            if (1 == 1)
+            //            {
+            //                //ERP插入数据成功
+            //                updateAppointmentOrderFlag(Integer.parseInt(AO_NO), 1);
+            //            }
+            //            else
+            //            {
+            //                //ERP插入数据失败
+            //                updateAppointmentOrderFlag(Integer.parseInt(AO_NO), 0);
+            //            }
+            return count;
+        }
+        //本地数据插入失败
+        return 0;
+    }
+
+    /**
+     * 预约单(修改提交)
+     * @param request
+     * @return
+     */
+    @SuppressWarnings("static-access")
+    public int editAppointmentOrder(HttpServletRequest request)
+    {
+        //预约单主键
+        int AO_ID = RequestParameter.getInt(request, "AO_ID", false);
+        Integer E_ID = RequestParameter.getInt(request, "E_ID", false);//登录人id
+        //根据登录人id查询登录人信息
+        Map<String, Object> userLoginMap = searchUserLoginInfo(E_ID);
+        //根据主键查询该预约单是否已审核
+        String statusSql = "SELECT AO_STATUS FROM SYS_APPOINTMENT_ORDER WHERE AO_ID = ?";
+        Map<String, Object> statusMap = baseDao.queryForMap(statusSql, AO_ID);
+        if (statusMap.get("AO_STATUS").toString().equals("0"))
+        {
+            String AO_PAYMENT = RequestParameter.getString(request,
+                "AO_PAYMENT", //支付方式
+                false);
+            //根据支付方式查询支付方式的编码
+            Map<String, Object> payMap = searchPay(AO_PAYMENT);
+            //未审核，可以修改
+            String AO_PAYMENT_NO = payMap.get("P_ID").toString(); //支付方式编码
+
+            String AO_UPADTE_NO = userLoginMap.get("E_LOGIN_CODE").toString();//修改人编码
+
+            String AO_UPADTE_NAME = userLoginMap.get("E_NAME").toString();//修改人名称
+
+            String AO_UPADTE_TIME = new Date().toString(); //修改日期
+
+            String AO_CUS_NAME = RequestParameter.getString(request,
+                "AO_CUS_NAME", null);
+            String AO_CUS_PHONE = RequestParameter.getString(request,
+                "AO_CUS_PHONE", null);
+            String AO_SPEC_STORE = RequestParameter.getString(request,
+                "AO_SPEC_STORE", null);
+            String AO_CUS_ADD = RequestParameter.getString(request,
+                "AO_CUS_ADD", null);
+            String AO_TOTAL_DEPOSIT = RequestParameter.getString(request,
+                "AO_TOTAL_DEPOSIT", null);
+            String AO_TIME = RequestParameter.getString(request, "AO_TIME",
+                null);
+            String AO_REMARK = RequestParameter.getString(request, "AO_REMARK",
+                null);
+
+            String sql = "UPDATE SYS_APPOINTMENT_ORDER SET AO_CUS_NAME = ?,AO_CUS_PHONE = ?,"
+                         + "AO_PAYMENT_NO = ?,AO_PAYMENT = ?,AO_REMARK = ?,AO_CUS_ADD = ?,"
+                         + "AO_UPADTE_NO = ?,AO_UPADTE_NAME = ?,AO_UPADTE_TIME = ?"
+                         + "WHERE AO_ID = ?";
+            int count = baseDao.execute(sql, AO_CUS_NAME, AO_CUS_PHONE,
+                AO_PAYMENT_NO, AO_PAYMENT, AO_REMARK, AO_CUS_ADD,
+                AO_UPADTE_NAME, AO_UPADTE_TIME, AO_ID);
+            if (count == 1)
+            {
+                //本地数据修改成功 
+                //调用ERP接口
+                //                Map<String, Object> erpData = new HashMap<String, Object>();
+                //                String content = "";
+                //                erpData.put("FBaseProperty2", null);
+                //                erpData.put("FBaseProperty1", null);
+                //                erpData.put("FDGLong", null);
+                //                erpData.put("FPrice", null);
+                //                erpData.put("FDGLong1", null);
+                //                erpData.put("FHuoDongInfo", null);
+                //                erpData.put("FOtherTel", null);
+                //                erpData.put("FCuReq", null);
+                //                erpData.put("FBaseProperty", null);
+                //                erpData.put("FRemarks", AO_REMARK);
+                //                erpData.put("FIsCL", null);
+                //                //                erpData.put("FJSTel", AO_STORE_PHONE);
+                //                erpData.put("FSKFS", null);
+                //                erpData.put("FOrgId1", null);
+                //                erpData.put("FMDFZR1", null);
+                //                //                erpData.put("FFZRTEL", AO_STORE_PHONE);
+                //                erpData.put("FCustomer", AO_CUS_NAME);
+                //                erpData.put("FTOTALAMOUNT", null);
+                //                erpData.put("FBookDate", AO_TIME);
+                //                erpData.put("FCuName", AO_CUS_NAME);
+                //                erpData.put("FProduct", null);
+                //                erpData.put("FDocumentStatus", null);
+                //                //                erpData.put("FBillNo", AO_NO);
+                //                erpData.put("FTel", AO_CUS_PHONE);
+                //                //                erpData.put("FDaoGou", AO_ATTN_USER);
+                //                erpData.put("FMenDian", null);
+                //                erpData.put("FModifierId", null);
+                //                erpData.put("FCreateDate", new Date());
+                //                erpData.put("FModifyDate", new Date());
+                //                erpData.put("FDatetime", null);
+                //                //                erpData.put("FCreatorId", AO_CREATEER);
+                //                erpData.put("FCuAddress", AO_CUS_ADD);
+                //                erpData.put("FRemarks1", null);
+                //                erpData.put("FHuoDong", null);
+                //                erpData.put("FHuoDongName", null);
+                //                erpData.put("FBaoBeiNo", null);
+                //                content = CommonUtil.toJSONString(erpData);
+                //
+                //                String ERP_APPOINTMENT_RECORD_SAVE = PropConfigUtil.getVal(
+                //                    "erp.appointmentrecordsave").trim();
+                //                String resultFromERP = ERPWebServiceUtil.getResultFromERP(
+                //                    content, ERP_APPOINTMENT_RECORD_SAVE);
+                //                String jsonStr = resultFromERP.substring(20,
+                //                    resultFromERP.length() - 1);
+                //                JSONObject obj = JSONObject.fromObject(jsonStr);
+                //                Result result = (Result)obj.toBean(obj, Result.class);
+                //                //                System.out.println(result.getRESPONSESTATUS().isISSUCCESS());
+                //                if (1 == 1)
+                //                {
+                //                    count = 2;
+                //                    //ERP修改数据成功
+                //                    updateAppointmentOrderFlag(AO_ID, count);
+                //                }
+                //                else
+                //                {
+                //                    count = 3;
+                //                    //ERP修改数据失败
+                //                    updateAppointmentOrderFlag(AO_ID, count);
+                //                }
+                return count;
+            }
+            else
+            {
+                //本地数据修改失败
+                return -1;
+            }
+        }
+
+        //已经审核，不可以修改
+        return -2;
+    }
+
+    /**
+     * 
+     *〈预约单生成编号〉
+     * @return String
+     */
+    public String appointmentOrderNo()
+    {
+        //先查询数据库里的编号，取其最大值
+        String queryNoSql = "SELECT AO_NO FROM SYS_APPOINTMENT_ORDER ORDER BY AO_NO DESC LIMIT 1";
+        Map<String, Object> noMap = baseDao.queryForMap(queryNoSql);
+        String no = "";
+        if (null != noMap.get("AO_NO")
+            && !"".equals(noMap.get("AO_NO").toString()))
+        {
+            no = noMap.get("AO_NO").toString().substring(11,
+                noMap.get("AO_NO").toString().length());
+            System.out.println(no);
+            if (Integer.parseInt(no) < 9)
+            {
+                no = "YYD" + TimeUtil.getTimeDate2() + "00"
+                     + (Integer.parseInt(no) + 1);
+            }
+            else if (Integer.parseInt(no) < 99)
+            {
+                no = "YYD" + TimeUtil.getTimeDate2() + "0"
+                     + (Integer.parseInt(no) + 1);
+            }
+            else
+            {
+                no = "YYD" + TimeUtil.getTimeDate2()
+                     + (Integer.parseInt(no) + 1);
+            }
+        }
+        else
+        {
+            no = "YYD" + TimeUtil.getTimeDate2() + "001";
+        }
+        return no;
+    }
+
+    /**
+     * 预约单(修改同步标识)
+     * 同步标识 0：增加失败 1：增加成功 2：修改成功 3：修改失败
+     * @param request
+     * @return
+     */
+    public int updateAppointmentOrderFlag(int AO_ID, int AO_FLAG)
+    {
+        String sql = "UPDATE SYS_APPOINTMENT_ORDER SET AO_FLAG = ? WHERE AO_ID = ?";
+        return baseDao.execute(sql, AO_FLAG, AO_ID);
+    }
+
+    /**
+     * 
+     *〈预约单查询详情信息〉
+     * @param request
+     * @return Map<String,Object>
+     */
+    public Map<String, Object> queryAppointmentOrderDetail(
+                                                           HttpServletRequest request)
+    {
+        int AO_ID = RequestParameter.getInt(request, "AO_ID", false);
+        String sql = "SELECT * FROM SYS_APPOINTMENT_ORDER WHERE AO_ID = ?";
+        Map<String, Object> map = baseDao.queryForMap(sql, AO_ID);
+        return map;
+    }
+
+    /**
+     * 显示商机单列表
+     * @param request
+     * @return
+     */
+    public Map<String, Object> businessOrderList(HttpServletRequest request)
+    {
+        int E_ID = RequestParameter.getInt(request, "E_ID", false);
+        int page = RequestParameter.getIntGreaterThen(request, "page", 0, 0,
+            false);
+        int count = RequestParameter.getInt(request, "count", 10, 1, 20, false);
+        String sql = "SELECT * FROM SYS_BUSINESS_ORDER WHERE BO_CREATE_USER = ?";
+        Map<String, Object> map = baseDao.pagination(page, count, sql, E_ID);
+        return map;
+    }
+
+    /**
+     * 显示预约单列表
+     * @param request
+     * @return
+     */
+    public Map<String, Object> appointmentOrderList(HttpServletRequest request)
+    {
+        int E_ID = RequestParameter.getInt(request, "E_ID", false);
+        int page = RequestParameter.getIntGreaterThen(request, "page", 0, 0,
+            false);
+        int count = RequestParameter.getInt(request, "count", 10, 1, 20, false);
+        String sql = "SELECT * FROM SYS_APPOINTMENT_ORDER WHERE AO_CREATEER = ?";
+        Map<String, Object> map = baseDao.pagination(page, count, sql, E_ID);
+        return map;
+    }
+
+    /**
+     * 查询省
+     * @param request
+     * @return
+     */
+    public List<Map<String, Object>> queryProvince(HttpServletRequest request)
+    {
+        String sql = "SELECT * FROM SYS_PROVINCE";
+        List<Map<String, Object>> map = baseDao.queryForList(sql);
+        return map;
+    }
+
+    /**
+     * 查询市
+     * @param request
+     * @return
+     */
+    public List<Map<String, Object>> queryCity(HttpServletRequest request)
+    {
+        String P_ID = RequestParameter.getString(request, "P_ID", false);
+        String sql = "SELECT * FROM SYS_CITY WHERE P_ID = ?";
+        List<Map<String, Object>> map = baseDao.queryForList(sql, P_ID);
+        return map;
+    }
+
+    /**
+     * 查询区
+     * @param request
+     * @return
+     */
+    public List<Map<String, Object>> queryDistrict(HttpServletRequest request)
+    {
+        String C_ID = RequestParameter.getString(request, "C_ID", false);
+        String sql = "SELECT * FROM SYS_DISTRICT WHERE C_ID = ?";
+        List<Map<String, Object>> map = baseDao.queryForList(sql, C_ID);
+        return map;
+    }
+
+    /**
+     * 商机单搜索
+     * @param request
+     * @return
+     */
+    public Map<String, Object> searchBusinessOrder(HttpServletRequest request)
+    {
+        int page = RequestParameter.getIntGreaterThen(request, "page", 0, 0,
+            false);
+        int count = RequestParameter.getInt(request, "count", 10, 1, 20, false);
+        String condition = RequestParameter.getString(request, "condition",
+            null);
+        String sql = "SELECT * FROM SYS_BUSINESS_ORDER WHERE 1=1";
+        Map<String, Object> map = null;
+        if (null != condition && !"".equals(condition))
+        {
+            sql += " AND BO_ONO LIKE '%" + condition + "%'";
+            sql += " OR BO_TIME LIKE binary '%" + condition + "%'";
+            sql += " OR BO_CUS_NAME LIKE '%" + condition + "%'";
+            sql += " OR BO_CUS_PHONE LIKE '%" + condition + "%'";
+        }
+        System.out.println(sql);
+        map = baseDao.pagination(page, count, sql);
+        return map;
+    }
+
+    /**
+     * 预约单搜索
+     * @param request
+     * @return
+     */
+    public Map<String, Object> searchAppointmentOrder(HttpServletRequest request)
+    {
+        int page = RequestParameter.getIntGreaterThen(request, "page", 0, 0,
+            false);
+        int count = RequestParameter.getInt(request, "count", 10, 1, 20, false);
+        String condition = RequestParameter.getString(request, "condition",
+            null);
+        String sql = "SELECT * FROM SYS_APPOINTMENT_ORDER WHERE 1=1";
+        Map<String, Object> map = null;
+        if (null != condition && !"".equals(condition))
+        {
+            sql += " AND AO_NO LIKE '%" + condition + "%'"
+                   + " OR AO_CREATE_TIME LIKE binary '%" + condition + "%'"
+                   + " OR AO_CUS_NAME LIKE '%" + condition + "%'"
+                   + " OR AO_CUS_PHONE LIKE '%" + condition + "%'";
+        }
+        map = baseDao.pagination(page, count, sql);
+        return map;
+    }
+
+    /**
+     * 
+     *〈根据id查询 经手人(登录人门店、个人)信息〉
+     * @param request
+     * @return Map<String,Object>
+     */
+    public Map<String, Object> searchUserLoginInfo(int E_ID)
+    {
+        String sql = "SELECT A.E_NAME,A.E_LOGIN_CODE,A.E_PHONE,"
+                     + "B.S_NAME,B.S_PHONE,B.S_ADD "
+                     + "FROM W_EMPLOYEE A INNER JOIN SYS_STORE B "
+                     + "ON A.S_ID = B.S_ID " + "WHERE E_ID = ?";
+        Map<String, Object> map = baseDao.queryForMap(sql, E_ID);
+        return map;
+    }
+
+    /**
+     * 
+     *〈根据id查询 负责人(门店负责人、门店)信息〉
+     * @param request
+     * @return Map<String,Object>
+     */
+    public Map<String, Object> searchChargePersonInfo(int E_ID)
+    {
+        String sql = "SELECT A.E_ID,A.E_NAME,A.E_PHONE,A.E_TYPE,"
+                     + "B.S_NAME,B.S_PHONE,B.S_ADD "
+                     + "FROM W_EMPLOYEE A INNER JOIN SYS_STORE B "
+                     + "ON A.S_ID = B.S_ID " + "WHERE A.S_ID = ("
+                     + "SELECT S_ID FROM W_EMPLOYEE WHERE E_ID = ?) "
+                     + " AND E_TYPE = 1";
+        Map<String, Object> map = baseDao.queryForMap(sql, E_ID);
+        return map;
+    }
+
+    //    /**
+    //     * 
+    //     *〈根据id查询省、市、区〉
+    //     * @param objects
+    //     * @return Map<String,Object>
+    //     */
+    //    public Map<String, Object> searchAddress(Object... objects)
+    //    {
+    //        String pSql = "SELECT P_ID,P_NAME FROM SYS_PROVINCE WHERE P_ID = ?";
+    //
+    //        String cSql = "SELECT C_ID,C_NAME FROM SYS_CITY WHERE C_ID = ?";
+    //
+    //        String dSql = "SELECT D_ID,D_NAME FROM SYS_DISTRICT WHERE D_ID = ?";
+    //
+    //        Map<String, Object> map = new HashMap<String, Object>();
+    //        map.put("P_ID", baseDao.queryForMap(pSql, objects[0]).get("P_ID"));
+    //        map.put("P_NAME", baseDao.queryForMap(pSql, objects[0]).get("P_NAME"));
+    //        map.put("C_ID", baseDao.queryForMap(cSql, objects[1]).get("C_ID"));
+    //        map.put("C_NAME", baseDao.queryForMap(cSql, objects[1]).get("C_NAME"));
+    //        map.put("D_ID", baseDao.queryForMap(dSql, objects[2]).get("D_ID"));
+    //        map.put("D_NAME", baseDao.queryForMap(dSql, objects[2]).get("D_NAME"));
+    //
+    //        return map;
+    //    }
+
+    //    /**
+    //     * 
+    //     *〈查询活动〉
+    //     * @return Map<String,Object>
+    //     */
+    //    public Map<String, Object> searchAct()
+    //    {
+    //        String sql = "select a.O_ID,a.PRO_ID,a.PRO_NAME,a.PRO_DEC,b.A_ID,"
+    //                     + " b.A_NO,b.A_NAME,b.A_DESC from wx_orders a,sys_act b "
+    //                     + " where a.ACTIVITY_ID = b.A_ID";
+    //        Map<String, Object> map = baseDao.queryForMap(sql, "");
+    //        map.put("AC_ID", map.get("AC_ID"));
+    //        return map;
+    //    }
+
+    /**
+     * 
+     *〈查询付款方式〉
+     * @param P_NAME
+     * @return Map<String,Object>
+     */
+    public Map<String, Object> searchPay(String P_NAME)
+    {
+        String sql = "SELECT P_ID,P_NAME FROM W_PAY WHERE P_NAME = ?";
+        Map<String, Object> map = baseDao.queryForMap(sql, P_NAME);
+        return map;
+    }
+
+}

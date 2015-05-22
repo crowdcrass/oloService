@@ -1,0 +1,9 @@
+<sqls>
+	<queryWxUserByWxid> 
+	    <![CDATA[   
+			 select *
+		    from wxpt_wxuser t 
+		    where t.wxid =?
+		     ]]>
+	</queryWxUserByWxid>
+</sqls>

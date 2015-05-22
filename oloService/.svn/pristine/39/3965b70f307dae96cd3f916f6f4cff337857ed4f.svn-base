@@ -1,0 +1,24 @@
+package com.amiba.util.charconvert;
+
+import java.io.UnsupportedEncodingException;
+
+/**
+ *  转换页面中文乱码
+ * @author lz
+ *
+ */
+public class CharConvert {
+
+	public static String convertToChinese(String str){
+		String temp = "";
+		if(str != null && !"".equals(str)){
+			try {
+				temp = new String(str.getBytes("iso-8859-1"),"utf-8");
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return temp;
+	}
+}

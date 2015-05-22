@@ -1,0 +1,25 @@
+package com.sys.index.web;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationListener;
+import org.springframework.stereotype.Controller;
+
+import com.platform.common.data.Common;
+
+
+@Controller
+public class AutorunListener implements ApplicationListener<ApplicationEvent> {
+	
+	private static boolean hasLoad = false;
+	
+	@Override
+	public void onApplicationEvent(ApplicationEvent event) {
+		if (AutorunListener.hasLoad) {
+			return;
+		}
+		Common.jsonIgnoreNull = false;
+		Common.jsonNullToEmpty = true;
+		AutorunListener.hasLoad = true;
+	}
+}
+
+

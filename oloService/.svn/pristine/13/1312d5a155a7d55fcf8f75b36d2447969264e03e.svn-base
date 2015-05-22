@@ -1,0 +1,16 @@
+package com.amiba.util;
+
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+/**
+ * 加载配置文件，获取 相应的信息
+ * @author Administrator
+ *
+ */
+public final class SpringUtil {
+	private static ApplicationContext  ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
+
+	public static Object getBean(String beanName){
+		return ctx.getBean(beanName);
+	}
+}

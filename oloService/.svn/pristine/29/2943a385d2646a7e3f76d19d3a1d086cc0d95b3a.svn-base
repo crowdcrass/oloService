@@ -1,0 +1,173 @@
+package com.amiba.app.web;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.amiba.app.service.ProductTypeService4App;
+import com.platform.common.servlet.JSONWeb;
+
+
+/**
+ * 
+ * 物品展示
+ * @author zfj
+ *
+ */
+@Controller
+@RequestMapping("/app/product")
+public class ProductTypeAction4App
+{
+    @Autowired
+    private ProductTypeService4App productTypeService4App;
+
+    /**
+     * 找出所有物品
+     * @return
+     * @throws Exception String
+     */
+    @ResponseBody
+    @RequestMapping("/findAllProduct")
+    public String findProductMenus()
+        throws Exception
+    {
+        return new JSONWeb()
+        {
+            protected Object execute()
+            {
+                return productTypeService4App.findAllProduct();
+            }
+        }.toString();
+    }
+
+    /**
+     * 根据物品节点查询列表详细信息
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception String
+     */
+    @ResponseBody
+    @RequestMapping("/queryProductTreeNodeList")
+    public String queryProductTreeNodeList(final HttpServletRequest request,
+                                           HttpServletResponse response)
+        throws Exception
+    {
+        return new JSONWeb()
+        {
+            protected Object execute()
+            {
+                return productTypeService4App.queryProductTreeNodeList(request);
+            }
+        }.toString();
+    }
+
+    /**
+     * 根据类别节点查询所有物品
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception String
+     */
+    @ResponseBody
+    @RequestMapping("/queryProductsByNode")
+    public String queryProductTreeNode(final HttpServletRequest request,
+                                       HttpServletResponse response)
+        throws Exception
+    {
+        return new JSONWeb()
+        {
+            protected Object execute()
+            {
+                return productTypeService4App.queryProductsByNode(request);
+            }
+        }.toString();
+    }
+
+    /*	*//**
+          * 找出所有物品
+          * @return
+          * @throws Exception
+          */
+    /*
+    @ResponseBody
+    @RequestMapping("/findAllProduct")
+    public String findAllProduct()
+    		throws Exception{
+    return new JSONWeb(){
+    	protected Object execute(){
+    		return productTypeService4App.findAllProduct();
+    	}
+    }.toString();
+    }*/
+
+    /**
+     * 根据物品名称模糊查询
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception String
+     */
+    @ResponseBody
+    @RequestMapping("/findProductByNameBlur")
+    public String findProductByNameBlur(final HttpServletRequest request,
+                                        HttpServletResponse response)
+        throws Exception
+    {
+        return new JSONWeb()
+        {
+            protected Object execute()
+            {
+                return productTypeService4App.findProductByNameBlur(request);
+            }
+        }.toString();
+    }
+
+    /**
+     * 模糊查询物品
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception String
+     */
+    @ResponseBody
+    @RequestMapping("/findProductBlur")
+    public String findProductBlur(final HttpServletRequest request,
+                                  HttpServletResponse response)
+        throws Exception
+    {
+        return new JSONWeb()
+        {
+            protected Object execute()
+            {
+                return productTypeService4App.findProductBlur(request);
+            }
+        }.toString();
+    }
+
+    /**
+     * 根据物品ID查询物品〉
+     * @param request
+     * @param response
+     * @return
+     * @throws Exception String
+     */
+    @ResponseBody
+    @RequestMapping("/findProductById")
+    public String findProductById(final HttpServletRequest request,
+                                  HttpServletResponse response)
+        throws Exception
+    {
+        return new JSONWeb()
+        {
+            protected Object execute()
+            {
+                return productTypeService4App.findProductById(request);
+            }
+        }.toString();
+    }
+}
